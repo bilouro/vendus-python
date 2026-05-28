@@ -1,0 +1,15 @@
+{
+  "id": 12346,
+  "type": "NC",
+  "subtype": "NC",
+  "number": "NC 2026/4",
+  "date": "2026-05-27",
+  "system_time": "2026-05-27 15:00:00",
+  "local_time": "2026-05-27 15:00:00",
+  "amount_gross": "18.45",
+  "amount_net": "15.00",
+  "hash": "EFGH",
+  "atcud": "BBBBBBBB-4",
+  "qrcode": "A:123456789*B:999999990*C:PT*D:NC",
+  "output": "NC 2026/4"
+}

@@ -1,0 +1,15 @@
+{
+  "id": 12345,
+  "type": "FT",
+  "subtype": "FT",
+  "number": "FT 2026/123",
+  "date": "2026-05-27",
+  "system_time": "2026-05-27 14:30:00",
+  "local_time": "2026-05-27 14:30:00",
+  "amount_gross": "92.25",
+  "amount_net": "75.00",
+  "hash": "ABCD",
+  "atcud": "AAAAAAAA-123",
+  "qrcode": "A:123456789*B:999999990*C:PT*D:FT*E:N*F:20260527*G:FT 2026/123",
+  "output": "FT 2026/123"
+}

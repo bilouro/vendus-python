@@ -1,16 +1,16 @@
-# Invoice (FT)
+# Fatura (FT)
 
-## What it is
+## O que é
 
-The Invoice (FT) is the standard Portuguese fiscal document. Required for:
+A Fatura (FT) é o documento fiscal padrão em Portugal. Obrigatória para:
 
-- B2B transactions
-- B2C where the client provides a NIF
-- B2C where payment is deferred (on credit); if the client pays on the spot, use Invoice-Receipt (FR)
+- Transações B2B
+- B2C onde o cliente fornece NIF
+- B2C onde o pagamento é diferido (a crédito); se o cliente paga na hora, usa Fatura-Recibo (FR)
 
-Vendus automatically reports the document to AT (hash, ATCUD, QR code).
+A Vendus comunica automaticamente o documento à AT (hash, ATCUD, QR code).
 
-## Flow
+## Fluxo
 
 ```mermaid
 sequenceDiagram
@@ -20,15 +20,15 @@ sequenceDiagram
     participant AT
 
     App->>SDK: create_invoice(client, items)
-    SDK->>SDK: validate NIF mod 11
+    SDK->>SDK: validar NIF mod 11
     SDK->>API: POST /v1.1/documents (FT)
-    API->>AT: report document
+    API->>AT: comunicar documento
     AT-->>API: hash + ATCUD
     API-->>SDK: Document JSON
     SDK-->>App: Document(id, number, atcud, qrcode...)
 ```
 
-## Full example
+## Exemplo completo
 
 ```python
 from decimal import Decimal
@@ -49,7 +49,7 @@ invoice = client.documents.create_invoice(
     ),
     items=[
         DocumentItem(
-            description="Consulting",
+            description="Consultoria",
             quantity=Decimal("10"),
             unit_price=Decimal("75.00"),
             tax_rate=Decimal("23"),
@@ -65,35 +65,35 @@ print(invoice.atcud)          # "AAAAAAAA-123"
 print(invoice.qrcode)         # "A:123456789*B:..."
 ```
 
-## Parameters
+## Parâmetros
 
-| Parameter | Type | Required | Description |
+| Parâmetro | Tipo | Obrigatório | Descrição |
 |---|---|---|---|
-| `register_id` | `int` | Yes | POS register ID configured in Vendus |
-| `items` | `list[DocumentItem]` | Yes | At least one item |
-| `client` | `ClientData \| None` | No | Omit = final consumer |
-| `external_reference` | `str` | No | Enables safe POST retries |
+| `register_id` | `int` | Sim | ID do POS configurado na Vendus |
+| `items` | `list[DocumentItem]` | Sim | Pelo menos um item |
+| `client` | `ClientData \| None` | Não | Omitir = consumidor final |
+| `external_reference` | `str` | Não | Habilita retry seguro do POST |
 
-## Three client shapes
+## Três formatos de cliente
 
 ```python
-# With NIF (B2B)
+# Com NIF (B2B)
 client.documents.create_invoice(
     register_id=1, items=[...],
     client=ClientData(name="Acme Lda", fiscal_id="123456789"),
 )
 
-# Name only (client did not provide NIF)
+# Só com nome (cliente não deu NIF)
 client.documents.create_invoice(
     register_id=1, items=[...],
     client=ClientData(name="João Silva"),
 )
 
-# Final consumer
+# Consumidor final
 client.documents.create_invoice(register_id=1, items=[...])
 ```
 
-## Async variant
+## Variante async
 
 ```python
 invoice = await client.documents.create_invoice_async(
@@ -103,46 +103,46 @@ invoice = await client.documents.create_invoice_async(
 )
 ```
 
-## VAT-exempt items
+## Itens isentos de IVA
 
-When `tax_rate=0`, AT requires an exemption code (M01-M99):
+Quando `tax_rate=0`, a AT exige um código de isenção (M01-M99):
 
 ```python
 from vendus import DocumentItem, TaxExemption
 
 DocumentItem(
-    description="Education service",
+    description="Serviço de educação",
     quantity=Decimal("1"),
     unit_price=Decimal("100.00"),
     tax_rate=Decimal("0"),
-    tax_exemption=TaxExemption.M07,  # Exempt Article 9.º CIVA
+    tax_exemption=TaxExemption.M07,  # Isento Artigo 9.º do CIVA
 )
 ```
 
-Common codes:
+Códigos comuns:
 
-| Code | Meaning |
+| Código | Significado |
 |---|---|
-| M01 | Article 16.º, n.º 6 CIVA |
-| M07 | Exempt Article 9.º (health, education) |
-| M10 | Cash VAT regime |
-| M16 | Exempt Article 14.º RITI (intra-community) |
-| M99 | Not subject; not taxed |
+| M01 | Artigo 16.º, n.º 6 do CIVA |
+| M07 | Isento Artigo 9.º (saúde, educação) |
+| M10 | Regime de IVA de caixa |
+| M16 | Isento Artigo 14.º RITI (intracomunitária) |
+| M99 | Não sujeito; não tributado |
 
-## Cancel an invoice
+## Cancelar uma fatura
 
 ```python
 cancelled = client.documents.cancel(
     document_id=invoice.id,
-    reason="Wrong client",
+    reason="Erro no cliente",
 )
 ```
 
-AT requires `reason`. Cancellation is non-idempotent — do not pass max_retries > 0.
+A AT exige `reason`. Cancelamento é não-idempotente — não passes max_retries > 0.
 
-## Notes
+## Notas
 
-1. **`unit_price` is gross** (includes VAT). The SDK does not recompute.
-2. **`external_reference` is your idempotency anchor.** Without it, a POST that fails mid-flight cannot be safely retried.
-3. **AT is opaque** — `hash`, `atcud`, and `qrcode` come ready from Vendus. You never need to talk to AT directly.
-4. **`raw_response`** holds the raw JSON if you need fields the SDK doesn't model yet.
+1. **`unit_price` é bruto** (com IVA incluído). O SDK não recalcula.
+2. **`external_reference` é a tua âncora de idempotência.** Sem ele, um POST que falhe a meio não pode ser retentado em segurança.
+3. **AT é opaca** — `hash`, `atcud` e `qrcode` vêm prontos da Vendus. Nunca precisas falar com a AT diretamente.
+4. **`raw_response`** contém o JSON cru se precisares de campos que o SDK ainda não modela.

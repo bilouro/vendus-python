@@ -1,12 +1,12 @@
-# Receitas
+# Recipes
 
-Guias de integração com frameworks Python populares.
+Integration guides for popular Python frameworks.
 
-- [FastAPI](fastapi.md) — endpoint async para emitir faturas
-- [Flask](flask.md) — emissão síncrona em rota Flask
-- [Django](django.md) — view + serviço para emissão e armazenamento local
+- [FastAPI](fastapi.md) — async endpoint to issue invoices
+- [Flask](flask.md) — sync issuance in a Flask route
+- [Django](django.md) — view + service for issuance and local storage
 
-Padrões transversais:
-- Carregar a API key de `VENDUS_API_KEY` ou ficheiro `.env`
-- Guardar `invoice.id` na DB local para futuras NCs
-- Passar `external_reference` único por pedido para idempotência
+Cross-cutting patterns:
+- Load the API key from `VENDUS_API_KEY` or a `.env` file
+- Store `invoice.id` in your local DB for future NCs
+- Pass a unique `external_reference` per request for idempotency

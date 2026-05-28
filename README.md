@@ -10,7 +10,7 @@
 The first Python SDK for [Vendus](https://www.vendus.pt), Portugal's AT-certified invoicing & POS platform.
 Issue invoices, invoice-receipts, and credit notes — in 5 lines of Python.
 
-**[Documentation (PT/EN)](https://bilouro.github.io/vendus-python/)** | [Examples](examples/) | [API Reference](https://bilouro.github.io/vendus-python/api/)
+**Documentation: [English](https://bilouro.github.io/vendus-python/) · [Português](https://bilouro.github.io/vendus-python/pt/)** | [Examples](examples/) | [API Reference](https://bilouro.github.io/vendus-python/api/)
 
 > **Community SDK** — not affiliated with or endorsed by Vendus.
 > For official integrations, visit [vendus.pt](https://www.vendus.pt).

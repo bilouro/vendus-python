@@ -1,4 +1,4 @@
-# Referência API
+# API Reference
 
 ## VendusClient
 
@@ -8,7 +8,7 @@
 
 ::: vendus.services.documents.DocumentsService
 
-## Modelos
+## Models
 
 ::: vendus.Document
 ::: vendus.DocumentItem
@@ -17,7 +17,7 @@
 ::: vendus.DocumentStatus
 ::: vendus.TaxExemption
 
-## Exceções
+## Exceptions
 
 ::: vendus.VendusError
 ::: vendus.ValidationError

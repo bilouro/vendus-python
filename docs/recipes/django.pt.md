@@ -1,8 +1,8 @@
 # Django
 
-Service + view to issue invoices and store the ID locally for future NCs.
+Serviço + view para emitir faturas e guardar o ID localmente para futuras NCs.
 
-## Service
+## Serviço
 
 ```python
 # billing/services.py
@@ -13,10 +13,10 @@ _vendus = VendusClient.from_env()
 
 
 def issue_invoice_for_order(order):
-    """Issue an invoice for an Order from your domain.
+    """Emite fatura para uma Order do teu domínio.
 
-    Stores Vendus's id on order.vendus_document_id for future use
-    (cancellation, credit note, etc.).
+    Guarda o id da Vendus em order.vendus_document_id para uso futuro
+    (cancelamento, nota de crédito, etc.).
     """
     client_data = None
     if order.customer.name:
@@ -82,8 +82,8 @@ def issue_invoice(request, order_id):
     })
 ```
 
-## Notes
+## Notas
 
-- `VendusClient` is thread-safe for reuse — instantiated once on module import
-- Retry policy is handled internally; `external_reference=f"order-{order.id}"` makes retries safe
-- If you prefer async with Django ASGI, swap to `create_invoice_async` and `async def` on the view
+- O `VendusClient` é thread-safe para reutilização — instanciado uma vez ao import do módulo
+- A política de retries é gerida internamente; o `external_reference=f"order-{order.id}"` garante que retentar é seguro
+- Se preferes async com Django ASGI, troca para `create_invoice_async` e `async def` na view

@@ -1,15 +1,15 @@
-# Nota de Crédito (NC)
+# Credit Note (NC)
 
-## O que é
+## What it is
 
-A Nota de Crédito (NC) anula ou credita parcialmente um documento já emitido (FT ou FS). É o mecanismo legal para devoluções, descontos retroativos, ou correções de faturas erradas.
+A Credit Note (NC) cancels or partially credits a previously issued document (FT or FS). It is the legal mechanism for returns, retroactive discounts, or correcting wrong invoices.
 
-- **Referencia sempre** um documento original (`reference_document_id`)
-- **Motivo obrigatório** (`reason`) — exigido pela AT
-- O cliente deve coincidir com o do documento original
-- Pode ser parcial (devolução de só alguns itens)
+- **Always references** an original document (`reference_document_id`)
+- **Reason is mandatory** (`reason`) — required by AT
+- Client should match the original document's client
+- Can be partial (refunding only some items)
 
-## Fluxo
+## Flow
 
 ```mermaid
 sequenceDiagram
@@ -18,17 +18,17 @@ sequenceDiagram
     participant API as Vendus API
     participant AT
 
-    Note over App: Originalmente: cliente comprou 10 horas
-    App->>SDK: create_credit_note(<br/>reference_document_id=12345,<br/>reason="Devolução 2h",<br/>items=[2 horas])
-    SDK->>SDK: validar reason + reference_id
+    Note over App: Original: client bought 10 hours
+    App->>SDK: create_credit_note(<br/>reference_document_id=12345,<br/>reason="Refund 2h",<br/>items=[2 hours])
+    SDK->>SDK: validate reason + reference_id
     SDK->>API: POST /v1.1/documents (NC)
-    API->>AT: comunicar NC
+    API->>AT: report NC
     AT-->>API: hash + ATCUD
     API-->>SDK: Document JSON
     SDK-->>App: Document(NC)
 ```
 
-## Exemplo completo
+## Full example
 
 ```python
 from decimal import Decimal
@@ -36,17 +36,17 @@ from vendus import VendusClient, ClientData, DocumentItem
 
 client = VendusClient.from_env()
 
-# Assume que invoice.id foi guardado da emissão original
+# Assume invoice.id was stored from the original issue
 original_invoice_id = 12345
 
 nc = client.documents.create_credit_note(
     register_id=1,
     reference_document_id=original_invoice_id,
-    reason="Cliente devolveu 2 horas de consultoria",
+    reason="Client returned 2 consulting hours",
     client=ClientData(name="Acme Lda", fiscal_id="123456789"),
     items=[
         DocumentItem(
-            description="Consultoria (creditada)",
+            description="Consulting (credited)",
             quantity=Decimal("2"),
             unit_price=Decimal("75.00"),
             tax_rate=Decimal("23"),
@@ -59,18 +59,18 @@ print(nc.number)         # "NC 2026/4"
 print(nc.gross_amount)   # Decimal("184.50") — 2 × 75 × 1.23
 ```
 
-## Parâmetros
+## Parameters
 
-| Parâmetro | Tipo | Obrigatório | Descrição |
+| Parameter | Type | Required | Description |
 |---|---|---|---|
-| `register_id` | `int` | Sim | ID do POS configurado na Vendus |
-| `reference_document_id` | `int` | Sim | ID da FT/FS original a creditar |
-| `reason` | `str` | Sim | Motivo da NC (exigido pela AT) |
-| `items` | `list[DocumentItem]` | Sim | Itens a creditar (podem ser subset do original) |
-| `client` | `ClientData \| None` | Não | Deve coincidir com o cliente do original |
-| `external_reference` | `str` | Não | Habilita retry seguro do POST |
+| `register_id` | `int` | Yes | POS register ID configured in Vendus |
+| `reference_document_id` | `int` | Yes | ID of the original FT/FS being credited |
+| `reason` | `str` | Yes | Reason for the credit note (required by AT) |
+| `items` | `list[DocumentItem]` | Yes | Items to credit (can be a subset of the original) |
+| `client` | `ClientData \| None` | No | Should match the original document's client |
+| `external_reference` | `str` | No | Enables safe POST retries |
 
-## Variante async
+## Async variant
 
 ```python
 nc = await client.documents.create_credit_note_async(
@@ -81,8 +81,8 @@ nc = await client.documents.create_credit_note_async(
 )
 ```
 
-## Notas
+## Notes
 
-1. **NC total vs parcial:** se devolves o total, replica todos os itens. Se devolves uma parte, inclui só os itens/quantidades a creditar.
-2. **Não é cancelamento:** uma NC **credita** o valor mas mantém o documento original. Para cancelar completamente, usa `client.documents.cancel(id, reason)` em alternativa.
-3. **Cliente coerente:** se o original foi a Consumidor Final, a NC também deve omitir `client`.
+1. **Full vs partial NC:** if refunding the whole amount, replicate all items. For partial refunds, include only the items/quantities to credit.
+2. **NC is not cancellation:** an NC **credits** the value but keeps the original document. To fully void, use `client.documents.cancel(id, reason)` instead.
+3. **Consistent client:** if the original was to Final Consumer, the NC should also omit `client`.

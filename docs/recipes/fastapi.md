@@ -1,6 +1,6 @@
 # FastAPI
 
-Endpoint async que recebe um pedido de fatura e devolve o documento emitido.
+Async endpoint that receives an invoice request and returns the issued document.
 
 ```python
 # main.py
@@ -71,8 +71,8 @@ async def create_invoice(payload: InvoiceIn):
     }
 ```
 
-Notas:
+Notes:
 
-- `VendusClient` é seguro para reutilizar entre requests
-- `external_reference` deve vir do cliente HTTP (ex: order id) para garantir idempotência ponta-a-ponta
-- Erros são mapeados para HTTP status apropriados
+- `VendusClient` is safe to reuse across requests
+- `external_reference` should come from the HTTP client (e.g. order id) to guarantee end-to-end idempotency
+- Errors map to appropriate HTTP statuses

@@ -1,41 +1,41 @@
-# Instalação e Quickstart
+# Installation & Quickstart
 
-## Instalação
+## Installation
 
 ```bash
 pip install vendus
 ```
 
-Requer Python 3.9+. Dependências: [httpx](https://www.python-httpx.org/) e [Pydantic v2](https://docs.pydantic.dev/).
+Requires Python 3.9+. Dependencies: [httpx](https://www.python-httpx.org/) and [Pydantic v2](https://docs.pydantic.dev/).
 
-## Obter API key
+## Get your API key
 
-1. Inicia sessão em [www.vendus.pt](https://www.vendus.pt)
-2. **Definições → Acessos → API**
-3. Cria/copia a API key
+1. Sign in at [www.vendus.pt](https://www.vendus.pt)
+2. **Settings → Access → API**
+3. Create/copy the API key
 
-A API key identifica o utilizador na Vendus — todos os documentos emitidos via API ficam atribuídos a esse utilizador.
+The API key identifies the user in Vendus — every document issued via API is attributed to that user.
 
-## Configurar credenciais
+## Configure credentials
 
-Recomendado: variável de ambiente ou ficheiro `.env`.
+Recommended: environment variable or `.env` file.
 
 ```bash
-export VENDUS_API_KEY="a-tua-key"
+export VENDUS_API_KEY="your-key"
 ```
 
 ```python
 from vendus import VendusClient
 
-client = VendusClient.from_env()         # lê VENDUS_API_KEY
-# ou
+client = VendusClient.from_env()         # reads VENDUS_API_KEY
+# or
 client = VendusClient(api_key="...")
 ```
 
-!!! danger "Nunca commits API keys"
-    O `.env` deve estar no `.gitignore`. Não passes API keys como parâmetro de URL nem as registes em logs.
+!!! danger "Never commit API keys"
+    Add `.env` to `.gitignore`. Do not pass API keys as URL parameters or log them.
 
-## Primeira fatura
+## First invoice
 
 ```python
 from decimal import Decimal
@@ -44,30 +44,30 @@ from vendus import VendusClient, ClientData, DocumentItem
 client = VendusClient.from_env()
 
 invoice = client.documents.create_invoice(
-    register_id=1,                       # ID do POS configurado na Vendus
+    register_id=1,                       # POS register ID configured in Vendus
     client=ClientData(
         name="Acme Lda",
         fiscal_id="123456789",
     ),
     items=[
         DocumentItem(
-            description="Consultoria",
+            description="Consulting",
             quantity=Decimal("10"),
-            unit_price=Decimal("75.00"), # bruto, com IVA incluído
+            unit_price=Decimal("75.00"), # gross, includes VAT
             tax_rate=Decimal("23"),
         ),
     ],
-    external_reference="ORD-2026-001",   # ativa retry seguro em POST
+    external_reference="ORD-2026-001",   # enables safe POST retries
 )
 
-print(f"Fatura {invoice.number}")
+print(f"Invoice {invoice.number}")
 print(f"Total: {invoice.gross_amount} EUR")
 print(f"ATCUD: {invoice.atcud}")
 print(f"QR: {invoice.qrcode}")
 ```
 
-## Próximos passos
+## Next steps
 
-- [Configuração](configuration.md) — todas as opções do `VendusClient`
-- [Qual tipo de documento escolher?](../documents/index.md)
-- [Fatura (FT)](../documents/invoice.md), [Fatura-Recibo (FR)](../documents/invoice-receipt.md), [Nota de Crédito (NC)](../documents/credit-note.md)
+- [Configuration](configuration.md) — all `VendusClient` options
+- [Which document type to choose?](../documents/index.md)
+- [Invoice (FT)](../documents/invoice.md), [Invoice-Receipt (FR)](../documents/invoice-receipt.md), [Credit Note (NC)](../documents/credit-note.md)

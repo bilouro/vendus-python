@@ -1,6 +1,6 @@
-# Contribuir
+# Contributing
 
-Obrigado pelo interesse. Este projeto segue padrões rigorosos — lê `CLAUDE.md` no repositório antes de propor mudanças.
+Thanks for your interest. This project follows strict standards — read `CLAUDE.md` in the repository before proposing changes.
 
 ## Setup
 
@@ -12,9 +12,9 @@ pip install -e ".[dev]"
 pre-commit install
 ```
 
-## Antes de abrir PR
+## Before opening a PR
 
-Todos têm que passar:
+All must pass:
 
 ```bash
 ruff check .
@@ -23,24 +23,24 @@ mypy src/
 pytest
 ```
 
-Cobertura mínima: 85%.
+Minimum coverage: 85%.
 
-## O que ler primeiro
+## What to read first
 
-- `CLAUDE.md` — arquitetura, regras (R1–R15), tipos de documentos, vocabulário
-- `src/vendus/services/documents.py` — implementação de referência
-- `tests/unit/test_invoice_scenarios.py` — padrão de testes para novos tipos de documento
+- `CLAUDE.md` — architecture, rules (R1–R15), document types, vocabulary
+- `src/vendus/services/documents.py` — reference implementation
+- `tests/unit/test_invoice_scenarios.py` — test pattern for new document types
 
-## Âmbito
+## Scope
 
-Tudo fora do roadmap atual (ver `CLAUDE.md`) deve ser discutido em issue primeiro.
+Anything outside the current roadmap (see `CLAUDE.md`) should be discussed in an issue first.
 
-## Adicionar um novo tipo de documento
+## Adding a new document type
 
-1. Adicionar ao enum `DocumentType` em `models/document.py`
-2. Criar `_build_X_body` em `services/documents.py`
-3. Criar métodos `create_X` e `create_X_async` em `DocumentsService`
-4. Adicionar testes em `tests/unit/test_X.py` com fixtures em `tests/fixtures/`
-5. Criar exemplo em `examples/`
-6. Criar página em `docs/documents/X.md` (PT) e `X.en.md` (EN)
-7. Atualizar `CLAUDE.md` (roadmap) e `CHANGELOG.md`
+1. Add to the `DocumentType` enum in `models/document.py`
+2. Create `_build_X_body` in `services/documents.py`
+3. Create `create_X` and `create_X_async` methods on `DocumentsService`
+4. Add tests in `tests/unit/test_X.py` with fixtures in `tests/fixtures/`
+5. Create an example in `examples/`
+6. Create page in `docs/documents/X.md` (EN, default) and `X.pt.md` (PT)
+7. Update `CLAUDE.md` (roadmap) and `CHANGELOG.md`

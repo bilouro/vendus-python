@@ -1,6 +1,6 @@
 # Flask
 
-Sync route to issue an invoice.
+Rota síncrona para emitir uma fatura.
 
 ```python
 # app.py

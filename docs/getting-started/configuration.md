@@ -1,55 +1,55 @@
-# Configuração
+# Configuration
 
-## Opções do `VendusClient`
+## `VendusClient` options
 
 ```python
 from vendus import VendusClient
 
 client = VendusClient(
-    api_key="a-tua-key",
-    base_url="https://www.vendus.pt/ws",  # produção (default)
-    timeout=30.0,                          # segundos
-    max_retries=3,                         # GETs retentam, POST só com external_reference
+    api_key="your-key",
+    base_url="https://www.vendus.pt/ws",  # production (default)
+    timeout=30.0,                          # seconds
+    max_retries=3,                         # GETs retry; POST only with external_reference
 )
 ```
 
-| Parâmetro | Tipo | Default | Descrição |
+| Parameter | Type | Default | Description |
 |---|---|---|---|
-| `api_key` | `str` | — | API key da Vendus (obrigatório) |
-| `base_url` | `str` | `https://www.vendus.pt/ws` | Base da API. Para Espanha: `https://www.vendus.es/ws` |
-| `timeout` | `float` | `30.0` | Timeout HTTP em segundos |
-| `max_retries` | `int` | `3` | Número máximo de retentativas em pedidos elegíveis |
+| `api_key` | `str` | — | Vendus API key (required) |
+| `base_url` | `str` | `https://www.vendus.pt/ws` | API base. For Spain: `https://www.vendus.es/ws` |
+| `timeout` | `float` | `30.0` | HTTP timeout in seconds |
+| `max_retries` | `int` | `3` | Max retry attempts on eligible requests |
 
-## A partir do ambiente
+## From environment
 
 ```python
-client = VendusClient.from_env()             # lê VENDUS_API_KEY
-client = VendusClient.from_env(env_var="X")  # variável custom
+client = VendusClient.from_env()             # reads VENDUS_API_KEY
+client = VendusClient.from_env(env_var="X")  # custom variable
 ```
 
-## Política de retries
+## Retry policy
 
-| Método | Retenta? | Quando |
+| Method | Retries? | When |
 |---|---|---|
-| GET | ✅ Sempre | 408, 429, 5xx, timeout |
-| POST / PUT / PATCH | Condicional | Apenas se o body contém `external_reference` |
-| DELETE | ❌ Nunca | Cancelamento tem que ser explicitamente idempotente do lado da app |
+| GET | ✅ Always | 408, 429, 5xx, timeout |
+| POST / PUT / PATCH | Conditional | Only if body contains `external_reference` |
+| DELETE | ❌ Never | Cancellation must be explicitly idempotent on the app side |
 
-A regra existe porque a Vendus **não oferece idempotency keys**. Sem `external_reference`, um POST repetido poderia criar dois documentos fiscais (e dois números de série gastos). O parâmetro `external_reference` é o âncora de deduplicação que a Vendus aceita.
+The rule exists because Vendus **does not offer idempotency keys**. Without `external_reference`, a retried POST could create two fiscal documents (and burn two serial numbers). The `external_reference` parameter is the deduplication anchor Vendus accepts.
 
-**Recomendação:** passa sempre `external_reference` ao emitir documentos.
+**Recommendation:** always pass `external_reference` when issuing documents.
 
 ```python
 invoice = client.documents.create_invoice(
     register_id=1,
     items=[...],
-    external_reference="ORD-2026-001",  # idempotência
+    external_reference="ORD-2026-001",  # idempotency
 )
 ```
 
 ## Logging
 
-O SDK usa o logger `vendus`. Tem um filtro automático que redige PII: `fiscal_id`, `email`, `phone`, `mobile`, `address`, `postalcode`, `billing_email`.
+The SDK uses the `vendus` logger with an automatic PII redaction filter for `fiscal_id`, `email`, `phone`, `mobile`, `address`, `postalcode`, `billing_email`.
 
 ```python
 import logging
@@ -57,16 +57,16 @@ logging.basicConfig(level=logging.DEBUG)
 logging.getLogger("vendus").setLevel(logging.DEBUG)
 ```
 
-!!! warning "Nunca faças bypass ao logger"
-    Não imprimas payloads diretamente com `print(json)` ou outro logger. Usa sempre `logging.getLogger("vendus")` para que a redação se aplique.
+!!! warning "Never bypass the logger"
+    Don't print payloads directly with `print(json)` or another logger. Always use `logging.getLogger("vendus")` so redaction applies.
 
 ## Sandbox
 
-A Vendus **não tem ambiente de sandbox público** documentado. Toda chamada autenticada atinge produção e pode criar documentos fiscais reais com implicações fiscais com a AT.
+Vendus **does not have a publicly documented sandbox environment**. Every authenticated call hits production and may create real fiscal documents with AT-reporting implications.
 
-Estratégias recomendadas:
+Recommended strategies:
 
-1. **Conta dedicada para testes** — Vendus aceita criar contas de demonstração comerciais
-2. **Série dedicada** — configura uma série de documentos exclusiva para testes ("FT-TESTE") na conta de produção
-3. **Cancelar imediatamente** — todos os documentos de teste devem ser cancelados via `client.documents.cancel(id, reason="teste")`
-4. **Mocks em testes unitários** — usa `respx` para fingir respostas, evitando completamente chamadas à API real
+1. **Dedicated test account** — Vendus accepts creating commercial demo accounts
+2. **Dedicated series** — configure a document series exclusively for tests ("FT-TEST") on the production account
+3. **Cancel immediately** — every test document should be cancelled via `client.documents.cancel(id, reason="test")`
+4. **Mocks in unit tests** — use `respx` to fake responses and avoid real API calls entirely

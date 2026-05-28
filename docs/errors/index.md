@@ -1,23 +1,23 @@
-# Erros e Troubleshooting
+# Errors & Troubleshooting
 
-## Hierarquia de exceções
+## Exception hierarchy
 
-Todas as exceções do SDK herdam de `VendusError`. Capturas mais específicas no topo, mais gerais em baixo.
+All SDK exceptions inherit from `VendusError`. Catch specific exceptions first, general ones last.
 
 ```python
 from vendus import (
     VendusError,            # base
-    ValidationError,        # validação local (antes da API)
+    ValidationError,        # local validation (before API)
     AuthenticationError,    # 401
     AuthorizationError,     # 403
     NotFoundError,          # 404
     RateLimitError,         # 429
-    APIError,               # outros erros da API (status_code + response_body)
-    TransportError,         # rede: timeout, DNS, conexão recusada
+    APIError,               # other API errors (status_code + response_body)
+    TransportError,         # network: timeout, DNS, connection refused
 )
 ```
 
-## Tratamento típico
+## Typical handling
 
 ```python
 from vendus import VendusClient, ValidationError, RateLimitError, APIError, TransportError
@@ -27,69 +27,69 @@ client = VendusClient.from_env()
 try:
     invoice = client.documents.create_invoice(...)
 except ValidationError as e:
-    # NIF inválido, items vazios, 999999990, etc.
-    logger.warning("Validação falhou: %s", e)
+    # Invalid NIF, empty items, 999999990, etc.
+    logger.warning("Validation failed: %s", e)
 except RateLimitError:
-    # Vendus está a rate-limitar. Espera e tenta de novo.
+    # Vendus is rate-limiting. Wait and retry.
     time.sleep(60)
 except APIError as e:
-    # Outro erro do lado da Vendus
+    # Other Vendus-side error
     logger.error("Vendus API %s: %s", e.status_code, e.response_body)
 except TransportError as e:
-    # Rede caiu. O GET já retentou; o POST sem external_reference NÃO retentou.
-    logger.error("Rede falhou: %s", e)
+    # Network failed. GET retried automatically; POST without external_reference did NOT.
+    logger.error("Network failed: %s", e)
 ```
 
-## Erros comuns
+## Common errors
 
 ### `ValidationError: Invalid Portuguese NIF`
 
-O check digit do NIF não corresponde ao algoritmo mod 11.
+NIF check digit does not match the mod 11 algorithm.
 
-**Solução:** verifica os dígitos. Se for um NIF válido que o SDK não aceita, abre issue.
+**Fix:** verify digits. If you believe it's a valid NIF the SDK rejects, open an issue.
 
 ### `ValidationError: Do not pass fiscal_id='999999990'`
 
-Estás a tentar emitir a consumidor final passando o NIF genérico. **Errado** — em PT, consumidor final = omitir o argumento `client`.
+You're trying to invoice a final consumer by passing the generic NIF. **Wrong** — in PT, final consumer = omit the `client` argument.
 
 ```python
-# ❌ Errado
+# ❌ Wrong
 client.documents.create_invoice(
     register_id=1, items=[...],
     client=ClientData(name="Anyone", fiscal_id="999999990"),
 )
 
-# ✅ Certo
+# ✅ Right
 client.documents.create_invoice(register_id=1, items=[...])
 ```
 
 ### `ValidationError: Credit note requires reference_document_id`
 
-A NC tem que referenciar o documento original via `reference_document_id`.
+The NC must reference the original document via `reference_document_id`.
 
 ### `AuthenticationError`
 
-API key incorreta, expirada ou revogada. Verifica em **Vendus → Definições → Acessos → API**.
+API key wrong, expired, or revoked. Check in **Vendus → Settings → Access → API**.
 
 ### `RateLimitError`
 
-A Vendus está a limitar pedidos. O SDK já retenta automaticamente em GETs. Para POSTs, retenta apenas com `external_reference`.
+Vendus is throttling requests. The SDK already retries automatically on GETs. For POSTs, retries only with `external_reference`.
 
-**Solução:** espera (`time.sleep`) ou implementa fila com backoff exponencial.
+**Fix:** sleep (`time.sleep`) or implement a queue with exponential backoff.
 
-### POST falhou — como retentar com segurança?
+### POST failed — how to safely retry?
 
-Se passaste `external_reference`, o SDK já retenta automaticamente. Se não passaste:
+If you passed `external_reference`, the SDK already retries automatically. If not:
 
-1. **Não retentes cegamente** — corres o risco de criar fiscal documento duplicado
-2. Verifica via `client.documents.list(date_from=..., date_to=...)` se o original foi de facto criado
-3. Se sim, descarta. Se não, retenta com `external_reference` desta vez
+1. **Don't retry blindly** — risk of creating a duplicate fiscal document
+2. Check via `client.documents.list(date_from=..., date_to=...)` whether the original was actually created
+3. If yes, discard. If not, retry with `external_reference` this time
 
-A regra geral: **sempre que emites algo, passa `external_reference`.**
+General rule: **always pass `external_reference` when issuing.**
 
 ## Logging
 
-O SDK loga pedidos/respostas no logger `vendus`. PII (NIF, email, telefone, morada) é redigida automaticamente.
+The SDK logs requests/responses on the `vendus` logger. PII (NIF, email, phone, address) is redacted automatically.
 
 ```python
 import logging

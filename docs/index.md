@@ -4,10 +4,10 @@
 [![Python versions](https://img.shields.io/pypi/pyversions/vendus)](https://pypi.org/project/vendus/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/bilouro/vendus-python/blob/main/LICENSE)
 
-SDK Python para a [Vendus](https://www.vendus.pt), plataforma portuguesa de faturação e POS certificada pela AT.
+Python SDK for [Vendus](https://www.vendus.pt), Portugal's AT-certified invoicing & POS platform.
 
-!!! warning "SDK da comunidade"
-    Este é um projeto open-source independente, não afiliado nem endossado pela Vendus.
+!!! warning "Community SDK"
+    This is an independent open-source project, not affiliated with or endorsed by Vendus.
 
 ## Quickstart
 
@@ -15,14 +15,14 @@ SDK Python para a [Vendus](https://www.vendus.pt), plataforma portuguesa de fatu
 from decimal import Decimal
 from vendus import VendusClient, ClientData, DocumentItem
 
-client = VendusClient(api_key="a-tua-key")
+client = VendusClient(api_key="your-api-key")
 
 invoice = client.documents.create_invoice(
     register_id=1,
     client=ClientData(name="Acme Lda", fiscal_id="123456789"),
     items=[
         DocumentItem(
-            description="Horas de consultoria",
+            description="Consulting hours",
             quantity=Decimal("10"),
             unit_price=Decimal("75.00"),
             tax_rate=Decimal("23"),
@@ -31,62 +31,62 @@ invoice = client.documents.create_invoice(
 )
 
 print(invoice.number)   # "FT 2026/123"
-print(invoice.atcud)    # código de comunicação à AT
-print(invoice.qrcode)   # payload do QR code da AT
+print(invoice.atcud)    # AT communication code
+print(invoice.qrcode)   # AT QR code payload
 ```
 
-## Tipos de documentos suportados
+## Supported document types
 
-| Documento | Código | Método | Estado |
+| Document | Code | Method | Status |
 |---|---|---|---|
-| **Fatura** | FT | `client.documents.create_invoice` | ✅ |
-| **Fatura-Recibo** | FR | `client.documents.create_invoice_receipt` | ✅ |
-| **Nota de Crédito** | NC | `client.documents.create_credit_note` | ✅ |
+| **Invoice** | FT | `client.documents.create_invoice` | ✅ |
+| **Invoice-Receipt** | FR | `client.documents.create_invoice_receipt` | ✅ |
+| **Credit Note** | NC | `client.documents.create_credit_note` | ✅ |
 
-## Porquê este SDK?
+## Why this SDK?
 
-- **Sync + Async** — mesmo client, sufixo `_async` para variantes assíncronas
-- **100% tipado** — `mypy --strict`, autocomplete total no IDE
-- **`Decimal` para dinheiro** — nunca `float`. Precisão ao cêntimo, exigida pela AT
-- **Retries seguros** — GET retenta automaticamente; POST só com `external_reference` (evita documento fiscal duplicado)
-- **NIF validado localmente** — algoritmo mod 11, falha antes de tocar na API
-- **Redação de PII em logs** — `fiscal_id`, email, telefone, morada
-- **AT é opaco** — Vendus comunica com a AT; o SDK nunca fala diretamente com a AT
+- **Sync + Async** — same client, `_async` suffix for async variants
+- **Fully typed** — `mypy --strict`, full IDE autocomplete
+- **`Decimal` for money** — never `float`. Cent precision required by AT
+- **Safe retries** — GET auto-retries; POST only when `external_reference` is present (prevents duplicate fiscal documents)
+- **NIF validated locally** — mod 11 algorithm, fails before hitting the API
+- **PII redaction in logs** — `fiscal_id`, email, phone, address
+- **AT is opaque** — Vendus communicates with AT; the SDK never talks to AT directly
 
-## Próximos passos
+## Next steps
 
 <div class="grid cards" markdown>
 
--   :material-download:{ .lg .middle } **Instalação**
+-   :material-download:{ .lg .middle } **Installation**
 
     ---
 
-    Instalar e configurar em 2 minutos
+    Install and configure in 2 minutes
 
-    [:octicons-arrow-right-24: Começar](getting-started/index.md)
+    [:octicons-arrow-right-24: Get started](getting-started/index.md)
 
--   :material-file-document:{ .lg .middle } **Documentos**
-
-    ---
-
-    Qual tipo usar? Guia de decisão
-
-    [:octicons-arrow-right-24: Documentos](documents/index.md)
-
--   :material-flask:{ .lg .middle } **Receitas**
+-   :material-file-document:{ .lg .middle } **Documents**
 
     ---
 
-    Guias para FastAPI, Flask, Django
+    Which type to use? Decision guide
 
-    [:octicons-arrow-right-24: Receitas](recipes/index.md)
+    [:octicons-arrow-right-24: Documents](documents/index.md)
 
--   :material-alert-circle:{ .lg .middle } **Erros**
+-   :material-flask:{ .lg .middle } **Recipes**
 
     ---
 
-    Hierarquia de exceções e como tratar
+    Guides for FastAPI, Flask, Django
 
-    [:octicons-arrow-right-24: Erros](errors/index.md)
+    [:octicons-arrow-right-24: Recipes](recipes/index.md)
+
+-   :material-alert-circle:{ .lg .middle } **Errors**
+
+    ---
+
+    Exception hierarchy and handling
+
+    [:octicons-arrow-right-24: Errors](errors/index.md)
 
 </div>

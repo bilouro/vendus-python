@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+    <url>
+        <loc>https://bilouro.github.io/vendus-python/</loc>
+        <lastmod>2026-05-28</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://bilouro.github.io/vendus-python/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://bilouro.github.io/vendus-python/en/"/>
+    </url>
+    <url>
+        <loc>https://bilouro.github.io/vendus-python/contributing/</loc>
+        <lastmod>2026-05-28</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://bilouro.github.io/vendus-python/contributing/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://bilouro.github.io/vendus-python/en/contributing/"/>
+    </url>
+    <url>
+        <loc>https://bilouro.github.io/vendus-python/api/</loc>
+        <lastmod>2026-05-28</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://bilouro.github.io/vendus-python/api/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://bilouro.github.io/vendus-python/en/api/"/>
+    </url>
+    <url>
+        <loc>https://bilouro.github.io/vendus-python/documents/</loc>
+        <lastmod>2026-05-28</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://bilouro.github.io/vendus-python/documents/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://bilouro.github.io/vendus-python/en/documents/"/>
+    </url>
+    <url>
+        <loc>https://bilouro.github.io/vendus-python/documents/credit-note/</loc>
+        <lastmod>2026-05-28</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://bilouro.github.io/vendus-python/documents/credit-note/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://bilouro.github.io/vendus-python/en/documents/credit-note/"/>
+    </url>
+    <url>
+        <loc>https://bilouro.github.io/vendus-python/documents/invoice/</loc>
+        <lastmod>2026-05-28</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://bilouro.github.io/vendus-python/documents/invoice/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://bilouro.github.io/vendus-python/en/documents/invoice/"/>
+    </url>
+    <url>
+        <loc>https://bilouro.github.io/vendus-python/documents/simplified-invoice/</loc>
+        <lastmod>2026-05-28</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://bilouro.github.io/vendus-python/documents/simplified-invoice/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://bilouro.github.io/vendus-python/en/documents/simplified-invoice/"/>
+    </url>
+    <url>
+        <loc>https://bilouro.github.io/vendus-python/errors/</loc>
+        <lastmod>2026-05-28</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://bilouro.github.io/vendus-python/errors/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://bilouro.github.io/vendus-python/en/errors/"/>
+    </url>
+    <url>
+        <loc>https://bilouro.github.io/vendus-python/getting-started/</loc>
+        <lastmod>2026-05-28</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://bilouro.github.io/vendus-python/getting-started/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://bilouro.github.io/vendus-python/en/getting-started/"/>
+    </url>
+    <url>
+        <loc>https://bilouro.github.io/vendus-python/getting-started/configuration/</loc>
+        <lastmod>2026-05-28</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://bilouro.github.io/vendus-python/getting-started/configuration/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://bilouro.github.io/vendus-python/en/getting-started/configuration/"/>
+    </url>
+    <url>
+        <loc>https://bilouro.github.io/vendus-python/recipes/</loc>
+        <lastmod>2026-05-28</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://bilouro.github.io/vendus-python/recipes/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://bilouro.github.io/vendus-python/en/recipes/"/>
+    </url>
+    <url>
+        <loc>https://bilouro.github.io/vendus-python/recipes/django/</loc>
+        <lastmod>2026-05-28</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://bilouro.github.io/vendus-python/recipes/django/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://bilouro.github.io/vendus-python/en/recipes/django/"/>
+    </url>
+    <url>
+        <loc>https://bilouro.github.io/vendus-python/recipes/fastapi/</loc>
+        <lastmod>2026-05-28</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://bilouro.github.io/vendus-python/recipes/fastapi/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://bilouro.github.io/vendus-python/en/recipes/fastapi/"/>
+    </url>
+    <url>
+        <loc>https://bilouro.github.io/vendus-python/recipes/flask/</loc>
+        <lastmod>2026-05-28</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://bilouro.github.io/vendus-python/recipes/flask/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://bilouro.github.io/vendus-python/en/recipes/flask/"/>
+    </url>
+    <url>
+        <loc>https://bilouro.github.io/vendus-python/en/</loc>
+        <lastmod>2026-05-28</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://bilouro.github.io/vendus-python/en/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://bilouro.github.io/vendus-python/"/>
+    </url>
+    <url>
+        <loc>https://bilouro.github.io/vendus-python/en/contributing/</loc>
+        <lastmod>2026-05-28</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://bilouro.github.io/vendus-python/en/contributing/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://bilouro.github.io/vendus-python/contributing/"/>
+    </url>
+    <url>
+        <loc>https://bilouro.github.io/vendus-python/en/api/</loc>
+        <lastmod>2026-05-28</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://bilouro.github.io/vendus-python/en/api/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://bilouro.github.io/vendus-python/api/"/>
+    </url>
+    <url>
+        <loc>https://bilouro.github.io/vendus-python/en/documents/</loc>
+        <lastmod>2026-05-28</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://bilouro.github.io/vendus-python/en/documents/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://bilouro.github.io/vendus-python/documents/"/>
+    </url>
+    <url>
+        <loc>https://bilouro.github.io/vendus-python/en/documents/credit-note/</loc>
+        <lastmod>2026-05-28</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://bilouro.github.io/vendus-python/en/documents/credit-note/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://bilouro.github.io/vendus-python/documents/credit-note/"/>
+    </url>
+    <url>
+        <loc>https://bilouro.github.io/vendus-python/en/documents/invoice/</loc>
+        <lastmod>2026-05-28</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://bilouro.github.io/vendus-python/en/documents/invoice/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://bilouro.github.io/vendus-python/documents/invoice/"/>
+    </url>
+    <url>
+        <loc>https://bilouro.github.io/vendus-python/en/documents/simplified-invoice/</loc>
+        <lastmod>2026-05-28</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://bilouro.github.io/vendus-python/en/documents/simplified-invoice/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://bilouro.github.io/vendus-python/documents/simplified-invoice/"/>
+    </url>
+    <url>
+        <loc>https://bilouro.github.io/vendus-python/en/errors/</loc>
+        <lastmod>2026-05-28</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://bilouro.github.io/vendus-python/en/errors/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://bilouro.github.io/vendus-python/errors/"/>
+    </url>
+    <url>
+        <loc>https://bilouro.github.io/vendus-python/en/getting-started/</loc>
+        <lastmod>2026-05-28</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://bilouro.github.io/vendus-python/en/getting-started/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://bilouro.github.io/vendus-python/getting-started/"/>
+    </url>
+    <url>
+        <loc>https://bilouro.github.io/vendus-python/en/getting-started/configuration/</loc>
+        <lastmod>2026-05-28</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://bilouro.github.io/vendus-python/en/getting-started/configuration/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://bilouro.github.io/vendus-python/getting-started/configuration/"/>
+    </url>
+    <url>
+        <loc>https://bilouro.github.io/vendus-python/en/recipes/</loc>
+        <lastmod>2026-05-28</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://bilouro.github.io/vendus-python/en/recipes/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://bilouro.github.io/vendus-python/recipes/"/>
+    </url>
+    <url>
+        <loc>https://bilouro.github.io/vendus-python/en/recipes/django/</loc>
+        <lastmod>2026-05-28</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://bilouro.github.io/vendus-python/en/recipes/django/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://bilouro.github.io/vendus-python/recipes/django/"/>
+    </url>
+    <url>
+        <loc>https://bilouro.github.io/vendus-python/en/recipes/fastapi/</loc>
+        <lastmod>2026-05-28</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://bilouro.github.io/vendus-python/en/recipes/fastapi/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://bilouro.github.io/vendus-python/recipes/fastapi/"/>
+    </url>
+    <url>
+        <loc>https://bilouro.github.io/vendus-python/en/recipes/flask/</loc>
+        <lastmod>2026-05-28</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://bilouro.github.io/vendus-python/en/recipes/flask/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://bilouro.github.io/vendus-python/recipes/flask/"/>
+    </url>
+</urlset>

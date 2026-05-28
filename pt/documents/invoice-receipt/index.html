@@ -1,16 +1,16 @@
 
 <!doctype html>
-<html lang="en" class="no-js">
+<html lang="pt" class="no-js">
   <head>
     
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Unofficial Python SDK for the Vendus invoicing API">
+        <meta name="description" content="SDK Python não-oficial para a API da Vendus (faturação Portugal)">
       
       
       
-        <link rel="canonical" href="https://bilouro.github.io/vendus-python/en/documents/invoice-receipt/">
+        <link rel="canonical" href="https://bilouro.github.io/vendus-python/pt/documents/invoice-receipt/">
       
       
         <link rel="prev" href="../invoice/">
@@ -20,9 +20,9 @@
       
       
         
-          <link rel="alternate" href="../../../documents/invoice-receipt/" hreflang="pt">
+          <link rel="alternate" href="../../../documents/invoice-receipt/" hreflang="en">
         
-          <link rel="alternate" href="./" hreflang="en">
+          <link rel="alternate" href="./" hreflang="pt">
         
       
       
@@ -31,7 +31,7 @@
     
     
       
-        <title>Invoice-Receipt - vendus Python SDK</title>
+        <title>Fatura-Recibo - vendus Python SDK</title>
       
     
     
@@ -86,8 +86,8 @@
     <div data-md-component="skip">
       
         
-        <a href="#invoice-receipt-fr" class="md-skip">
-          Skip to content
+        <a href="#fatura-recibo-fr" class="md-skip">
+          Ir para o conteúdo
         </a>
       
     </div>
@@ -99,7 +99,7 @@
       
 
 <header class="md-header" data-md-component="header">
-  <nav class="md-header__inner md-grid" aria-label="Header">
+  <nav class="md-header__inner md-grid" aria-label="Cabeçalho">
     <a href="../../" title="vendus Python SDK" class="md-header__button md-logo" aria-label="vendus Python SDK" data-md-component="logo">
       
   
@@ -120,7 +120,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Invoice-Receipt
+              Fatura-Recibo
             
           </span>
         </div>
@@ -133,9 +133,9 @@
     
     
     
-    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Mudar para modo escuro"  type="radio" name="__palette" id="__palette_0">
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
     
-      <label class="md-header__button md-icon" title="Mudar para modo escuro" for="__palette_1" hidden>
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
       </label>
     
@@ -143,9 +143,9 @@
     
     
     
-    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Mudar para modo claro"  type="radio" name="__palette" id="__palette_1">
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
     
-      <label class="md-header__button md-icon" title="Mudar para modo claro" for="__palette_0" hidden>
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
       </label>
     
@@ -160,21 +160,21 @@
       <div class="md-header__option">
   <div class="md-select">
     
-    <button class="md-header__button md-icon" aria-label="Select language">
+    <button class="md-header__button md-icon" aria-label="Selecione o idioma">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12.87 15.07-2.54-2.51.03-.03A17.5 17.5 0 0 0 14.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2zm-2.62 7 1.62-4.33L19.12 17z"/></svg>
     </button>
     <div class="md-select__inner">
       <ul class="md-select__list">
         
           <li class="md-select__item">
-            <a href="../../../documents/invoice-receipt/" hreflang="pt" class="md-select__link">
-              Português
+            <a href="../../../documents/invoice-receipt/" hreflang="en" class="md-select__link">
+              English
             </a>
           </li>
         
           <li class="md-select__item">
-            <a href="./" hreflang="en" class="md-select__link">
-              English
+            <a href="./" hreflang="pt" class="md-select__link">
+              Português
             </a>
           </li>
         
@@ -194,16 +194,16 @@
   <label class="md-search__overlay" for="__search"></label>
   <div class="md-search__inner" role="search">
     <form class="md-search__form" name="search">
-      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <input type="text" class="md-search__input" name="query" aria-label="Buscar" placeholder="Buscar" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
       <label class="md-search__icon md-icon" for="__search">
         
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
         
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
       </label>
-      <nav class="md-search__options" aria-label="Search">
+      <nav class="md-search__options" aria-label="Pesquisar">
         
-        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+        <button type="reset" class="md-search__icon md-icon" title="Limpar" aria-label="Limpar" tabindex="-1">
           
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
         </button>
@@ -216,7 +216,7 @@
       <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
         <div class="md-search-result" data-md-component="search-result">
           <div class="md-search-result__meta">
-            Initializing search
+            Inicializando a pesquisa
           </div>
           <ol class="md-search-result__list" role="presentation"></ol>
         </div>
@@ -228,7 +228,7 @@
     
     
       <div class="md-header__source">
-        <a href="https://github.com/bilouro/vendus-python" title="Go to repository" class="md-source" data-md-component="source">
+        <a href="https://github.com/bilouro/vendus-python" title="Ir ao repositório" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
@@ -249,7 +249,7 @@
         
           
             
-<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+<nav class="md-tabs" aria-label="Abas" data-md-component="tabs">
   <div class="md-grid">
     <ul class="md-tabs__list">
       
@@ -265,7 +265,7 @@
   
     
   
-  Home
+  Início
 
       </a>
     </li>
@@ -284,7 +284,7 @@
           
   
   
-  Getting Started
+  Começar
 
         </a>
       </li>
@@ -306,7 +306,7 @@
           
   
   
-  Documents
+  Documentos
 
         </a>
       </li>
@@ -326,7 +326,7 @@
           
   
   
-  Recipes
+  Receitas
 
         </a>
       </li>
@@ -346,7 +346,7 @@
   
     
   
-  Errors & Troubleshooting
+  Erros e Troubleshooting
 
       </a>
     </li>
@@ -365,7 +365,7 @@
   
     
   
-  API Reference
+  Referência API
 
       </a>
     </li>
@@ -384,7 +384,7 @@
   
     
   
-  Contributing
+  Contribuir
 
       </a>
     </li>
@@ -411,7 +411,7 @@
   
 
 
-<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navegação" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
     <a href="../../" title="vendus Python SDK" class="md-nav__button md-logo" aria-label="vendus Python SDK" data-md-component="logo">
       
@@ -423,7 +423,7 @@
   </label>
   
     <div class="md-nav__source">
-      <a href="https://github.com/bilouro/vendus-python" title="Go to repository" class="md-source" data-md-component="source">
+      <a href="https://github.com/bilouro/vendus-python" title="Ir ao repositório" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
@@ -450,7 +450,7 @@
   <span class="md-ellipsis">
     
   
-    Home
+    Início
   
 
     
@@ -493,7 +493,7 @@
   <span class="md-ellipsis">
     
   
-    Getting Started
+    Começar
   
 
     
@@ -509,7 +509,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Getting Started
+    Começar
   
 
           </label>
@@ -529,7 +529,7 @@
   <span class="md-ellipsis">
     
   
-    Installation & Quickstart
+    Instalação e Quickstart
   
 
     
@@ -557,7 +557,7 @@
   <span class="md-ellipsis">
     
   
-    Configuration
+    Configuração
   
 
     
@@ -613,7 +613,7 @@
   <span class="md-ellipsis">
     
   
-    Documents
+    Documentos
   
 
     
@@ -629,7 +629,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Documents
+    Documentos
   
 
           </label>
@@ -649,7 +649,7 @@
   <span class="md-ellipsis">
     
   
-    Which type to choose?
+    Qual tipo escolher?
   
 
     
@@ -677,7 +677,7 @@
   <span class="md-ellipsis">
     
   
-    Invoice
+    Fatura
   
 
     
@@ -714,7 +714,7 @@
   <span class="md-ellipsis">
     
   
-    Invoice-Receipt
+    Fatura-Recibo
   
 
     
@@ -732,7 +732,7 @@
   <span class="md-ellipsis">
     
   
-    Invoice-Receipt
+    Fatura-Recibo
   
 
     
@@ -744,7 +744,7 @@
       
         
 
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<nav class="md-nav md-nav--secondary" aria-label="Índice">
   
   
   
@@ -753,15 +753,15 @@
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
-      Table of contents
+      Índice
     </label>
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#what-it-is" class="md-nav__link">
+  <a href="#o-que-e" class="md-nav__link">
     <span class="md-ellipsis">
       
-        What it is
+        O que é
       
     </span>
   </a>
@@ -769,10 +769,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#example" class="md-nav__link">
+  <a href="#exemplo" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Example
+        Exemplo
       
     </span>
   </a>
@@ -780,10 +780,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#scenarios" class="md-nav__link">
+  <a href="#cenarios" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Scenarios
+        Cenários
       
     </span>
   </a>
@@ -791,10 +791,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#async-variant" class="md-nav__link">
+  <a href="#variante-async" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Async variant
+        Variante async
       
     </span>
   </a>
@@ -813,10 +813,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#notes" class="md-nav__link">
+  <a href="#notas" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Notes
+        Notas
       
     </span>
   </a>
@@ -846,7 +846,7 @@
   <span class="md-ellipsis">
     
   
-    Credit Note
+    Nota de Crédito
   
 
     
@@ -897,7 +897,7 @@
   <span class="md-ellipsis">
     
   
-    Recipes
+    Receitas
   
 
     
@@ -913,7 +913,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Recipes
+    Receitas
   
 
           </label>
@@ -933,7 +933,7 @@
   <span class="md-ellipsis">
     
   
-    Recipes
+    Receitas
   
 
     
@@ -1052,7 +1052,7 @@
   <span class="md-ellipsis">
     
   
-    Errors & Troubleshooting
+    Erros e Troubleshooting
   
 
     
@@ -1079,7 +1079,7 @@
   <span class="md-ellipsis">
     
   
-    API Reference
+    Referência API
   
 
     
@@ -1106,7 +1106,7 @@
   <span class="md-ellipsis">
     
   
-    Contributing
+    Contribuir
   
 
     
@@ -1132,7 +1132,7 @@
                   <div class="md-sidebar__inner">
                     
 
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<nav class="md-nav md-nav--secondary" aria-label="Índice">
   
   
   
@@ -1141,15 +1141,15 @@
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
-      Table of contents
+      Índice
     </label>
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#what-it-is" class="md-nav__link">
+  <a href="#o-que-e" class="md-nav__link">
     <span class="md-ellipsis">
       
-        What it is
+        O que é
       
     </span>
   </a>
@@ -1157,10 +1157,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#example" class="md-nav__link">
+  <a href="#exemplo" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Example
+        Exemplo
       
     </span>
   </a>
@@ -1168,10 +1168,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#scenarios" class="md-nav__link">
+  <a href="#cenarios" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Scenarios
+        Cenários
       
     </span>
   </a>
@@ -1179,10 +1179,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#async-variant" class="md-nav__link">
+  <a href="#variante-async" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Async variant
+        Variante async
       
     </span>
   </a>
@@ -1201,10 +1201,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#notes" class="md-nav__link">
+  <a href="#notas" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Notes
+        Notas
       
     </span>
   </a>
@@ -1231,15 +1231,15 @@
   
 
 
-<h1 id="invoice-receipt-fr">Invoice-Receipt (FR)<a class="headerlink" href="#invoice-receipt-fr" title="Permanent link">&para;</a></h1>
-<h2 id="what-it-is">What it is<a class="headerlink" href="#what-it-is" title="Permanent link">&para;</a></h2>
-<p>The Invoice-Receipt (FR) is <strong>an invoice and a receipt in one document</strong>: it bills the sale <strong>and</strong> acknowledges payment at the same time. It is the right document when the client <strong>pays on the spot</strong>.</p>
+<h1 id="fatura-recibo-fr">Fatura-Recibo (FR)<a class="headerlink" href="#fatura-recibo-fr" title="Permanent link">&para;</a></h1>
+<h2 id="o-que-e">O que é<a class="headerlink" href="#o-que-e" title="Permanent link">&para;</a></h2>
+<p>A Fatura-Recibo (FR) é <strong>fatura e recibo num só documento</strong>: factura a venda <strong>e</strong> dá quitação do pagamento ao mesmo tempo. É o documento certo quando o cliente <strong>paga na hora</strong>.</p>
 <ul>
-<li>Very common for <strong>services</strong> (consultations, freelancers, independent professionals)</li>
-<li>Avoids issuing an FT and then a separate RC</li>
-<li>Client identification: can include NIF, name only, or be anonymous</li>
+<li>Muito comum em <strong>serviços</strong> (consultas, freelancers, profissionais liberais)</li>
+<li>Evita emitir uma FT e depois um RC separado</li>
+<li>Identificação do cliente: pode ter NIF, só nome, ou ser anónima</li>
 </ul>
-<h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h2>
+<h2 id="exemplo">Exemplo<a class="headerlink" href="#exemplo" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">decimal</span><span class="w"> </span><span class="kn">import</span> <span class="n">Decimal</span>
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">vendus</span><span class="w"> </span><span class="kn">import</span> <span class="n">VendusClient</span><span class="p">,</span> <span class="n">ClientData</span><span class="p">,</span> <span class="n">DocumentItem</span>
 <a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
@@ -1250,7 +1250,7 @@
 <a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>    <span class="n">client</span><span class="o">=</span><span class="n">ClientData</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Acme Lda&quot;</span><span class="p">,</span> <span class="n">fiscal_id</span><span class="o">=</span><span class="s2">&quot;123456789&quot;</span><span class="p">),</span>
 <a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>    <span class="n">items</span><span class="o">=</span><span class="p">[</span>
 <a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>        <span class="n">DocumentItem</span><span class="p">(</span>
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Consulting session (paid on the spot)&quot;</span><span class="p">,</span>
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Sessão de consultoria (paga na hora)&quot;</span><span class="p">,</span>
 <a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>            <span class="n">quantity</span><span class="o">=</span><span class="n">Decimal</span><span class="p">(</span><span class="s2">&quot;1&quot;</span><span class="p">),</span>
 <a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>            <span class="n">unit_price</span><span class="o">=</span><span class="n">Decimal</span><span class="p">(</span><span class="s2">&quot;90.00&quot;</span><span class="p">),</span>
 <a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>            <span class="n">tax_rate</span><span class="o">=</span><span class="n">Decimal</span><span class="p">(</span><span class="s2">&quot;23&quot;</span><span class="p">),</span>
@@ -1262,23 +1262,23 @@
 <a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="nb">print</span><span class="p">(</span><span class="n">fr</span><span class="o">.</span><span class="n">number</span><span class="p">)</span>  <span class="c1"># &quot;FR 2026/12&quot;</span>
 <a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="nb">print</span><span class="p">(</span><span class="n">fr</span><span class="o">.</span><span class="n">atcud</span><span class="p">)</span>
 </code></pre></div>
-<h2 id="scenarios">Scenarios<a class="headerlink" href="#scenarios" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># 1. With NIF</span>
+<h2 id="cenarios">Cenários<a class="headerlink" href="#cenarios" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># 1. Com NIF</span>
 <a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="n">client</span><span class="o">.</span><span class="n">documents</span><span class="o">.</span><span class="n">create_invoice_receipt</span><span class="p">(</span>
 <a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    <span class="n">register_id</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">items</span><span class="o">=</span><span class="p">[</span><span class="o">...</span><span class="p">],</span>
 <a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>    <span class="n">client</span><span class="o">=</span><span class="n">ClientData</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Acme Lda&quot;</span><span class="p">,</span> <span class="n">fiscal_id</span><span class="o">=</span><span class="s2">&quot;123456789&quot;</span><span class="p">),</span>
 <a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="p">)</span>
 <a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="c1"># 2. Name only (client did not provide NIF)</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="c1"># 2. Só com nome (cliente não deu NIF)</span>
 <a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="n">client</span><span class="o">.</span><span class="n">documents</span><span class="o">.</span><span class="n">create_invoice_receipt</span><span class="p">(</span>
 <a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>    <span class="n">register_id</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">items</span><span class="o">=</span><span class="p">[</span><span class="o">...</span><span class="p">],</span>
 <a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>    <span class="n">client</span><span class="o">=</span><span class="n">ClientData</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;João Silva&quot;</span><span class="p">),</span>
 <a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="p">)</span>
 <a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>
-<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="c1"># 3. Final consumer (anonymous)</span>
+<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="c1"># 3. Consumidor final (anónimo)</span>
 <a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="n">client</span><span class="o">.</span><span class="n">documents</span><span class="o">.</span><span class="n">create_invoice_receipt</span><span class="p">(</span><span class="n">register_id</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">items</span><span class="o">=</span><span class="p">[</span><span class="o">...</span><span class="p">])</span>
 </code></pre></div>
-<h2 id="async-variant">Async variant<a class="headerlink" href="#async-variant" title="Permanent link">&para;</a></h2>
+<h2 id="variante-async">Variante async<a class="headerlink" href="#variante-async" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">fr</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">documents</span><span class="o">.</span><span class="n">create_invoice_receipt_async</span><span class="p">(</span>
 <a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>    <span class="n">register_id</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
 <a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>    <span class="n">items</span><span class="o">=</span><span class="p">[</span><span class="o">...</span><span class="p">],</span>
@@ -1289,33 +1289,33 @@
 <thead>
 <tr>
 <th></th>
-<th>Invoice (FT)</th>
-<th>Invoice-Receipt (FR)</th>
+<th>Fatura (FT)</th>
+<th>Fatura-Recibo (FR)</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Bills the sale</td>
+<td>Factura a venda</td>
 <td>✅</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>Acknowledges payment</td>
-<td>❌ (needs a separate RC)</td>
+<td>Dá quitação do pagamento</td>
+<td>❌ (precisa de RC à parte)</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>When to use</td>
-<td>Client pays later (on credit, net 30)</td>
-<td>Client pays <strong>on the spot</strong></td>
+<td>Quando usar</td>
+<td>Cliente paga depois (a crédito, a 30 dias)</td>
+<td>Cliente paga <strong>na hora</strong></td>
 </tr>
 </tbody>
 </table>
-<h2 id="notes">Notes<a class="headerlink" href="#notes" title="Permanent link">&para;</a></h2>
+<h2 id="notas">Notas<a class="headerlink" href="#notas" title="Permanent link">&para;</a></h2>
 <ol>
-<li><strong>Immediate payment:</strong> FR assumes payment happens at issue time. If you bill on credit, use <code>create_invoice</code> (FT) and issue the receipt (RC) when the client pays — RC comes in a future version.</li>
-<li><strong>Cancellation:</strong> same API (<code>client.documents.cancel(id, reason)</code>).</li>
-<li><strong>Credit note:</strong> an FR can be credited via <code>create_credit_note</code> referencing the FR's <code>id</code>.</li>
+<li><strong>Pagamento imediato:</strong> a FR pressupõe que o pagamento ocorre no momento da emissão. Se faturas a crédito, usa <code>create_invoice</code> (FT) e emite o recibo (RC) quando o cliente pagar — RC chega numa versão futura.</li>
+<li><strong>Cancelamento:</strong> mesma API (<code>client.documents.cancel(id, reason)</code>).</li>
+<li><strong>Nota de crédito:</strong> uma FR pode ser creditada via <code>create_credit_note</code> referenciando o <code>id</code> da FR.</li>
 </ol>
 
 
@@ -1342,7 +1342,7 @@
           <button type="button" class="md-top md-icon" data-md-component="top" hidden>
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
-  Back to top
+  Voltar ao topo
 </button>
         
       </main>
@@ -1401,7 +1401,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["content.code.copy", "content.code.annotate", "content.tabs.link", "navigation.tabs", "navigation.sections", "navigation.top", "search.highlight", "search.suggest", "toc.follow"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["content.code.copy", "content.code.annotate", "content.tabs.link", "navigation.tabs", "navigation.sections", "navigation.top", "search.highlight", "search.suggest", "toc.follow"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copiado para \u00e1rea de transfer\u00eancia", "clipboard.copy": "Copiar para \u00e1rea de transfer\u00eancia", "search.result.more.one": "Mais 1 nesta p\u00e1gina", "search.result.more.other": "Mais # nesta p\u00e1gina", "search.result.none": "Nenhum resultado encontrado", "search.result.one": "1 resultado encontrado", "search.result.other": "# resultados encontrados", "search.result.placeholder": "Digite para iniciar a busca", "search.result.term.missing": "Ausente", "select.version": "Selecione a vers\u00e3o"}, "version": null}</script>
     
     
       <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>

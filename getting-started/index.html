@@ -1,12 +1,12 @@
 
 <!doctype html>
-<html lang="pt" class="no-js">
+<html lang="en" class="no-js">
   <head>
     
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="SDK Python não-oficial para a API da Vendus (faturação Portugal)">
+        <meta name="description" content="Unofficial Python SDK for the Vendus invoicing API (Portugal)">
       
       
       
@@ -20,9 +20,9 @@
       
       
         
-          <link rel="alternate" href="./" hreflang="pt">
+          <link rel="alternate" href="./" hreflang="en">
         
-          <link rel="alternate" href="../en/getting-started/" hreflang="en">
+          <link rel="alternate" href="../pt/getting-started/" hreflang="pt">
         
       
       
@@ -31,7 +31,7 @@
     
     
       
-        <title>Instalação e Quickstart - vendus Python SDK</title>
+        <title>Installation & Quickstart - vendus Python SDK</title>
       
     
     
@@ -84,8 +84,8 @@
     <div data-md-component="skip">
       
         
-        <a href="#instalacao-e-quickstart" class="md-skip">
-          Ir para o conteúdo
+        <a href="#installation-quickstart" class="md-skip">
+          Skip to content
         </a>
       
     </div>
@@ -97,7 +97,7 @@
       
 
 <header class="md-header" data-md-component="header">
-  <nav class="md-header__inner md-grid" aria-label="Cabeçalho">
+  <nav class="md-header__inner md-grid" aria-label="Header">
     <a href=".." title="vendus Python SDK" class="md-header__button md-logo" aria-label="vendus Python SDK" data-md-component="logo">
       
   
@@ -118,7 +118,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Instalação e Quickstart
+              Installation & Quickstart
             
           </span>
         </div>
@@ -131,9 +131,9 @@
     
     
     
-    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Mudar para modo escuro"  type="radio" name="__palette" id="__palette_0">
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
     
-      <label class="md-header__button md-icon" title="Mudar para modo escuro" for="__palette_1" hidden>
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
       </label>
     
@@ -141,9 +141,9 @@
     
     
     
-    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Mudar para modo claro"  type="radio" name="__palette" id="__palette_1">
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
     
-      <label class="md-header__button md-icon" title="Mudar para modo claro" for="__palette_0" hidden>
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
       </label>
     
@@ -158,21 +158,21 @@
       <div class="md-header__option">
   <div class="md-select">
     
-    <button class="md-header__button md-icon" aria-label="Selecione o idioma">
+    <button class="md-header__button md-icon" aria-label="Select language">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12.87 15.07-2.54-2.51.03-.03A17.5 17.5 0 0 0 14.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2zm-2.62 7 1.62-4.33L19.12 17z"/></svg>
     </button>
     <div class="md-select__inner">
       <ul class="md-select__list">
         
           <li class="md-select__item">
-            <a href="./" hreflang="pt" class="md-select__link">
-              Português
+            <a href="./" hreflang="en" class="md-select__link">
+              English
             </a>
           </li>
         
           <li class="md-select__item">
-            <a href="../en/getting-started/" hreflang="en" class="md-select__link">
-              English
+            <a href="../pt/getting-started/" hreflang="pt" class="md-select__link">
+              Português
             </a>
           </li>
         
@@ -192,16 +192,16 @@
   <label class="md-search__overlay" for="__search"></label>
   <div class="md-search__inner" role="search">
     <form class="md-search__form" name="search">
-      <input type="text" class="md-search__input" name="query" aria-label="Buscar" placeholder="Buscar" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
       <label class="md-search__icon md-icon" for="__search">
         
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
         
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
       </label>
-      <nav class="md-search__options" aria-label="Pesquisar">
+      <nav class="md-search__options" aria-label="Search">
         
-        <button type="reset" class="md-search__icon md-icon" title="Limpar" aria-label="Limpar" tabindex="-1">
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
           
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
         </button>
@@ -214,7 +214,7 @@
       <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
         <div class="md-search-result" data-md-component="search-result">
           <div class="md-search-result__meta">
-            Inicializando a pesquisa
+            Initializing search
           </div>
           <ol class="md-search-result__list" role="presentation"></ol>
         </div>
@@ -226,7 +226,7 @@
     
     
       <div class="md-header__source">
-        <a href="https://github.com/bilouro/vendus-python" title="Ir ao repositório" class="md-source" data-md-component="source">
+        <a href="https://github.com/bilouro/vendus-python" title="Go to repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
@@ -247,7 +247,7 @@
         
           
             
-<nav class="md-tabs" aria-label="Abas" data-md-component="tabs">
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
   <div class="md-grid">
     <ul class="md-tabs__list">
       
@@ -263,7 +263,7 @@
   
     
   
-  Início
+  Home
 
       </a>
     </li>
@@ -284,7 +284,7 @@
           
   
   
-  Começar
+  Getting Started
 
         </a>
       </li>
@@ -304,7 +304,7 @@
           
   
   
-  Documentos
+  Documents
 
         </a>
       </li>
@@ -324,7 +324,7 @@
           
   
   
-  Receitas
+  Recipes
 
         </a>
       </li>
@@ -344,7 +344,7 @@
   
     
   
-  Erros e Troubleshooting
+  Errors & Troubleshooting
 
       </a>
     </li>
@@ -363,7 +363,7 @@
   
     
   
-  Referência API
+  API Reference
 
       </a>
     </li>
@@ -382,7 +382,7 @@
   
     
   
-  Contribuir
+  Contributing
 
       </a>
     </li>
@@ -409,7 +409,7 @@
   
 
 
-<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navegação" data-md-level="0">
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
     <a href=".." title="vendus Python SDK" class="md-nav__button md-logo" aria-label="vendus Python SDK" data-md-component="logo">
       
@@ -421,7 +421,7 @@
   </label>
   
     <div class="md-nav__source">
-      <a href="https://github.com/bilouro/vendus-python" title="Ir ao repositório" class="md-source" data-md-component="source">
+      <a href="https://github.com/bilouro/vendus-python" title="Go to repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
@@ -448,7 +448,7 @@
   <span class="md-ellipsis">
     
   
-    Início
+    Home
   
 
     
@@ -496,7 +496,7 @@
   <span class="md-ellipsis">
     
   
-    Começar
+    Getting Started
   
 
     
@@ -512,7 +512,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Começar
+    Getting Started
   
 
           </label>
@@ -541,7 +541,7 @@
   <span class="md-ellipsis">
     
   
-    Instalação e Quickstart
+    Installation & Quickstart
   
 
     
@@ -559,7 +559,7 @@
   <span class="md-ellipsis">
     
   
-    Instalação e Quickstart
+    Installation & Quickstart
   
 
     
@@ -571,7 +571,7 @@
       
         
 
-<nav class="md-nav md-nav--secondary" aria-label="Índice">
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
   
   
   
@@ -580,15 +580,15 @@
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
-      Índice
+      Table of contents
     </label>
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#instalacao" class="md-nav__link">
+  <a href="#installation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Instalação
+        Installation
       
     </span>
   </a>
@@ -596,10 +596,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#obter-api-key" class="md-nav__link">
+  <a href="#get-your-api-key" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Obter API key
+        Get your API key
       
     </span>
   </a>
@@ -607,10 +607,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#configurar-credenciais" class="md-nav__link">
+  <a href="#configure-credentials" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Configurar credenciais
+        Configure credentials
       
     </span>
   </a>
@@ -618,10 +618,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#primeira-fatura" class="md-nav__link">
+  <a href="#first-invoice" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Primeira fatura
+        First invoice
       
     </span>
   </a>
@@ -629,10 +629,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#proximos-passos" class="md-nav__link">
+  <a href="#next-steps" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Próximos passos
+        Next steps
       
     </span>
   </a>
@@ -662,7 +662,7 @@
   <span class="md-ellipsis">
     
   
-    Configuração
+    Configuration
   
 
     
@@ -713,7 +713,7 @@
   <span class="md-ellipsis">
     
   
-    Documentos
+    Documents
   
 
     
@@ -729,7 +729,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Documentos
+    Documents
   
 
           </label>
@@ -749,7 +749,7 @@
   <span class="md-ellipsis">
     
   
-    Qual tipo escolher?
+    Which type to choose?
   
 
     
@@ -777,7 +777,7 @@
   <span class="md-ellipsis">
     
   
-    Fatura
+    Invoice
   
 
     
@@ -805,7 +805,7 @@
   <span class="md-ellipsis">
     
   
-    Fatura-Recibo
+    Invoice-Receipt
   
 
     
@@ -833,7 +833,7 @@
   <span class="md-ellipsis">
     
   
-    Nota de Crédito
+    Credit Note
   
 
     
@@ -884,7 +884,7 @@
   <span class="md-ellipsis">
     
   
-    Receitas
+    Recipes
   
 
     
@@ -900,7 +900,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Receitas
+    Recipes
   
 
           </label>
@@ -920,7 +920,7 @@
   <span class="md-ellipsis">
     
   
-    Receitas
+    Recipes
   
 
     
@@ -1039,7 +1039,7 @@
   <span class="md-ellipsis">
     
   
-    Erros e Troubleshooting
+    Errors & Troubleshooting
   
 
     
@@ -1066,7 +1066,7 @@
   <span class="md-ellipsis">
     
   
-    Referência API
+    API Reference
   
 
     
@@ -1093,7 +1093,7 @@
   <span class="md-ellipsis">
     
   
-    Contribuir
+    Contributing
   
 
     
@@ -1119,7 +1119,7 @@
                   <div class="md-sidebar__inner">
                     
 
-<nav class="md-nav md-nav--secondary" aria-label="Índice">
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
   
   
   
@@ -1128,15 +1128,15 @@
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
-      Índice
+      Table of contents
     </label>
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#instalacao" class="md-nav__link">
+  <a href="#installation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Instalação
+        Installation
       
     </span>
   </a>
@@ -1144,10 +1144,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#obter-api-key" class="md-nav__link">
+  <a href="#get-your-api-key" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Obter API key
+        Get your API key
       
     </span>
   </a>
@@ -1155,10 +1155,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#configurar-credenciais" class="md-nav__link">
+  <a href="#configure-credentials" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Configurar credenciais
+        Configure credentials
       
     </span>
   </a>
@@ -1166,10 +1166,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#primeira-fatura" class="md-nav__link">
+  <a href="#first-invoice" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Primeira fatura
+        First invoice
       
     </span>
   </a>
@@ -1177,10 +1177,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#proximos-passos" class="md-nav__link">
+  <a href="#next-steps" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Próximos passos
+        Next steps
       
     </span>
   </a>
@@ -1207,65 +1207,65 @@
   
 
 
-<h1 id="instalacao-e-quickstart">Instalação e Quickstart<a class="headerlink" href="#instalacao-e-quickstart" title="Permanent link">&para;</a></h1>
-<h2 id="instalacao">Instalação<a class="headerlink" href="#instalacao" title="Permanent link">&para;</a></h2>
+<h1 id="installation-quickstart">Installation &amp; Quickstart<a class="headerlink" href="#installation-quickstart" title="Permanent link">&para;</a></h1>
+<h2 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>pip<span class="w"> </span>install<span class="w"> </span>vendus
 </code></pre></div>
-<p>Requer Python 3.9+. Dependências: <a href="https://www.python-httpx.org/">httpx</a> e <a href="https://docs.pydantic.dev/">Pydantic v2</a>.</p>
-<h2 id="obter-api-key">Obter API key<a class="headerlink" href="#obter-api-key" title="Permanent link">&para;</a></h2>
+<p>Requires Python 3.9+. Dependencies: <a href="https://www.python-httpx.org/">httpx</a> and <a href="https://docs.pydantic.dev/">Pydantic v2</a>.</p>
+<h2 id="get-your-api-key">Get your API key<a class="headerlink" href="#get-your-api-key" title="Permanent link">&para;</a></h2>
 <ol>
-<li>Inicia sessão em <a href="https://www.vendus.pt">www.vendus.pt</a></li>
-<li><strong>Definições → Acessos → API</strong></li>
-<li>Cria/copia a API key</li>
+<li>Sign in at <a href="https://www.vendus.pt">www.vendus.pt</a></li>
+<li><strong>Settings → Access → API</strong></li>
+<li>Create/copy the API key</li>
 </ol>
-<p>A API key identifica o utilizador na Vendus — todos os documentos emitidos via API ficam atribuídos a esse utilizador.</p>
-<h2 id="configurar-credenciais">Configurar credenciais<a class="headerlink" href="#configurar-credenciais" title="Permanent link">&para;</a></h2>
-<p>Recomendado: variável de ambiente ou ficheiro <code>.env</code>.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">VENDUS_API_KEY</span><span class="o">=</span><span class="s2">&quot;a-tua-key&quot;</span>
+<p>The API key identifies the user in Vendus — every document issued via API is attributed to that user.</p>
+<h2 id="configure-credentials">Configure credentials<a class="headerlink" href="#configure-credentials" title="Permanent link">&para;</a></h2>
+<p>Recommended: environment variable or <code>.env</code> file.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">VENDUS_API_KEY</span><span class="o">=</span><span class="s2">&quot;your-key&quot;</span>
 </code></pre></div>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">vendus</span><span class="w"> </span><span class="kn">import</span> <span class="n">VendusClient</span>
 <a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="n">client</span> <span class="o">=</span> <span class="n">VendusClient</span><span class="o">.</span><span class="n">from_env</span><span class="p">()</span>         <span class="c1"># lê VENDUS_API_KEY</span>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="c1"># ou</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="n">client</span> <span class="o">=</span> <span class="n">VendusClient</span><span class="o">.</span><span class="n">from_env</span><span class="p">()</span>         <span class="c1"># reads VENDUS_API_KEY</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="c1"># or</span>
 <a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="n">client</span> <span class="o">=</span> <span class="n">VendusClient</span><span class="p">(</span><span class="n">api_key</span><span class="o">=</span><span class="s2">&quot;...&quot;</span><span class="p">)</span>
 </code></pre></div>
 <div class="admonition danger">
-<p class="admonition-title">Nunca commits API keys</p>
-<p>O <code>.env</code> deve estar no <code>.gitignore</code>. Não passes API keys como parâmetro de URL nem as registes em logs.</p>
+<p class="admonition-title">Never commit API keys</p>
+<p>Add <code>.env</code> to <code>.gitignore</code>. Do not pass API keys as URL parameters or log them.</p>
 </div>
-<h2 id="primeira-fatura">Primeira fatura<a class="headerlink" href="#primeira-fatura" title="Permanent link">&para;</a></h2>
+<h2 id="first-invoice">First invoice<a class="headerlink" href="#first-invoice" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">decimal</span><span class="w"> </span><span class="kn">import</span> <span class="n">Decimal</span>
 <a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">vendus</span><span class="w"> </span><span class="kn">import</span> <span class="n">VendusClient</span><span class="p">,</span> <span class="n">ClientData</span><span class="p">,</span> <span class="n">DocumentItem</span>
 <a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>
 <a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="n">client</span> <span class="o">=</span> <span class="n">VendusClient</span><span class="o">.</span><span class="n">from_env</span><span class="p">()</span>
 <a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>
 <a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="n">invoice</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">documents</span><span class="o">.</span><span class="n">create_invoice</span><span class="p">(</span>
-<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>    <span class="n">register_id</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>                       <span class="c1"># ID do POS configurado na Vendus</span>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>    <span class="n">register_id</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>                       <span class="c1"># POS register ID configured in Vendus</span>
 <a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>    <span class="n">client</span><span class="o">=</span><span class="n">ClientData</span><span class="p">(</span>
 <a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Acme Lda&quot;</span><span class="p">,</span>
 <a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>        <span class="n">fiscal_id</span><span class="o">=</span><span class="s2">&quot;123456789&quot;</span><span class="p">,</span>
 <a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>    <span class="p">),</span>
 <a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>    <span class="n">items</span><span class="o">=</span><span class="p">[</span>
 <a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>        <span class="n">DocumentItem</span><span class="p">(</span>
-<a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Consultoria&quot;</span><span class="p">,</span>
+<a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Consulting&quot;</span><span class="p">,</span>
 <a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a>            <span class="n">quantity</span><span class="o">=</span><span class="n">Decimal</span><span class="p">(</span><span class="s2">&quot;10&quot;</span><span class="p">),</span>
-<a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a>            <span class="n">unit_price</span><span class="o">=</span><span class="n">Decimal</span><span class="p">(</span><span class="s2">&quot;75.00&quot;</span><span class="p">),</span> <span class="c1"># bruto, com IVA incluído</span>
+<a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a>            <span class="n">unit_price</span><span class="o">=</span><span class="n">Decimal</span><span class="p">(</span><span class="s2">&quot;75.00&quot;</span><span class="p">),</span> <span class="c1"># gross, includes VAT</span>
 <a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a>            <span class="n">tax_rate</span><span class="o">=</span><span class="n">Decimal</span><span class="p">(</span><span class="s2">&quot;23&quot;</span><span class="p">),</span>
 <a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a>        <span class="p">),</span>
 <a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a>    <span class="p">],</span>
-<a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a>    <span class="n">external_reference</span><span class="o">=</span><span class="s2">&quot;ORD-2026-001&quot;</span><span class="p">,</span>   <span class="c1"># ativa retry seguro em POST</span>
+<a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a>    <span class="n">external_reference</span><span class="o">=</span><span class="s2">&quot;ORD-2026-001&quot;</span><span class="p">,</span>   <span class="c1"># enables safe POST retries</span>
 <a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a><span class="p">)</span>
 <a id="__codelineno-3-22" name="__codelineno-3-22" href="#__codelineno-3-22"></a>
-<a id="__codelineno-3-23" name="__codelineno-3-23" href="#__codelineno-3-23"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Fatura </span><span class="si">{</span><span class="n">invoice</span><span class="o">.</span><span class="n">number</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<a id="__codelineno-3-23" name="__codelineno-3-23" href="#__codelineno-3-23"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invoice </span><span class="si">{</span><span class="n">invoice</span><span class="o">.</span><span class="n">number</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 <a id="__codelineno-3-24" name="__codelineno-3-24" href="#__codelineno-3-24"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total: </span><span class="si">{</span><span class="n">invoice</span><span class="o">.</span><span class="n">gross_amount</span><span class="si">}</span><span class="s2"> EUR&quot;</span><span class="p">)</span>
 <a id="__codelineno-3-25" name="__codelineno-3-25" href="#__codelineno-3-25"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;ATCUD: </span><span class="si">{</span><span class="n">invoice</span><span class="o">.</span><span class="n">atcud</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 <a id="__codelineno-3-26" name="__codelineno-3-26" href="#__codelineno-3-26"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;QR: </span><span class="si">{</span><span class="n">invoice</span><span class="o">.</span><span class="n">qrcode</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </code></pre></div>
-<h2 id="proximos-passos">Próximos passos<a class="headerlink" href="#proximos-passos" title="Permanent link">&para;</a></h2>
+<h2 id="next-steps">Next steps<a class="headerlink" href="#next-steps" title="Permanent link">&para;</a></h2>
 <ul>
-<li><a href="configuration/">Configuração</a> — todas as opções do <code>VendusClient</code></li>
-<li><a href="../documents/">Qual tipo de documento escolher?</a></li>
-<li><a href="../documents/invoice/">Fatura (FT)</a>, <a href="../documents/invoice-receipt/">Fatura-Recibo (FR)</a>, <a href="../documents/credit-note/">Nota de Crédito (NC)</a></li>
+<li><a href="configuration/">Configuration</a> — all <code>VendusClient</code> options</li>
+<li><a href="../documents/">Which document type to choose?</a></li>
+<li><a href="../documents/invoice/">Invoice (FT)</a>, <a href="../documents/invoice-receipt/">Invoice-Receipt (FR)</a>, <a href="../documents/credit-note/">Credit Note (NC)</a></li>
 </ul>
 
 
@@ -1292,7 +1292,7 @@
           <button type="button" class="md-top md-icon" data-md-component="top" hidden>
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
-  Voltar ao topo
+  Back to top
 </button>
         
       </main>
@@ -1351,7 +1351,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["content.code.copy", "content.code.annotate", "content.tabs.link", "navigation.tabs", "navigation.sections", "navigation.top", "search.highlight", "search.suggest", "toc.follow"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copiado para \u00e1rea de transfer\u00eancia", "clipboard.copy": "Copiar para \u00e1rea de transfer\u00eancia", "search.result.more.one": "Mais 1 nesta p\u00e1gina", "search.result.more.other": "Mais # nesta p\u00e1gina", "search.result.none": "Nenhum resultado encontrado", "search.result.one": "1 resultado encontrado", "search.result.other": "# resultados encontrados", "search.result.placeholder": "Digite para iniciar a busca", "search.result.term.missing": "Ausente", "select.version": "Selecione a vers\u00e3o"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["content.code.copy", "content.code.annotate", "content.tabs.link", "navigation.tabs", "navigation.sections", "navigation.top", "search.highlight", "search.suggest", "toc.follow"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>

@@ -693,14 +693,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../documents/simplified-invoice/" class="md-nav__link">
+      <a href="../documents/invoice-receipt/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Simplified Invoice
+    Invoice-Receipt
   
 
     
@@ -1094,10 +1094,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#vendus.services.documents.DocumentsService.create_simplified_invoice" class="md-nav__link">
+  <a href="#vendus.services.documents.DocumentsService.create_invoice_receipt" class="md-nav__link">
     <span class="md-ellipsis">
       
-        create_simplified_invoice
+        create_invoice_receipt
       
     </span>
   </a>
@@ -1466,10 +1466,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#vendus.services.documents.DocumentsService.create_simplified_invoice" class="md-nav__link">
+  <a href="#vendus.services.documents.DocumentsService.create_invoice_receipt" class="md-nav__link">
     <span class="md-ellipsis">
       
-        create_simplified_invoice
+        create_invoice_receipt
       
     </span>
   </a>
@@ -1936,18 +1936,19 @@ safe POST retries (R3).</p>
 <div class="doc doc-object doc-function">
 
 
-<h4 id="vendus.services.documents.DocumentsService.create_simplified_invoice" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">create_simplified_invoice</span><span class="p">(</span><span class="n">register_id</span><span class="p">,</span> <span class="n">items</span><span class="p">,</span> <span class="n">client</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">external_reference</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+<h4 id="vendus.services.documents.DocumentsService.create_invoice_receipt" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">create_invoice_receipt</span><span class="p">(</span><span class="n">register_id</span><span class="p">,</span> <span class="n">items</span><span class="p">,</span> <span class="n">client</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">external_reference</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
 
-<a href="#vendus.services.documents.DocumentsService.create_simplified_invoice" class="headerlink" title="Permanent link">&para;</a></h4>
+<a href="#vendus.services.documents.DocumentsService.create_invoice_receipt" class="headerlink" title="Permanent link">&para;</a></h4>
 
 
     <div class="doc doc-contents ">
 
-        <p>Issue a Fatura Simplificada (FS).</p>
-<p>Use for B2C transactions where NIF is not required by the buyer. AT limits
-the amount per FS (currently 1000 EUR for non-resale, 100 EUR for resale).
-Client can be omitted (final consumer) or passed with/without fiscal_id.</p>
+        <p>Issue a Fatura-Recibo (FR).</p>
+<p>An FR is an invoice and a receipt in a single document: it bills and
+acknowledges payment at once. Use it when the client pays immediately
+(typical for services and freelancers).</p>
+<p>Client can be omitted (final consumer) or passed with/without fiscal_id.</p>
 
 
     </div>
@@ -2227,10 +2228,9 @@ Client can be omitted (final consumer) or passed with/without fiscal_id.</p>
 <p>Two valid shapes:
 - With NIF: <code>ClientData(name="Acme Lda", fiscal_id="123456789")</code>
 - Name only: <code>ClientData(name="João Silva")</code> — for clients that did not
-  provide a fiscal_id. Legally valid on Fatura Simplificada (FS), and on
-  regular Fatura (FT) for small B2C transactions.</p>
+  provide a fiscal_id. Accepted by Vendus on FT and FR.</p>
 <p>To invoice a final consumer with NO identification at all, omit the
-<code>client</code> argument entirely from create_invoice / create_simplified_invoice.</p>
+<code>client</code> argument entirely from create_invoice / create_invoice_receipt.</p>
 <p>Vendus upserts by <code>fiscal_id</code> when present. The API does NOT return the
 client object in the document response.</p>
 

@@ -787,14 +787,14 @@
   
   
     <li class="md-nav__item">
-      <a href="simplified-invoice/" class="md-nav__link">
+      <a href="invoice-receipt/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Fatura Simplificada
+    Fatura-Recibo
   
 
     
@@ -1193,27 +1193,23 @@
 <th>Tipo</th>
 <th>Código AT</th>
 <th>Quando usar</th>
-<th>Limite</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><strong>Fatura (FT)</strong></td>
 <td>FT</td>
-<td>B2B; B2C com NIF; B2C acima do limite da FS</td>
-<td>Sem limite</td>
+<td>Venda em que o cliente paga depois (a crédito, a 30 dias)</td>
 </tr>
 <tr>
-<td><strong>Fatura Simplificada (FS)</strong></td>
-<td>FS</td>
-<td>B2C até €1000 (€100 se revenda)</td>
-<td>€1000 / €100</td>
+<td><strong>Fatura-Recibo (FR)</strong></td>
+<td>FR</td>
+<td>Venda em que o cliente paga <strong>na hora</strong> (factura + recibo num só)</td>
 </tr>
 <tr>
 <td><strong>Nota de Crédito (NC)</strong></td>
 <td>NC</td>
 <td>Anular ou creditar parcialmente um documento já emitido</td>
-<td>—</td>
 </tr>
 </tbody>
 </table>
@@ -1221,13 +1217,9 @@
 <pre class="mermaid"><code>flowchart TD
     A[Vou emitir um documento] --&gt; B{É para anular/creditar&lt;br/&gt;um documento existente?}
     B --&gt;|Sim| NC[Nota de Crédito]
-    B --&gt;|Não| C{Cliente deu NIF?}
-    C --&gt;|Sim| FT[Fatura FT]
-    C --&gt;|Não| D{Valor &amp;le; &amp;euro;1000?}
-    D --&gt;|Sim| FS[Fatura Simplificada FS]
-    D --&gt;|Não| E{Tem identificação&lt;br/&gt;parcial nome?}
-    E --&gt;|Sim| FT2[Fatura FT só com nome]
-    E --&gt;|Não| FT3[Fatura FT a Consumidor Final]</code></pre>
+    B --&gt;|Não| C{Cliente paga na hora?}
+    C --&gt;|Sim| FR[Fatura-Recibo FR]
+    C --&gt;|Não| FT[Fatura FT]</code></pre>
 <h2 id="os-3-formatos-de-cliente">Os 3 formatos de cliente<a class="headerlink" href="#os-3-formatos-de-cliente" title="Permanent link">&para;</a></h2>
 <p>Todos os três métodos de criação aceitam as mesmas três formas de identificação:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">vendus</span><span class="w"> </span><span class="kn">import</span> <span class="n">ClientData</span>
@@ -1257,7 +1249,7 @@
 <h2 id="proximos-passos">Próximos passos<a class="headerlink" href="#proximos-passos" title="Permanent link">&para;</a></h2>
 <ul>
 <li><a href="invoice/">Fatura (FT)</a></li>
-<li><a href="simplified-invoice/">Fatura Simplificada (FS)</a></li>
+<li><a href="invoice-receipt/">Fatura-Recibo (FR)</a></li>
 <li><a href="credit-note/">Nota de Crédito (NC)</a></li>
 </ul>
 

@@ -36,18 +36,18 @@
         <xhtml:link rel="alternate" hreflang="en" href="https://bilouro.github.io/vendus-python/en/documents/credit-note/"/>
     </url>
     <url>
+        <loc>https://bilouro.github.io/vendus-python/documents/invoice-receipt/</loc>
+        <lastmod>2026-05-28</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://bilouro.github.io/vendus-python/documents/invoice-receipt/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://bilouro.github.io/vendus-python/en/documents/invoice-receipt/"/>
+    </url>
+    <url>
         <loc>https://bilouro.github.io/vendus-python/documents/invoice/</loc>
         <lastmod>2026-05-28</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="pt" href="https://bilouro.github.io/vendus-python/documents/invoice/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://bilouro.github.io/vendus-python/en/documents/invoice/"/>
-    </url>
-    <url>
-        <loc>https://bilouro.github.io/vendus-python/documents/simplified-invoice/</loc>
-        <lastmod>2026-05-28</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="pt" href="https://bilouro.github.io/vendus-python/documents/simplified-invoice/"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://bilouro.github.io/vendus-python/en/documents/simplified-invoice/"/>
     </url>
     <url>
         <loc>https://bilouro.github.io/vendus-python/errors/</loc>
@@ -134,18 +134,18 @@
         <xhtml:link rel="alternate" hreflang="pt" href="https://bilouro.github.io/vendus-python/documents/credit-note/"/>
     </url>
     <url>
+        <loc>https://bilouro.github.io/vendus-python/en/documents/invoice-receipt/</loc>
+        <lastmod>2026-05-28</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://bilouro.github.io/vendus-python/en/documents/invoice-receipt/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://bilouro.github.io/vendus-python/documents/invoice-receipt/"/>
+    </url>
+    <url>
         <loc>https://bilouro.github.io/vendus-python/en/documents/invoice/</loc>
         <lastmod>2026-05-28</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="https://bilouro.github.io/vendus-python/en/documents/invoice/"/>
         <xhtml:link rel="alternate" hreflang="pt" href="https://bilouro.github.io/vendus-python/documents/invoice/"/>
-    </url>
-    <url>
-        <loc>https://bilouro.github.io/vendus-python/en/documents/simplified-invoice/</loc>
-        <lastmod>2026-05-28</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="en" href="https://bilouro.github.io/vendus-python/en/documents/simplified-invoice/"/>
-        <xhtml:link rel="alternate" hreflang="pt" href="https://bilouro.github.io/vendus-python/documents/simplified-invoice/"/>
     </url>
     <url>
         <loc>https://bilouro.github.io/vendus-python/en/errors/</loc>

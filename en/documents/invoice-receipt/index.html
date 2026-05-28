@@ -10,7 +10,7 @@
       
       
       
-        <link rel="canonical" href="https://bilouro.github.io/vendus-python/en/documents/simplified-invoice/">
+        <link rel="canonical" href="https://bilouro.github.io/vendus-python/en/documents/invoice-receipt/">
       
       
         <link rel="prev" href="../invoice/">
@@ -20,7 +20,7 @@
       
       
         
-          <link rel="alternate" href="../../../documents/simplified-invoice/" hreflang="pt">
+          <link rel="alternate" href="../../../documents/invoice-receipt/" hreflang="pt">
         
           <link rel="alternate" href="./" hreflang="en">
         
@@ -31,7 +31,7 @@
     
     
       
-        <title>Simplified Invoice - vendus Python SDK</title>
+        <title>Invoice-Receipt - vendus Python SDK</title>
       
     
     
@@ -86,7 +86,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#simplified-invoice-fs" class="md-skip">
+        <a href="#invoice-receipt-fr" class="md-skip">
           Skip to content
         </a>
       
@@ -120,7 +120,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Simplified Invoice
+              Invoice-Receipt
             
           </span>
         </div>
@@ -167,7 +167,7 @@
       <ul class="md-select__list">
         
           <li class="md-select__item">
-            <a href="../../../documents/simplified-invoice/" hreflang="pt" class="md-select__link">
+            <a href="../../../documents/invoice-receipt/" hreflang="pt" class="md-select__link">
               Português
             </a>
           </li>
@@ -714,7 +714,7 @@
   <span class="md-ellipsis">
     
   
-    Simplified Invoice
+    Invoice-Receipt
   
 
     
@@ -732,7 +732,7 @@
   <span class="md-ellipsis">
     
   
-    Simplified Invoice
+    Invoice-Receipt
   
 
     
@@ -795,6 +795,17 @@
     <span class="md-ellipsis">
       
         Async variant
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ft-vs-fr" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        FT vs FR
       
     </span>
   </a>
@@ -1179,6 +1190,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#ft-vs-fr" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        FT vs FR
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#notes" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1209,65 +1231,91 @@
   
 
 
-<h1 id="simplified-invoice-fs">Simplified Invoice (FS)<a class="headerlink" href="#simplified-invoice-fs" title="Permanent link">&para;</a></h1>
+<h1 id="invoice-receipt-fr">Invoice-Receipt (FR)<a class="headerlink" href="#invoice-receipt-fr" title="Permanent link">&para;</a></h1>
 <h2 id="what-it-is">What it is<a class="headerlink" href="#what-it-is" title="Permanent link">&para;</a></h2>
-<p>The Simplified Invoice (FS) is the legally correct way to invoice <strong>individual clients without a NIF</strong> in Portugal, within certain amount limits.</p>
+<p>The Invoice-Receipt (FR) is <strong>an invoice and a receipt in one document</strong>: it bills the sale <strong>and</strong> acknowledges payment at the same time. It is the right document when the client <strong>pays on the spot</strong>.</p>
 <ul>
-<li><strong>Limit:</strong> €1000 per transaction for individuals; €100 if for resale</li>
-<li><strong>NIF:</strong> optional. Above certain amounts it becomes mandatory</li>
-<li><strong>Identification:</strong> can include NIF, name only, or be anonymous</li>
+<li>Very common for <strong>services</strong> (consultations, freelancers, independent professionals)</li>
+<li>Avoids issuing an FT and then a separate RC</li>
+<li>Client identification: can include NIF, name only, or be anonymous</li>
 </ul>
-<p>AT created this document type precisely for the "client who won't give NIF" case. It is not an "inferior" invoice — it is the right one.</p>
 <h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">decimal</span><span class="w"> </span><span class="kn">import</span> <span class="n">Decimal</span>
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">vendus</span><span class="w"> </span><span class="kn">import</span> <span class="n">VendusClient</span><span class="p">,</span> <span class="n">ClientData</span><span class="p">,</span> <span class="n">DocumentItem</span>
 <a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
 <a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="n">client</span> <span class="o">=</span> <span class="n">VendusClient</span><span class="o">.</span><span class="n">from_env</span><span class="p">()</span>
 <a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="c1"># Client gave name but no NIF</span>
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="n">fs</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">documents</span><span class="o">.</span><span class="n">create_simplified_invoice</span><span class="p">(</span>
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>    <span class="n">register_id</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>    <span class="n">client</span><span class="o">=</span><span class="n">ClientData</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;João Silva&quot;</span><span class="p">),</span>
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>    <span class="n">items</span><span class="o">=</span><span class="p">[</span>
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>        <span class="n">DocumentItem</span><span class="p">(</span>
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Coffee&quot;</span><span class="p">,</span>
-<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>            <span class="n">quantity</span><span class="o">=</span><span class="n">Decimal</span><span class="p">(</span><span class="s2">&quot;2&quot;</span><span class="p">),</span>
-<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>            <span class="n">unit_price</span><span class="o">=</span><span class="n">Decimal</span><span class="p">(</span><span class="s2">&quot;2.50&quot;</span><span class="p">),</span>
-<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>            <span class="n">tax_rate</span><span class="o">=</span><span class="n">Decimal</span><span class="p">(</span><span class="s2">&quot;13&quot;</span><span class="p">),</span>
-<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>        <span class="p">),</span>
-<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>    <span class="p">],</span>
-<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>    <span class="n">external_reference</span><span class="o">=</span><span class="s2">&quot;VEN-2026-001&quot;</span><span class="p">,</span>
-<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="p">)</span>
-<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>
-<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="nb">print</span><span class="p">(</span><span class="n">fs</span><span class="o">.</span><span class="n">number</span><span class="p">)</span>  <span class="c1"># &quot;FS 2026/45&quot;</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="n">fr</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">documents</span><span class="o">.</span><span class="n">create_invoice_receipt</span><span class="p">(</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    <span class="n">register_id</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>    <span class="n">client</span><span class="o">=</span><span class="n">ClientData</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Acme Lda&quot;</span><span class="p">,</span> <span class="n">fiscal_id</span><span class="o">=</span><span class="s2">&quot;123456789&quot;</span><span class="p">),</span>
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>    <span class="n">items</span><span class="o">=</span><span class="p">[</span>
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>        <span class="n">DocumentItem</span><span class="p">(</span>
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Consulting session (paid on the spot)&quot;</span><span class="p">,</span>
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>            <span class="n">quantity</span><span class="o">=</span><span class="n">Decimal</span><span class="p">(</span><span class="s2">&quot;1&quot;</span><span class="p">),</span>
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>            <span class="n">unit_price</span><span class="o">=</span><span class="n">Decimal</span><span class="p">(</span><span class="s2">&quot;90.00&quot;</span><span class="p">),</span>
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>            <span class="n">tax_rate</span><span class="o">=</span><span class="n">Decimal</span><span class="p">(</span><span class="s2">&quot;23&quot;</span><span class="p">),</span>
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>        <span class="p">),</span>
+<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>    <span class="p">],</span>
+<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>    <span class="n">external_reference</span><span class="o">=</span><span class="s2">&quot;FR-2026-001&quot;</span><span class="p">,</span>
+<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="p">)</span>
+<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>
+<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="nb">print</span><span class="p">(</span><span class="n">fr</span><span class="o">.</span><span class="n">number</span><span class="p">)</span>  <span class="c1"># &quot;FR 2026/12&quot;</span>
+<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="nb">print</span><span class="p">(</span><span class="n">fr</span><span class="o">.</span><span class="n">atcud</span><span class="p">)</span>
 </code></pre></div>
 <h2 id="scenarios">Scenarios<a class="headerlink" href="#scenarios" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># 1. Client gave NIF (rare on FS but valid)</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="n">client</span><span class="o">.</span><span class="n">documents</span><span class="o">.</span><span class="n">create_simplified_invoice</span><span class="p">(</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># 1. With NIF</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="n">client</span><span class="o">.</span><span class="n">documents</span><span class="o">.</span><span class="n">create_invoice_receipt</span><span class="p">(</span>
 <a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    <span class="n">register_id</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">items</span><span class="o">=</span><span class="p">[</span><span class="o">...</span><span class="p">],</span>
 <a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>    <span class="n">client</span><span class="o">=</span><span class="n">ClientData</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Acme Lda&quot;</span><span class="p">,</span> <span class="n">fiscal_id</span><span class="o">=</span><span class="s2">&quot;123456789&quot;</span><span class="p">),</span>
 <a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="p">)</span>
 <a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="c1"># 2. Name only (typical case)</span>
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="n">client</span><span class="o">.</span><span class="n">documents</span><span class="o">.</span><span class="n">create_simplified_invoice</span><span class="p">(</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="c1"># 2. Name only (client did not provide NIF)</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="n">client</span><span class="o">.</span><span class="n">documents</span><span class="o">.</span><span class="n">create_invoice_receipt</span><span class="p">(</span>
 <a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>    <span class="n">register_id</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">items</span><span class="o">=</span><span class="p">[</span><span class="o">...</span><span class="p">],</span>
 <a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>    <span class="n">client</span><span class="o">=</span><span class="n">ClientData</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;João Silva&quot;</span><span class="p">),</span>
 <a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="p">)</span>
 <a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>
-<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="c1"># 3. Anonymous (final consumer)</span>
-<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="n">client</span><span class="o">.</span><span class="n">documents</span><span class="o">.</span><span class="n">create_simplified_invoice</span><span class="p">(</span><span class="n">register_id</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">items</span><span class="o">=</span><span class="p">[</span><span class="o">...</span><span class="p">])</span>
+<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="c1"># 3. Final consumer (anonymous)</span>
+<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="n">client</span><span class="o">.</span><span class="n">documents</span><span class="o">.</span><span class="n">create_invoice_receipt</span><span class="p">(</span><span class="n">register_id</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">items</span><span class="o">=</span><span class="p">[</span><span class="o">...</span><span class="p">])</span>
 </code></pre></div>
 <h2 id="async-variant">Async variant<a class="headerlink" href="#async-variant" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">fs</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">documents</span><span class="o">.</span><span class="n">create_simplified_invoice_async</span><span class="p">(</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">fr</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">documents</span><span class="o">.</span><span class="n">create_invoice_receipt_async</span><span class="p">(</span>
 <a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>    <span class="n">register_id</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
 <a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>    <span class="n">items</span><span class="o">=</span><span class="p">[</span><span class="o">...</span><span class="p">],</span>
 <a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="p">)</span>
 </code></pre></div>
+<h2 id="ft-vs-fr">FT vs FR<a class="headerlink" href="#ft-vs-fr" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Invoice (FT)</th>
+<th>Invoice-Receipt (FR)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Bills the sale</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Acknowledges payment</td>
+<td>❌ (needs a separate RC)</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>When to use</td>
+<td>Client pays later (on credit, net 30)</td>
+<td>Client pays <strong>on the spot</strong></td>
+</tr>
+</tbody>
+</table>
 <h2 id="notes">Notes<a class="headerlink" href="#notes" title="Permanent link">&para;</a></h2>
 <ol>
-<li><strong>Amount limits:</strong> the SDK does <strong>not</strong> validate the €1000/€100 limit — it depends on whether the client is an individual or a reseller, which the SDK cannot determine. <strong>The app is responsible.</strong></li>
-<li><strong>FT vs FS:</strong> if the client wants a formal invoice with NIF, use <code>create_invoice</code> (FT). If they're an individual without NIF and within the limit, use FS.</li>
+<li><strong>Immediate payment:</strong> FR assumes payment happens at issue time. If you bill on credit, use <code>create_invoice</code> (FT) and issue the receipt (RC) when the client pays — RC comes in a future version.</li>
 <li><strong>Cancellation:</strong> same API (<code>client.documents.cancel(id, reason)</code>).</li>
+<li><strong>Credit note:</strong> an FR can be credited via <code>create_credit_note</code> referencing the FR's <code>id</code>.</li>
 </ol>
 
 

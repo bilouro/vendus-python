@@ -789,14 +789,14 @@
   
   
     <li class="md-nav__item">
-      <a href="simplified-invoice/" class="md-nav__link">
+      <a href="invoice-receipt/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Simplified Invoice
+    Invoice-Receipt
   
 
     
@@ -1195,27 +1195,23 @@
 <th>Type</th>
 <th>AT code</th>
 <th>When to use</th>
-<th>Limit</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><strong>Invoice (FT)</strong></td>
 <td>FT</td>
-<td>B2B; B2C with NIF; B2C above the FS threshold</td>
-<td>None</td>
+<td>Sale where the client pays later (on credit, net 30)</td>
 </tr>
 <tr>
-<td><strong>Simplified Invoice (FS)</strong></td>
-<td>FS</td>
-<td>B2C up to €1000 (€100 if resale)</td>
-<td>€1000 / €100</td>
+<td><strong>Invoice-Receipt (FR)</strong></td>
+<td>FR</td>
+<td>Sale where the client pays <strong>on the spot</strong> (invoice + receipt in one)</td>
 </tr>
 <tr>
 <td><strong>Credit Note (NC)</strong></td>
 <td>NC</td>
 <td>Cancel or partially credit a previously issued document</td>
-<td>—</td>
 </tr>
 </tbody>
 </table>
@@ -1223,13 +1219,9 @@
 <pre class="mermaid"><code>flowchart TD
     A[Issue a document] --&gt; B{Cancel/credit&lt;br/&gt;an existing document?}
     B --&gt;|Yes| NC[Credit Note]
-    B --&gt;|No| C{Client gave NIF?}
-    C --&gt;|Yes| FT[Invoice FT]
-    C --&gt;|No| D{Amount &amp;le; &amp;euro;1000?}
-    D --&gt;|Yes| FS[Simplified Invoice FS]
-    D --&gt;|No| E{Partial identification&lt;br/&gt;name only?}
-    E --&gt;|Yes| FT2[Invoice FT name only]
-    E --&gt;|No| FT3[Invoice FT to Final Consumer]</code></pre>
+    B --&gt;|No| C{Client pays on the spot?}
+    C --&gt;|Yes| FR[Invoice-Receipt FR]
+    C --&gt;|No| FT[Invoice FT]</code></pre>
 <h2 id="three-client-shapes">Three client shapes<a class="headerlink" href="#three-client-shapes" title="Permanent link">&para;</a></h2>
 <p>All three creation methods accept the same three identification forms:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">vendus</span><span class="w"> </span><span class="kn">import</span> <span class="n">ClientData</span>
@@ -1259,7 +1251,7 @@
 <h2 id="next-steps">Next steps<a class="headerlink" href="#next-steps" title="Permanent link">&para;</a></h2>
 <ul>
 <li><a href="invoice/">Invoice (FT)</a></li>
-<li><a href="simplified-invoice/">Simplified Invoice (FS)</a></li>
+<li><a href="invoice-receipt/">Invoice-Receipt (FR)</a></li>
 <li><a href="credit-note/">Credit Note (NC)</a></li>
 </ul>
 

@@ -789,6 +789,34 @@
   
   
     <li class="md-nav__item">
+      <a href="simplified-invoice/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fatura Simplificada
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="invoice-receipt/" class="md-nav__link">
         
   
@@ -797,6 +825,34 @@
     
   
     Fatura-Recibo
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="receipt/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Recibo
   
 
     
@@ -1216,7 +1272,7 @@
 
 
 <h1 id="qual-tipo-de-documento-escolher">Qual tipo de documento escolher?<a class="headerlink" href="#qual-tipo-de-documento-escolher" title="Permanent link">&para;</a></h1>
-<p>A AT define vários tipos de documentos fiscais. O SDK suporta os três essenciais para o MVP:</p>
+<p>A AT define vários tipos de documentos fiscais. O SDK emite estes:</p>
 <table>
 <thead>
 <tr>
@@ -1232,9 +1288,19 @@
 <td>Venda em que o cliente paga depois (a crédito, a 30 dias)</td>
 </tr>
 <tr>
+<td><strong>Fatura Simplificada (FS)</strong></td>
+<td>FS</td>
+<td>Venda rápida a retalho / consumidor final, paga na hora (limites de valor AT)</td>
+</tr>
+<tr>
 <td><strong>Fatura-Recibo (FR)</strong></td>
 <td>FR</td>
 <td>Venda em que o cliente paga <strong>na hora</strong> (factura + recibo num só)</td>
+</tr>
+<tr>
+<td><strong>Recibo (RG)</strong></td>
+<td>RG</td>
+<td>Dar quitação do pagamento de uma fatura já emitida (ex.: uma FT)</td>
 </tr>
 <tr>
 <td><strong>Nota de Crédito (NC)</strong></td>
@@ -1245,10 +1311,14 @@
 </table>
 <h2 id="arvore-de-decisao">Árvore de decisão<a class="headerlink" href="#arvore-de-decisao" title="Permanent link">&para;</a></h2>
 <pre class="mermaid"><code>flowchart TD
-    A[Vou emitir um documento] --&gt; B{É para anular/creditar&lt;br/&gt;um documento existente?}
-    B --&gt;|Sim| NC[Nota de Crédito]
-    B --&gt;|Não| C{Cliente paga na hora?}
-    C --&gt;|Sim| FR[Fatura-Recibo FR]
+    A[Vou emitir um documento] --&gt; B{Reverter uma fatura existente?}
+    B --&gt;|Sim| NC[Nota de Crédito NC]
+    B --&gt;|Não| P{Pagar uma fatura anterior?}
+    P --&gt;|Sim| RG[Recibo RG]
+    P --&gt;|Não| C{Cliente paga na hora?}
+    C --&gt;|Sim| D{Venda rápida a retalho?}
+    D --&gt;|Sim| FS[Fatura Simplificada FS]
+    D --&gt;|Não| FR[Fatura-Recibo FR]
     C --&gt;|Não| FT[Fatura FT]</code></pre>
 <h2 id="os-3-formatos-de-cliente">Os 3 formatos de cliente<a class="headerlink" href="#os-3-formatos-de-cliente" title="Permanent link">&para;</a></h2>
 <p>Todos os três métodos de criação aceitam as mesmas três formas de identificação:</p>
@@ -1274,12 +1344,14 @@
 <li><strong>NIF 999999990:</strong> explicitamente rejeitado</li>
 <li><strong>Items:</strong> pelo menos um, <code>quantity &gt; 0</code>, uma <code>tax_category</code> (NORMAL/INTERMEDIATE/REDUCED/EXEMPT/OTHER)</li>
 <li><strong>Nota de Crédito:</strong> exige <code>reference_document_id</code> e <code>reason</code></li>
-<li><strong>Cancelamento:</strong> exige <code>reason</code></li>
+<li><strong>Documentos pagos (FR/FS) e recibos (RG):</strong> exigem <code>payments</code></li>
 </ul>
 <h2 id="proximos-passos">Próximos passos<a class="headerlink" href="#proximos-passos" title="Permanent link">&para;</a></h2>
 <ul>
 <li><a href="invoice/">Fatura (FT)</a></li>
+<li><a href="simplified-invoice/">Fatura Simplificada (FS)</a></li>
 <li><a href="invoice-receipt/">Fatura-Recibo (FR)</a></li>
+<li><a href="receipt/">Recibo (RG)</a></li>
 <li><a href="credit-note/">Nota de Crédito (NC)</a></li>
 </ul>
 

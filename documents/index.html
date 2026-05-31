@@ -787,6 +787,34 @@
   
   
     <li class="md-nav__item">
+      <a href="simplified-invoice/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Simplified Invoice
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="invoice-receipt/" class="md-nav__link">
         
   
@@ -795,6 +823,34 @@
     
   
     Invoice-Receipt
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="receipt/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Receipt
   
 
     
@@ -1214,7 +1270,7 @@
 
 
 <h1 id="which-document-type-to-choose">Which document type to choose?<a class="headerlink" href="#which-document-type-to-choose" title="Permanent link">&para;</a></h1>
-<p>AT defines several fiscal document types. The SDK supports the three essential for MVP:</p>
+<p>AT defines several fiscal document types. The SDK issues these:</p>
 <table>
 <thead>
 <tr>
@@ -1230,9 +1286,19 @@
 <td>Sale where the client pays later (on credit, net 30)</td>
 </tr>
 <tr>
+<td><strong>Simplified Invoice (FS)</strong></td>
+<td>FS</td>
+<td>Quick retail / final-consumer sale, paid on the spot (AT amount limits)</td>
+</tr>
+<tr>
 <td><strong>Invoice-Receipt (FR)</strong></td>
 <td>FR</td>
 <td>Sale where the client pays <strong>on the spot</strong> (invoice + receipt in one)</td>
+</tr>
+<tr>
+<td><strong>Receipt (RG)</strong></td>
+<td>RG</td>
+<td>Acknowledge payment of a previously-issued invoice (e.g. an FT)</td>
 </tr>
 <tr>
 <td><strong>Credit Note (NC)</strong></td>
@@ -1243,10 +1309,14 @@
 </table>
 <h2 id="decision-tree">Decision tree<a class="headerlink" href="#decision-tree" title="Permanent link">&para;</a></h2>
 <pre class="mermaid"><code>flowchart TD
-    A[Issue a document] --&gt; B{Cancel/credit&lt;br/&gt;an existing document?}
-    B --&gt;|Yes| NC[Credit Note]
-    B --&gt;|No| C{Client pays on the spot?}
-    C --&gt;|Yes| FR[Invoice-Receipt FR]
+    A[Issue a document] --&gt; B{Reverse an existing invoice?}
+    B --&gt;|Yes| NC[Credit Note NC]
+    B --&gt;|No| P{Paying an earlier invoice?}
+    P --&gt;|Yes| RG[Receipt RG]
+    P --&gt;|No| C{Client pays on the spot?}
+    C --&gt;|Yes| D{Quick retail sale?}
+    D --&gt;|Yes| FS[Simplified Invoice FS]
+    D --&gt;|No| FR[Invoice-Receipt FR]
     C --&gt;|No| FT[Invoice FT]</code></pre>
 <h2 id="three-client-shapes">Three client shapes<a class="headerlink" href="#three-client-shapes" title="Permanent link">&para;</a></h2>
 <p>All three creation methods accept the same three identification forms:</p>
@@ -1272,12 +1342,14 @@
 <li><strong>NIF 999999990:</strong> explicitly rejected</li>
 <li><strong>Items:</strong> at least one, <code>quantity &gt; 0</code>, a <code>tax_category</code> (NORMAL/INTERMEDIATE/REDUCED/EXEMPT/OTHER)</li>
 <li><strong>Credit Note:</strong> requires <code>reference_document_id</code> and <code>reason</code></li>
-<li><strong>Cancellation:</strong> requires <code>reason</code></li>
+<li><strong>Paid documents (FR/FS) and receipts (RG):</strong> require <code>payments</code></li>
 </ul>
 <h2 id="next-steps">Next steps<a class="headerlink" href="#next-steps" title="Permanent link">&para;</a></h2>
 <ul>
 <li><a href="invoice/">Invoice (FT)</a></li>
+<li><a href="simplified-invoice/">Simplified Invoice (FS)</a></li>
 <li><a href="invoice-receipt/">Invoice-Receipt (FR)</a></li>
+<li><a href="receipt/">Receipt (RG)</a></li>
 <li><a href="credit-note/">Credit Note (NC)</a></li>
 </ul>
 

@@ -693,6 +693,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../documents/simplified-invoice/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fatura Simplificada
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../documents/invoice-receipt/" class="md-nav__link">
         
   
@@ -701,6 +729,34 @@
     
   
     Fatura-Recibo
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../documents/receipt/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Recibo
   
 
     
@@ -1133,6 +1189,28 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#vendus.services.documents.DocumentsService.create_simplified_invoice" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        create_simplified_invoice
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#vendus.services.documents.DocumentsService.create_receipt" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        create_receipt
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#vendus.services.documents.DocumentsService.create_credit_note" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1520,6 +1598,28 @@
     <span class="md-ellipsis">
       
         create_invoice_receipt
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#vendus.services.documents.DocumentsService.create_simplified_invoice" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        create_simplified_invoice
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#vendus.services.documents.DocumentsService.create_receipt" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        create_receipt
       
     </span>
   </a>
@@ -2115,6 +2215,143 @@ account's method ids from :meth:<code>list_payment_methods</code>.</p>
             </td>
             <td>
                   <code>None</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>external_reference</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span> | None</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Your internal reference. Enables safe POST retries.</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>mode</code>
+            </td>
+            <td>
+                  <code><span title="vendus.models.document.DocumentMode">DocumentMode</span> | None</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p><code>DocumentMode.TESTS</code> for a non-fiscal test document.</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="vendus.services.documents.DocumentsService.create_simplified_invoice" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">create_simplified_invoice</span><span class="p">(</span><span class="n">register_id</span><span class="p">,</span> <span class="n">items</span><span class="p">,</span> <span class="n">payments</span><span class="p">,</span> <span class="n">client</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">external_reference</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+<a href="#vendus.services.documents.DocumentsService.create_simplified_invoice" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Issue a Fatura Simplificada (FS).</p>
+<p>A simplified invoice for retail / final-consumer sales (subject to AT
+amount limits). Like a Fatura-Recibo, it is paid on issue, so <code>payments</code>
+is <strong>required</strong>. The client is usually omitted (final consumer).</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="vendus.services.documents.DocumentsService.create_receipt" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">create_receipt</span><span class="p">(</span><span class="n">register_id</span><span class="p">,</span> <span class="n">invoice_numbers</span><span class="p">,</span> <span class="n">payments</span><span class="p">,</span> <span class="n">external_reference</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+<a href="#vendus.services.documents.DocumentsService.create_receipt" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Issue a Recibo (RG) acknowledging payment of one or more invoices.</p>
+<p>A receipt records payment for previously-issued invoices (e.g. an FT) and
+carries no line items of its own. Reference the invoices by their document
+number (e.g. <code>"FT 2026/123"</code>) and provide the <code>payments</code>.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>register_id</code>
+            </td>
+            <td>
+                  <code><span title="int">int</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>ID of the POS register configured in Vendus.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>invoice_numbers</code>
+            </td>
+            <td>
+                  <code><span title="vendus.services.documents.DocumentsService.list">list</span>[<span title="str">str</span>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>document numbers of the invoices being paid.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>payments</code>
+            </td>
+            <td>
+                  <code><span title="vendus.services.documents.DocumentsService.list">list</span>[<span title="vendus.models.payment.Payment">Payment</span>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>how the payment was made (see :meth:<code>list_payment_methods</code>).</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
             </td>
           </tr>
           <tr class="doc-section-item">

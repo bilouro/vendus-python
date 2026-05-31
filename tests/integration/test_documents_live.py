@@ -98,9 +98,9 @@ def test_invoice_in_test_mode_is_not_reported_to_at(
             mode=DocumentMode.TESTS,
         )
     except APIError as exc:
-        # Honesty rule (eupago-reference §4/§8.3): if the account itself is not
-        # provisioned for AT invoicing series, skip with a clear reason instead of
-        # failing — the SDK request was accepted, the blocker is account setup.
+        # Honesty rule: if the account itself is not provisioned for AT invoicing
+        # series, skip with a clear reason instead of failing — the SDK request was
+        # accepted, the blocker is account setup.
         body = exc.response_body if isinstance(exc.response_body, dict) else {}
         if body.get("code") == "A001" and "Autoridade Tribut" in str(body.get("message", "")):
             pytest.skip(

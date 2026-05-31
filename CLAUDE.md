@@ -20,14 +20,12 @@ This rule overrides convenience. It applies to code, comments, docs, commit mess
 
 > Origin: the docs once stated "Vendus has no public sandbox" as fact, with no cited source, while CLAUDE.md still listed sandbox as `TBD — investigate`. That unsourced assertion is exactly what this rule forbids.
 
-## Build Playbook — `eupago-reference.md` is the foundation
+## Build Disciplines (non-negotiable)
 
-The canonical playbook for building this SDK is [`eupago-reference.md`](eupago-reference.md) at the repo root — the distilled engineering discipline from the sibling `eupago-python` SDK. **Read it before any substantial work.** It is the *why*; the rules in this file are the Vendus-specific *how*.
+R1–R16 are the rules. The two disciplines below are called out separately because they are
+not encoded as numbered rules and this project has already been bitten by their absence.
 
-- **R1–R15 below are the Vendus application of that playbook.** Adapt, don't copy: where the Vendus domain demands a different choice, diverge **deliberately and document it** — e.g. R3's conditional POST retries vs. the playbook's blanket no-retry, because Vendus accepts `external_reference` as a dedup anchor.
-- The playbook's identity, architecture, naming, money/PII/validation and quality rules are already encoded as R1–R15 and the Architecture section. The two disciplines below are imported here explicitly because they are **not** yet encoded elsewhere in this file and this project has already been bitten by their absence.
-
-### Live-validation discipline (`eupago-reference.md` §4, §8) — non-negotiable
+### Live-validation discipline — non-negotiable
 
 Two test layers, both required:
 
@@ -38,16 +36,14 @@ Two test layers, both required:
 
 - Unit tests **assert the exact JSON sent on the wire**, not just the return value — that is how latent field-name/shape bugs are caught (`body = json.loads(route.calls[0].request.content); assert body == {...}`).
 - Live tests live in `tests/integration/`, are marked `@pytest.mark.integration` (excluded from the default `pytest` run), and **auto-skip** when `VENDUS_API_KEY` is absent — no false failures on machines without creds.
-- **One live test per operation**, exercising the full loop (SDK → Vendus → parse). Run them against the **test-mode register configured in `.env`** (`VENDUS_REGISTER_ID`, a register whose `mode` is `tests`) so live tests issue **non-fiscal** documents that are never reported to the AT. Concretely: assert a created test document comes back with an empty `tax_authority_id` (that field is only set once Vendus has communicated the document to the AT).
+- **One live test per operation**, exercising the full loop (SDK → Vendus → parse). Run them against the **test-mode register configured in `.env`** (`VENDUS_REGISTER_ID`, a register whose `mode` is `tests`) so live tests issue **non-fiscal** documents that are never reported to the AT.
 - **"If you didn't run it against the real Vendus API, it isn't done."** The Vendus `.doc` reference pages describe what *should* happen; verify the actual wire shape live before claiming an operation works. This is the operational form of the *Always Honest, Never Assume* rule above.
 
-### Honesty in status reporting (`eupago-reference.md` §4, §8.1, §10.3)
+### Honesty in status reporting
 
 - README / CHANGELOG / roadmap use a **per-operation matrix** (Unit ✅ / Live ✅), never a blanket "service done".
 - Never mark a row **Done** without a live test — or a live test that **skips with a documented reason**. A skipped-with-reason test is honest; a green test that never hit the API is a trap.
 - When the upstream docs turn out wrong or incomplete: fix the SDK, add a unit test asserting the **corrected** wire body, then the live test passes — and record the divergence (with the Vendus error it fixed) in the CHANGELOG.
-
-For situations not covered here — webhooks, multiple identifiers for one resource, form-vs-JSON bodies, operations that don't return a field the docs promise — consult `eupago-reference.md` §7–§8 when they arise.
 
 ## Scope (v0.1.0 — MVP)
 

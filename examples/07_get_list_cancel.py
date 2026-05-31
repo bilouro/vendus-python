@@ -1,8 +1,8 @@
-"""Read, list, and cancel documents."""
+"""Read, list, and reverse documents."""
 
 from __future__ import annotations
 
-from vendus import DocumentType, VendusClient
+from vendus import DocumentType, ValidationError, VendusClient
 
 client = VendusClient.from_env()
 
@@ -20,7 +20,14 @@ invoices = client.documents.list(
 for inv in invoices:
     print(f"  {inv.number}  {inv.gross_amount} EUR")
 
-# Cancel (void) a document. Vendus has no API field for a cancellation reason,
-# so none is passed — any AT justification is handled in the Vendus backoffice.
-cancelled = client.documents.cancel(12345)
-print(f"Cancelled: {cancelled.number} ({cancelled.status})")
+# Fiscal documents (FT/FR/NC) cannot be cancelled — the SDK refuses them.
+# To reverse an invoice, issue a credit note that credits it.
+try:
+    client.documents.cancel(12345)
+except ValidationError as e:
+    print(f"Cannot cancel: {e}")
+    nc = client.documents.create_credit_note(
+        reference_document_id=12345,
+        reason="Issued in error",
+    )
+    print(f"Reversed with {nc.number}")

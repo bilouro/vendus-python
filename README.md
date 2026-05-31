@@ -196,14 +196,26 @@ pip install -e ".[dev]"
 pre-commit install
 ```
 
-Run checks:
+Run checks (all must pass before a PR):
 
 ```bash
 ruff check .          # lint
-ruff format .         # format
+ruff format --check . # formatting
 mypy src/             # type check (strict)
-pytest                # tests with coverage (≥85% enforced)
+pytest                # unit tests + coverage (≥85% enforced)
 ```
+
+**Live integration tests** hit the real Vendus API; they're excluded from `pytest` and
+auto-skip without credentials. Run them in test mode against a demo account:
+
+```bash
+export VENDUS_API_KEY=... VENDUS_REGISTER_ID=...
+pytest -m integration --no-cov
+```
+
+Full developer guide — testing, the live-validation discipline, and how to add a document
+type — is on the [Contributing](https://bilouro.github.io/vendus-python/contributing/)
+page, alongside `CLAUDE.md` and `TODO.md`.
 
 ## Contributing
 

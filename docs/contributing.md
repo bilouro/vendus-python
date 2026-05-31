@@ -65,8 +65,8 @@ pytest -m integration --no-cov    # --no-cov: a subset run would otherwise trip 
 
 **Getting the ids you need:**
 
-- `register_id` — find it in the Vendus backoffice, or call `GET /v1.1/registers/`
-  (each register has an `id` and a `mode`).
+- `register_id` — `client.documents.list_registers()` (or the Vendus backoffice). Each
+  register has an `id` and a `mode`.
 - Payment-method ids (for a Fatura-Recibo) — `client.documents.list_payment_methods()`.
 
 !!! warning "Use a dedicated test/demo account"

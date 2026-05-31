@@ -27,6 +27,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
   `DC`, `PF`, `OT`, `EC`) plus `RG` (observed live)
 - Docs: a dedicated **Payment methods** page (`list_payment_methods`, the `Payment` model,
   split payments, `date_due`), all live-validated
+- `list_registers()` (sync + async) and the `Register` model — read the account's
+  registers (caixas) to discover a `register_id` and its working mode. Registers are
+  read-only via the API (configured in the Vendus backoffice)
 - `DocumentType.UNKNOWN` — forward-compat sentinel so the SDK does not crash on type
   codes the API returns but the enum does not model (e.g. `RG`); the raw code stays in
   `raw_response`

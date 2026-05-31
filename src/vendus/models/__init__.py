@@ -13,6 +13,7 @@ from vendus.models.document import (
     normalize_status,
 )
 from vendus.models.payment import Payment, PaymentMethod
+from vendus.models.register import Register
 from vendus.models.tax import TaxCategory, TaxExemption
 
 __all__ = [
@@ -25,6 +26,7 @@ __all__ = [
     "DocumentType",
     "Payment",
     "PaymentMethod",
+    "Register",
     "TaxCategory",
     "TaxExemption",
     "normalize_status",

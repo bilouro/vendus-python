@@ -34,6 +34,17 @@ client = VendusClient(api_key="...", default_mode=DocumentMode.NORMAL)
 
 A per-call `mode=` always overrides the client default.
 
+## Registers
+
+A register (caixa) is the POS configuration documents are issued from — you pass its `id`
+as `register_id`. Registers are **read-only** via the API (created and configured in the
+Vendus backoffice). List them to find the id and the working mode:
+
+```python
+for r in client.documents.list_registers():
+    print(r.id, r.title, r.mode)   # mode: "normal" or "tests"
+```
+
 ## From environment
 
 ```python

@@ -23,9 +23,11 @@ from typing import Any
 from vendus._config import (
     API_VERSION_DOCUMENTS,
     API_VERSION_PAYMENTS,
+    API_VERSION_REGISTERS,
     FINAL_CONSUMER_FORBIDDEN_NIF,
     PATH_DOCUMENTS,
     PATH_PAYMENTS,
+    PATH_REGISTERS,
 )
 from vendus._validators import validate_nif_pt
 from vendus.exceptions import NotFoundError, ValidationError
@@ -38,10 +40,12 @@ from vendus.models.document import (
     DocumentType,
 )
 from vendus.models.payment import Payment, PaymentMethod
+from vendus.models.register import Register
 from vendus.services._base import BaseService
 
 _PATH = f"/{API_VERSION_DOCUMENTS}{PATH_DOCUMENTS}"
 _PATH_PAYMENTS = f"/{API_VERSION_PAYMENTS}{PATH_PAYMENTS}"
+_PATH_REGISTERS = f"/{API_VERSION_REGISTERS}{PATH_REGISTERS}"
 
 # Fiscal documents communicated to the AT cannot be cancelled — they are reversed
 # with a credit note. Verified for FT (Vendus returns "Não é permitido cancelar
@@ -552,3 +556,20 @@ class DocumentsService(BaseService):
     async def list_payment_methods_async(self) -> builtins.list[PaymentMethod]:
         response = await self._request_async("GET", _PATH_PAYMENTS)
         return [PaymentMethod(**m) for m in response.json()]
+
+    # ----- registers --------------------------------------------------------
+
+    def list_registers(self) -> builtins.list[Register]:
+        """List the account's registers (caixas) — id, title, working mode.
+
+        Registers are read-only via the API (created/configured in the Vendus
+        backoffice). Use the returned ``id`` as ``register_id`` when issuing
+        documents, and check ``mode`` to know whether a register is in test or
+        normal mode.
+        """
+        response = self._request("GET", _PATH_REGISTERS)
+        return [Register(**r) for r in response.json()]
+
+    async def list_registers_async(self) -> builtins.list[Register]:
+        response = await self._request_async("GET", _PATH_REGISTERS)
+        return [Register(**r) for r in response.json()]

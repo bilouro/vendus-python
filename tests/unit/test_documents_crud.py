@@ -311,3 +311,36 @@ class TestErrorMapping:
             with pytest.raises(AuthorizationError) as exc:
                 vendus.documents.create_invoice(register_id=1, items=items)
         assert exc.value.error_code == "X999"
+
+
+class TestRegisters:
+    def test_list_registers(self, vendus: VendusClient) -> None:
+        with respx.mock(base_url=_BASE) as router:
+            router.get("/v1.1/registers").mock(
+                return_value=httpx.Response(
+                    200,
+                    json=[
+                        {
+                            "id": 191432496,
+                            "title": "Caixa principal",
+                            "mode": "tests",
+                            "type": "api",
+                            "status": "open",
+                            "store_id": 1,
+                            "extra": 1,
+                        }
+                    ],
+                )
+            )
+            regs = vendus.documents.list_registers()
+        assert regs[0].id == 191432496
+        assert regs[0].title == "Caixa principal"
+        assert regs[0].mode == "tests"
+
+    async def test_list_registers_async(self, vendus: VendusClient) -> None:
+        with respx.mock(base_url=_BASE) as router:
+            router.get("/v1.1/registers").mock(
+                return_value=httpx.Response(200, json=[{"id": 1, "title": "X", "mode": "normal"}])
+            )
+            regs = await vendus.documents.list_registers_async()
+        assert regs[0].mode == "normal"

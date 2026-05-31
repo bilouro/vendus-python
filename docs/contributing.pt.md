@@ -64,8 +64,8 @@ pytest -m integration --no-cov    # --no-cov: uma run parcial dispararia o gate 
 
 **Como obter os ids necessários:**
 
-- `register_id` — no backoffice da Vendus, ou via `GET /v1.1/registers/` (cada caixa tem
-  um `id` e um `mode`).
+- `register_id` — `client.documents.list_registers()` (ou o backoffice da Vendus). Cada
+  caixa tem um `id` e um `mode`.
 - ids dos métodos de pagamento (para uma Fatura-Recibo) —
   `client.documents.list_payment_methods()`.
 

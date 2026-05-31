@@ -148,6 +148,15 @@ def test_list_payment_methods_live(client: VendusClient) -> None:
 
 
 @requires_creds
+def test_list_registers_live(client: VendusClient) -> None:
+    """list_registers() returns the account's registers (read-only)."""
+    registers = client.documents.list_registers()
+    assert registers, "account should have at least one register"
+    assert all(r.id and r.title for r in registers)
+    assert all(r.mode in ("normal", "tests", "") for r in registers)
+
+
+@requires_creds
 def test_invoice_receipt_in_test_mode(
     client: VendusClient,
     register_id: int,

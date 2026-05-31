@@ -34,6 +34,17 @@ client = VendusClient(api_key="...", default_mode=DocumentMode.NORMAL)
 
 Um `mode=` por chamada sobrepõe-se sempre ao default do cliente.
 
+## Caixas (registers)
+
+Uma caixa (register) é a configuração de POS de onde os documentos são emitidos — passas o
+seu `id` como `register_id`. As caixas são **só de leitura** via API (criadas e configuradas
+no backoffice da Vendus). Lista-as para descobrir o id e o modo de funcionamento:
+
+```python
+for r in client.documents.list_registers():
+    print(r.id, r.title, r.mode)   # mode: "normal" ou "tests"
+```
+
 ## A partir do ambiente
 
 ```python

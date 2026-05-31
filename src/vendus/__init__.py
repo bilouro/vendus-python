@@ -24,6 +24,7 @@ from vendus.models import (
     DocumentType,
     Payment,
     PaymentMethod,
+    Register,
     TaxCategory,
     TaxExemption,
 )
@@ -43,6 +44,7 @@ __all__ = [
     "Payment",
     "PaymentMethod",
     "RateLimitError",
+    "Register",
     "TaxCategory",
     "TaxExemption",
     "TransportError",

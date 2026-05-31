@@ -19,8 +19,8 @@ Cada um é um `PaymentMethod`:
 | Campo | Descrição |
 |---|---|
 | `id` | o id a passar em `Payment.method_id` |
-| `title` | o nome configurado na Vendus (ex.: "Dinheiro", "Multibanco") |
-| `type` | o código de tipo Vendus — ex.: `NU` (numerário), `CD` (Multibanco), `MBWAY`, `CC` (cartão), `TB` (transferência) |
+| `title` | o teu nome de exibição, configurado na Vendus (ex.: "Dinheiro", "Multibanco") |
+| `type` | o código oficial Vendus — ex.: `NU` (numerário), `CC` (crédito), `CD` (débito), `MB` (referência MB), `MBWAY`, `TB` (transferência), `DNP` (conta corrente). `title` e `type` são independentes — uma conta pode chamar "Multibanco" a um método `CD` |
 | `status` | `on` / `off` |
 
 ## Anexar pagamentos a uma fatura-recibo

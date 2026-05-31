@@ -19,8 +19,8 @@ Each is a `PaymentMethod`:
 | Field | Description |
 |---|---|
 | `id` | the id to pass as `Payment.method_id` |
-| `title` | the display name configured in Vendus (e.g. "Dinheiro", "Multibanco") |
-| `type` | the Vendus type code — e.g. `NU` (cash), `CD` (Multibanco), `MBWAY`, `CC` (card), `TB` (bank transfer) |
+| `title` | your own display name, configured in Vendus (e.g. "Dinheiro", "Multibanco") |
+| `type` | the official Vendus code — e.g. `NU` (cash), `CC` (credit card), `CD` (debit card), `MB` (Multibanco reference), `MBWAY`, `TB` (bank transfer), `DNP` (current account). `title` and `type` are independent — an account may label a `CD` method "Multibanco" |
 | `status` | `on` / `off` |
 
 ## Attaching payments to a receipt

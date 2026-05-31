@@ -11,6 +11,7 @@ from vendus.models.document import (
     DocumentType,
     normalize_status,
 )
+from vendus.models.payment import Payment, PaymentMethod
 from vendus.models.tax import TaxCategory, TaxExemption
 
 __all__ = [
@@ -20,6 +21,8 @@ __all__ = [
     "DocumentMode",
     "DocumentStatus",
     "DocumentType",
+    "Payment",
+    "PaymentMethod",
     "TaxCategory",
     "TaxExemption",
     "normalize_status",

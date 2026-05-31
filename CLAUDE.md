@@ -294,16 +294,14 @@ client.documents.create_quote(...)            # OR
 
 Reason: each type has different mandatory/forbidden fields. A credit note **requires** `reference_document_id`; an invoice doesn't. Type-checking and autocomplete are better with dedicated methods.
 
-### R13: Credit Notes Always Reference an Original Document
+### R13: Credit Notes Credit a Real Original Document
 
-Validated locally before any API call:
+`create_credit_note(reference_document_id, reason)` credits the **full** original. Vendus requires each credit line to reference an existing line of the original (`reference_document` = document number + 1-based row) and to carry that line's id, so the SDK **GETs the original** (FT/FR) and replicates its lines. Consequences:
 
-```python
-if reference_document_id is None:
-    raise ValidationError("Credit note requires reference_document_id")
-```
-
-The original document must be a previously-issued invoice (FT) or invoice-receipt (FR). Vendus validates the rest server-side.
+- The original must be **retrievable** → a real document, not a test-mode one (test docs aren't addressable).
+- No inline `items`/`client` — they come from the original.
+- Partial credits are not supported in v0.1.
+- There is **no** top-level `reference_document_id` on the wire — Vendus rejects it (`P001`); the link lives per item.
 
 ### R14: Inline Client Only (v0.1.0)
 
@@ -317,6 +315,17 @@ If the app needs to track Vendus client IDs locally, that is its responsibility.
 ### R15: Final Consumer is Implicit
 
 In Portuguese invoicing, "consumidor final" (final consumer) is represented by omitting the client entirely, NOT by passing `fiscal_id=999999990`. R7 enforces this at validation time.
+
+### R16: Live-verified Wire Facts (do not regress)
+
+These were confirmed against the **real** Vendus API; changing them silently re-breaks the SDK. Each was a bug the respx mocks hid until live-validation caught it:
+
+- **Line items** send `tax_id` (a `TaxCategory` code — `NOR`/`INT`/`RED`/`ISE`/`OUT`), not `tax_rate`; `discount_percentage`, not `discount`; `id` for a product line, not `product_id`. Wrong names → `P001`.
+- **FR (Fatura-Recibo) requires `payments`** — `[{"id": <method_id>, "amount": <gross>}]`. `method_id` is **account-specific**; list it via `list_payment_methods()` (`GET /v1.0/payments`). Missing → "o pagamento deve ser realizado no ato".
+- **Cancel** = `PATCH /documents/{id}` with `{"status":"A"}` only (no reason field). **FT/FR/NC cannot be cancelled** ("Não é permitido cancelar este tipo de documentos") — the SDK fetches the type and refuses, pointing to a credit note.
+- **Test-mode documents** live in a separate space: not retrievable/cancellable via `/documents/{id}` (404 "não existe").
+- **Unknown type codes** (e.g. `RG`, seen live, absent from documents/types) must not crash parsing → `DocumentType.UNKNOWN`, raw code kept in `raw_response`.
+- `tax_authority_id` is **empty in the POST response even for real fiscal documents** (ATCUD/hash mark a doc fiscal), so it is not a reliable test-vs-real discriminator at create time — the series prefix is (`FT T01P…` test vs `FT 01P…` real).
 
 ---
 

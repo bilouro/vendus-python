@@ -16,6 +16,7 @@ from vendus import (
     DocumentItem,
     DocumentMode,
     DocumentType,
+    Payment,
     TaxCategory,
     ValidationError,
 )
@@ -42,6 +43,25 @@ def items() -> list[DocumentItem]:
 @pytest.fixture
 def client_data() -> ClientData:
     return ClientData(fiscal_id="123456789", name="Acme Lda")
+
+
+# Shape of a GET /documents/{id} response, as observed live — the credit-note
+# builder reads its lines from here.
+_ORIGINAL_FT: dict[str, object] = {
+    "number": "FT 2026/1",
+    "register_id": 1,
+    "client": {"name": "Acme Lda", "fiscal_id": "123456789", "ignored": "x"},
+    "items": [
+        {
+            "id": 555,
+            "title": "Consulting",
+            "qty": 1,
+            "qty_nc": 1,
+            "amounts": {"gross_unit": "92.25"},
+            "tax": {"id": "NOR"},
+        },
+    ],
+}
 
 
 class TestBuildInvoiceBody:
@@ -82,19 +102,35 @@ class TestBuildInvoiceBody:
 
 
 class TestBuildCreditNoteBody:
-    def test_minimal(self, items: list[DocumentItem]) -> None:
-        body = _build_credit_note_body(1, 999, "Return", items, None, None)
+    def test_credits_full_original(self) -> None:
+        body = _build_credit_note_body(_ORIGINAL_FT, "Return", None, None)
         assert body["type"] == "NC"
-        assert body["reference_document_id"] == 999
+        assert body["register_id"] == 1
         assert body["notes"] == "Return"
+        # client is taken from the original, slimmed to name + fiscal_id
+        assert body["client"] == {"name": "Acme Lda", "fiscal_id": "123456789"}
+        line = body["items"][0]
+        assert line["id"] == 555
+        assert line["tax_id"] == "NOR"
+        assert line["gross_price"] == 92.25
+        assert line["reference_document"] == {
+            "document_number": "FT 2026/1",
+            "document_row": 1,
+        }
+        # the old top-level field that Vendus rejected must be gone
+        assert "reference_document_id" not in body
 
-    def test_requires_reason(self, items: list[DocumentItem]) -> None:
+    def test_requires_reason(self) -> None:
         with pytest.raises(ValidationError, match="reason"):
-            _build_credit_note_body(1, 999, "", items, None, None)
+            _build_credit_note_body(_ORIGINAL_FT, "", None, None)
 
-    def test_requires_reason_not_whitespace(self, items: list[DocumentItem]) -> None:
+    def test_requires_reason_not_whitespace(self) -> None:
         with pytest.raises(ValidationError, match="reason"):
-            _build_credit_note_body(1, 999, "   ", items, None, None)
+            _build_credit_note_body(_ORIGINAL_FT, "   ", None, None)
+
+    def test_rejects_original_without_lines(self) -> None:
+        with pytest.raises(ValidationError, match="no lines"):
+            _build_credit_note_body({"number": "X", "items": []}, "r", None, None)
 
 
 class TestMode:
@@ -102,20 +138,22 @@ class TestMode:
 
     def test_omitted_by_default(self, items: list[DocumentItem]) -> None:
         # Omitting mode lets Vendus use the register's configured mode.
+        pays = [Payment(method_id=1, amount=Decimal("10"))]
         assert "mode" not in _build_invoice_body(1, items, None, None)
-        assert "mode" not in _build_invoice_receipt_body(1, items, None, None)
-        assert "mode" not in _build_credit_note_body(1, 9, "r", items, None, None)
+        assert "mode" not in _build_invoice_receipt_body(1, items, pays, None, None)
+        assert "mode" not in _build_credit_note_body(_ORIGINAL_FT, "r", None, None)
 
     def test_tests_mode_on_wire(self, items: list[DocumentItem]) -> None:
         body = _build_invoice_body(1, items, None, None, mode=DocumentMode.TESTS)
         assert body["mode"] == "tests"
 
     def test_normal_mode_on_wire(self, items: list[DocumentItem]) -> None:
-        body = _build_invoice_receipt_body(1, items, None, None, mode=DocumentMode.NORMAL)
+        pays = [Payment(method_id=1, amount=Decimal("10"))]
+        body = _build_invoice_receipt_body(1, items, pays, None, None, mode=DocumentMode.NORMAL)
         assert body["mode"] == "normal"
 
-    def test_credit_note_mode_on_wire(self, items: list[DocumentItem]) -> None:
-        body = _build_credit_note_body(1, 9, "Return", items, None, None, mode=DocumentMode.TESTS)
+    def test_credit_note_mode_on_wire(self) -> None:
+        body = _build_credit_note_body(_ORIGINAL_FT, "Return", None, DocumentMode.TESTS)
         assert body["mode"] == "tests"
 
 
@@ -136,6 +174,13 @@ class TestParseDocument:
         data = {**load_fixture("invoice_created.json"), "tax_authority_id": "AT-987654"}
         doc = _parse_document(data)
         assert doc.tax_authority_id == "AT-987654"
+
+    def test_unknown_type_maps_to_unknown(self) -> None:
+        # The live API can return type codes we do not model (e.g. "RG") — these
+        # must not crash parsing, and the exact code stays in raw_response.
+        doc = _parse_document({"id": 1, "type": "RG", "amount_gross": "1", "amount_net": "1"})
+        assert doc.type == DocumentType.UNKNOWN
+        assert doc.raw_response["type"] == "RG"
 
     def test_parses_credit_note_response(self, load_fixture: Any) -> None:
         data = load_fixture("credit_note_created.json")

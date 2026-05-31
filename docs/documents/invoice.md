@@ -129,13 +129,23 @@ Common codes:
 | M16 | Exempt Article 14.º RITI (intra-community) |
 | M99 | Not subject; not taxed |
 
-## Cancel an invoice
+## Reversing an invoice
+
+A Fatura (FT) **cannot be cancelled** — once issued it is a fiscal document reported to the AT. The SDK refuses it before any change:
 
 ```python
-cancelled = client.documents.cancel(document_id=invoice.id)
+client.documents.cancel(invoice.id)
+# raises ValidationError: a FT cannot be cancelled — issue a credit note instead
 ```
 
-Vendus has no API field for a cancellation reason, so none is sent. Cancellation is non-idempotent — do not pass max_retries > 0.
+To reverse an FT, issue a **credit note** that credits it (see [Credit Note](credit-note.md)):
+
+```python
+nc = client.documents.create_credit_note(
+    reference_document_id=invoice.id,
+    reason="Issued in error",
+)
+```
 
 ## Notes
 

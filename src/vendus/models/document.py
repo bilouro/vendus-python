@@ -13,7 +13,14 @@ from vendus.models.tax import TaxCategory, TaxExemption
 
 
 class DocumentType(str, Enum):
-    """Vendus document types (AT-defined codes)."""
+    """Vendus document type codes.
+
+    ``UNKNOWN`` is a forward-compatibility sentinel: the live API can return type
+    codes this enum does not model (e.g. ``RG``, seen on real accounts but absent
+    from the documents/types reference). Parsing maps any unmodelled code to
+    ``UNKNOWN`` instead of failing — the exact code is always preserved in
+    ``Document.raw_response["type"]``.
+    """
 
     INVOICE = "FT"
     SIMPLIFIED_INVOICE = "FS"
@@ -23,6 +30,7 @@ class DocumentType(str, Enum):
     RECEIPT = "RC"
     QUOTE = "OR"
     DELIVERY_NOTE = "GT"
+    UNKNOWN = "UNKNOWN"
 
 
 class DocumentMode(str, Enum):

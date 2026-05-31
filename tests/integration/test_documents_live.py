@@ -5,16 +5,21 @@ when credentials are absent, so they never run by accident.
 
 What is and isn't live-validated here, and why:
 
-- ``create_invoice`` is exercised in TEST MODE (``mode=tests``) — a non-fiscal
-  document Vendus never reports to the AT. Vendus stores these "Modo de Formação"
-  documents in a SEPARATE space: they are not retrievable or cancellable via
-  ``/documents/{id}`` (both return "não existe"). So this test cannot cancel its
-  own output — the document is non-fiscal, not listed, and harmless.
-- ``list`` and ``get`` are validated read-only against the account's REAL
-  documents (no writes).
-- ``cancel`` is NOT live-validated: it can only void a real fiscal document,
-  which is destructive, and test-mode documents are not addressable. Its wire
-  shape is covered by the unit tests.
+- ``create_invoice`` (FT) and ``create_invoice_receipt`` (FR) run in TEST MODE
+  (``mode=tests``) — non-fiscal documents Vendus never reports to the AT. Vendus
+  stores these "Modo de Formação" documents in a SEPARATE space: they are not
+  retrievable or cancellable via ``/documents/{id}`` (both return "não existe"),
+  so these tests cannot clean up after themselves — the documents are non-fiscal,
+  not listed, and harmless.
+- ``list_payment_methods``, ``list`` and ``get`` are validated read-only.
+- ``create_credit_note`` (NC) is NOT in this automated suite: it must GET a real
+  (retrievable) original to credit, so it cannot run in test mode, and crediting a
+  real invoice creates real fiscal documents. It was validated manually once in
+  real mode (NC 01P2026/9 credited FR 01P2026/2170); its body shape is covered by
+  unit tests.
+- ``cancel`` is NOT live-validated: FT/FR/NC cannot be cancelled (the SDK refuses
+  them), and cancelling any other real document is destructive. Covered by unit
+  tests.
 
 Run with (``--no-cov`` so a subset run does not trip the coverage gate):
 
@@ -28,7 +33,15 @@ from decimal import Decimal
 
 import pytest
 
-from vendus import APIError, DocumentItem, DocumentMode, DocumentType, TaxCategory, VendusClient
+from vendus import (
+    APIError,
+    DocumentItem,
+    DocumentMode,
+    DocumentType,
+    Payment,
+    TaxCategory,
+    VendusClient,
+)
 
 pytestmark = pytest.mark.integration
 
@@ -101,12 +114,12 @@ def test_invoice_in_test_mode_is_not_reported_to_at(
     assert invoice.type == DocumentType.INVOICE
     assert invoice.number  # Vendus assigns a number even in test mode
 
-    # The honesty assertion: a test document is NOT communicated to the AT,
-    # so its AT-generated id must be empty.
-    assert not invoice.tax_authority_id, (
-        "expected an empty tax_authority_id for a test-mode document, "
-        f"got {invoice.tax_authority_id!r} — was the register really in test mode?"
-    )
+    # A test document has no AT id. (This is necessary but not sufficient proof
+    # of non-fiscality: real documents also come back with an empty
+    # tax_authority_id at create time — the series prefix "T" is the real tell,
+    # e.g. "FT T01P2026/…" vs "FT 01P2026/…". We rely on mode=tests + the
+    # register being in test mode for the actual guarantee.)
+    assert not invoice.tax_authority_id
 
 
 @requires_creds
@@ -124,3 +137,35 @@ def test_list_and_get_documents_live(client: VendusClient) -> None:
     fetched = client.documents.get(first.id)
     assert fetched.id == first.id
     assert isinstance(fetched.type, DocumentType)
+
+
+@requires_creds
+def test_list_payment_methods_live(client: VendusClient) -> None:
+    """list_payment_methods() returns the account's configured methods (read-only)."""
+    methods = client.documents.list_payment_methods()
+    assert methods, "account should have at least one payment method"
+    assert all(m.id and m.type for m in methods)
+
+
+@requires_creds
+def test_invoice_receipt_in_test_mode(
+    client: VendusClient,
+    register_id: int,
+    items: list[DocumentItem],
+) -> None:
+    """Issue an FR in test mode — requires a payment, and is not reported to the AT."""
+    methods = client.documents.list_payment_methods()
+    method = next((m for m in methods if m.status == "on"), methods[0])
+
+    receipt = client.documents.create_invoice_receipt(
+        register_id=register_id,
+        items=items,
+        payments=[Payment(method_id=method.id, amount=Decimal("1.23"))],
+        external_reference="vendus-python-itest-fr",
+        mode=DocumentMode.TESTS,
+    )
+
+    assert receipt.id > 0
+    assert receipt.type == DocumentType.INVOICE_RECEIPT
+    assert receipt.number
+    assert not receipt.tax_authority_id

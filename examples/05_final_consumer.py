@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from decimal import Decimal
 
-from vendus import DocumentItem, TaxCategory, VendusClient
+from vendus import DocumentItem, Payment, TaxCategory, VendusClient
 
 client = VendusClient.from_env()
 
@@ -29,7 +29,9 @@ invoice = client.documents.create_invoice(
 
 print(f"FT to final consumer: {invoice.number}")
 
-# Or an invoice-receipt (when the client pays on the spot)
+# Or an invoice-receipt (when the client pays on the spot). An FR records the
+# payment, so pass how it was paid — look the method id up once.
+cash = next(m for m in client.documents.list_payment_methods() if m.type == "NU")
 fr = client.documents.create_invoice_receipt(
     register_id=1,
     items=[
@@ -40,6 +42,7 @@ fr = client.documents.create_invoice_receipt(
             tax_category=TaxCategory.INTERMEDIATE,
         ),
     ],
+    payments=[Payment(method_id=cash.id, amount=Decimal("2.50"))],
     external_reference="POS-2026-9002",
 )
 

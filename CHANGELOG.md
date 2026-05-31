@@ -13,9 +13,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - `Document.tax_authority_id` — the AT-generated id, empty until Vendus reports the
   document to the AT (lets you confirm a test document was not reported)
 - `TaxCategory` enum (`NORMAL`/`INTERMEDIATE`/`REDUCED`/`EXEMPT`/`OTHER`) for line-item VAT
-- Live integration tests (`tests/integration/`, excluded by default): issue an FT in
-  test mode (asserting `tax_authority_id` is empty) and read-only `list`/`get` against
-  real documents
+- `Payment` model and `list_payment_methods()` (sync + async) — a Fatura-Recibo now
+  takes `payments=[Payment(method_id=..., amount=...)]`; method ids are account-specific
+- `PaymentMethod` model returned by `list_payment_methods()`
+- `DocumentType.UNKNOWN` — forward-compat sentinel so the SDK does not crash on type
+  codes the API returns but the enum does not model (e.g. `RG`); the raw code stays in
+  `raw_response`
+- Live integration tests (`tests/integration/`, excluded by default): FT and FR in test
+  mode, plus read-only `list_payment_methods`/`list`/`get` against real documents
 - Initial project skeleton
 - `VendusClient` with HTTP Basic Auth
 - `DocumentsService.create_invoice` (sync + async)
@@ -27,7 +32,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - Portuguese NIF validation
 - PII redaction filter for logging
 - HttpTransport with conditional POST retries (R3)
-- 72 unit tests with `respx` mocks (94% coverage), plus live integration tests
+- 79 unit tests with `respx` mocks (94% coverage), plus live integration tests
 - Bilingual documentation (PT/EN) with mkdocs-material + i18n
 - 10 runnable examples, including an all-scenarios reference
 - CI workflow (ruff, mypy --strict, pytest on Python 3.9–3.13)
@@ -40,7 +45,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
   NOR/INT/RED/ISE/OUT), not by a numeric rate — the rate is defined by the category in
   the merchant's Vendus configuration.
 - **Breaking:** `cancel(document_id)` no longer takes a `reason` — the Vendus document
-  PATCH endpoint has no field for a cancellation reason.
+  PATCH endpoint has no field for a cancellation reason. It now also fetches the document
+  and **refuses to cancel FT/FR/NC** (fiscal documents cannot be cancelled; reverse them
+  with a credit note), raising `ValidationError` with that guidance.
+- **Breaking:** `create_credit_note(reference_document_id, reason, ...)` no longer takes
+  `register_id`/`items`/`client`. It fetches the original and credits its full set of
+  lines (the original must be a real, retrievable document). The previous signature never
+  worked: Vendus rejected the old top-level `reference_document_id` field.
+- **Breaking:** `create_invoice_receipt(...)` now requires `payments` — an FR records
+  payment on issue and Vendus rejects it otherwise.
 - Docs: replaced the "Sandbox" section with a sourced "Testing" section. Vendus has
   no separate sandbox host; testing is done via document-level test mode. Corrects a
   prior unsourced claim that every call creates real fiscal documents.
@@ -52,6 +65,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
   never succeeded against the live API before this.
 - `cancel` no longer sends `notes` (rejected by the document PATCH endpoint, which
   accepts only `status`/`mode`).
+- Credit notes now build the wire body Vendus accepts — found live: each credit line
+  references the original via `reference_document` (number + row) and the original line
+  id, instead of the rejected top-level `reference_document_id`.
+- `_parse_document` tolerates unknown document type codes instead of raising
+  (the live account returned `RG`, which is absent from the documents/types reference).
 
 ### Quality
 - `mypy --strict` passes with zero errors

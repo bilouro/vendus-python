@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from decimal import Decimal
 
-from vendus import ClientData, DocumentItem, TaxCategory, VendusClient
+from vendus import ClientData, DocumentItem, Payment, TaxCategory, VendusClient
 
 client = VendusClient.from_env()
 
@@ -23,6 +23,11 @@ items = [
         tax_category=TaxCategory.NORMAL,
     ),
 ]
+
+# A Fatura-Recibo records payment, so we need a payment method. Method ids are
+# account-specific — look them up once and reuse.
+cash = next(m for m in client.documents.list_payment_methods() if m.type == "NU")
+payments = [Payment(method_id=cash.id, amount=Decimal("100.00"))]
 
 
 # ---------------------------------------------------------------------------
@@ -68,6 +73,7 @@ fr_with_nif = client.documents.create_invoice_receipt(
     register_id=REGISTER_ID,
     client=ClientData(name="Acme Lda", fiscal_id="123456789"),
     items=items,
+    payments=payments,
     external_reference="FR-NIF-001",
 )
 print(f"FR with NIF:        {fr_with_nif.number}")
@@ -78,6 +84,7 @@ fr_name_only = client.documents.create_invoice_receipt(
     register_id=REGISTER_ID,
     client=ClientData(name="João Silva"),
     items=items,
+    payments=payments,
     external_reference="FR-NAME-001",
 )
 print(f"FR name only:       {fr_name_only.number}")
@@ -87,6 +94,7 @@ print(f"FR name only:       {fr_name_only.number}")
 fr_final = client.documents.create_invoice_receipt(
     register_id=REGISTER_ID,
     items=items,
+    payments=payments,
     external_reference="FR-FINAL-001",
 )
 print(f"FR final consumer:  {fr_final.number}")
@@ -96,13 +104,11 @@ print(f"FR final consumer:  {fr_final.number}")
 # NOTA DE CRÉDITO (NC) — credits a previously issued document
 # ---------------------------------------------------------------------------
 
-# 7. NC referencing the FT with NIF above. Client must match the original.
+# 7. NC crediting the FT with NIF above. The SDK fetches the original and
+# credits its full set of lines — pass only the id and a reason.
 nc = client.documents.create_credit_note(
-    register_id=REGISTER_ID,
     reference_document_id=ft_with_nif.id,
     reason="Customer returned the service",
-    client=ClientData(name="Acme Lda", fiscal_id="123456789"),
-    items=items,
     external_reference="NC-001",
 )
 print(f"NC:                 {nc.number}")

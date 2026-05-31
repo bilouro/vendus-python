@@ -12,9 +12,13 @@ A Fatura-Recibo (FR) é **fatura e recibo num só documento**: factura a venda *
 
 ```python
 from decimal import Decimal
-from vendus import ClientData, DocumentItem, TaxCategory, VendusClient
+from vendus import ClientData, DocumentItem, Payment, TaxCategory, VendusClient
 
 client = VendusClient.from_env()
+
+# Uma FR regista o pagamento na emissão, por isso tens de dizer COMO foi pago.
+# Os ids dos métodos são específicos da conta — consulta-os uma vez.
+cash = next(m for m in client.documents.list_payment_methods() if m.type == "NU")
 
 fr = client.documents.create_invoice_receipt(
     register_id=1,
@@ -27,6 +31,7 @@ fr = client.documents.create_invoice_receipt(
             tax_category=TaxCategory.NORMAL,
         ),
     ],
+    payments=[Payment(method_id=cash.id, amount=Decimal("90.00"))],
     external_reference="FR-2026-001",
 )
 
@@ -39,18 +44,18 @@ print(fr.atcud)
 ```python
 # 1. Com NIF
 client.documents.create_invoice_receipt(
-    register_id=1, items=[...],
+    register_id=1, items=[...], payments=[...],
     client=ClientData(name="Acme Lda", fiscal_id="123456789"),
 )
 
 # 2. Só com nome (cliente não deu NIF)
 client.documents.create_invoice_receipt(
-    register_id=1, items=[...],
+    register_id=1, items=[...], payments=[...],
     client=ClientData(name="João Silva"),
 )
 
 # 3. Consumidor final (anónimo)
-client.documents.create_invoice_receipt(register_id=1, items=[...])
+client.documents.create_invoice_receipt(register_id=1, items=[...], payments=[...])
 ```
 
 ## Variante async
@@ -59,6 +64,7 @@ client.documents.create_invoice_receipt(register_id=1, items=[...])
 fr = await client.documents.create_invoice_receipt_async(
     register_id=1,
     items=[...],
+    payments=[...],
 )
 ```
 
@@ -72,6 +78,6 @@ fr = await client.documents.create_invoice_receipt_async(
 
 ## Notas
 
-1. **Pagamento imediato:** a FR pressupõe que o pagamento ocorre no momento da emissão. Se faturas a crédito, usa `create_invoice` (FT) e emite o recibo (RC) quando o cliente pagar — RC chega numa versão futura.
-2. **Cancelamento:** mesma API (`client.documents.cancel(id)`).
-3. **Nota de crédito:** uma FR pode ser creditada via `create_credit_note` referenciando o `id` da FR.
+1. **Pagamento imediato:** a FR pressupõe pagamento no momento da emissão, por isso `payments` é **obrigatório** — obtém os ids dos métodos com `list_payment_methods()`. Se faturas a crédito, usa `create_invoice` (FT).
+2. **Cancelamento:** uma FR **não pode ser cancelada** — reverte-a com uma nota de crédito (`create_credit_note(reference_document_id=fr.id, reason=...)`).
+3. **Nota de crédito:** creditar uma FR usa o mesmo `create_credit_note` — ele vai buscar a FR e credita as suas linhas.

@@ -129,13 +129,23 @@ Códigos comuns:
 | M16 | Isento Artigo 14.º RITI (intracomunitária) |
 | M99 | Não sujeito; não tributado |
 
-## Cancelar uma fatura
+## Reverter uma fatura
+
+Uma Fatura (FT) **não pode ser cancelada** — uma vez emitida é um documento fiscal comunicado à AT. O SDK recusa-a antes de qualquer alteração:
 
 ```python
-cancelled = client.documents.cancel(document_id=invoice.id)
+client.documents.cancel(invoice.id)
+# levanta ValidationError: uma FT não pode ser cancelada — emite uma nota de crédito
 ```
 
-A Vendus não tem campo de motivo de cancelamento na API, por isso nenhum é enviado. Cancelamento é não-idempotente — não passes max_retries > 0.
+Para reverter uma FT, emite uma **nota de crédito** que a credita (ver [Nota de Crédito](credit-note.md)):
+
+```python
+nc = client.documents.create_credit_note(
+    reference_document_id=invoice.id,
+    reason="Emitida por erro",
+)
+```
 
 ## Notas
 

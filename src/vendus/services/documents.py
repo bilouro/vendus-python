@@ -22,16 +22,27 @@ from typing import Any
 
 from vendus._config import (
     API_VERSION_DOCUMENTS,
+    API_VERSION_PAYMENTS,
     FINAL_CONSUMER_FORBIDDEN_NIF,
     PATH_DOCUMENTS,
+    PATH_PAYMENTS,
 )
 from vendus._validators import validate_nif_pt
 from vendus.exceptions import ValidationError
 from vendus.models.client import ClientData
 from vendus.models.document import Document, DocumentItem, DocumentMode, DocumentType
+from vendus.models.payment import Payment, PaymentMethod
 from vendus.services._base import BaseService
 
 _PATH = f"/{API_VERSION_DOCUMENTS}{PATH_DOCUMENTS}"
+_PATH_PAYMENTS = f"/{API_VERSION_PAYMENTS}{PATH_PAYMENTS}"
+
+# Fiscal documents communicated to the AT cannot be cancelled — they are reversed
+# with a credit note. Verified for FT (Vendus returns "Não é permitido cancelar
+# este tipo de documentos"); applied to the fiscal invoice types the SDK issues.
+_NON_CANCELLABLE = frozenset(
+    {DocumentType.INVOICE, DocumentType.INVOICE_RECEIPT, DocumentType.CREDIT_NOTE}
+)
 
 
 # ---------------------------------------------------------------------------
@@ -118,9 +129,37 @@ def _build_invoice_body(
     return body
 
 
+def _serialize_payments(payments: list[Payment]) -> list[dict[str, Any]]:
+    """Build the `payments` wire array. An FR is paid on the spot, so Vendus
+    requires at least one payment (verified: it rejects an FR with no payment)."""
+    if not payments:
+        raise ValidationError(
+            "A Fatura-Recibo requires at least one payment (it records payment on issue). "
+            "List the account's payment-method ids with list_payment_methods()."
+        )
+    out: list[dict[str, Any]] = []
+    for p in payments:
+        entry: dict[str, Any] = {"id": p.method_id, "amount": float(p.amount)}
+        if p.date_due is not None:
+            entry["date_due"] = p.date_due.isoformat()
+        out.append(entry)
+    return out
+
+
+def _ensure_cancellable(doc_type: DocumentType) -> None:
+    """Refuse to cancel fiscal documents — they are reversed with a credit note."""
+    if doc_type in _NON_CANCELLABLE:
+        raise ValidationError(
+            f"A {doc_type.value} cannot be cancelled. Fiscal documents communicated to "
+            "the AT are reversed with a credit note, not cancelled — issue one with "
+            "create_credit_note(reference_document_id=...) on the original document."
+        )
+
+
 def _build_invoice_receipt_body(
     register_id: int,
     items: list[DocumentItem],
+    payments: list[Payment],
     client: ClientData | None,
     external_reference: str | None,
     mode: DocumentMode | None = None,
@@ -129,33 +168,65 @@ def _build_invoice_receipt_body(
         "type": DocumentType.INVOICE_RECEIPT.value,
         "register_id": register_id,
         "items": _serialize_items(items),
+        "payments": _serialize_payments(payments),
     }
     _apply_optional(body, client, external_reference, mode)
     return body
 
 
+def _credit_note_items_from_original(original: dict[str, Any]) -> list[dict[str, Any]]:
+    """Build NC lines that credit every line of the original document.
+
+    Vendus requires each credit line to point at an existing line of the original
+    via ``reference_document`` (document_number + 1-based row) and to carry that
+    line's id. These are read from the original document's response (R9). Field
+    paths (items[].id, .qty_nc, .amounts.gross_unit, .tax.id) are taken from a
+    real GET response, not assumed.
+    """
+    number = original.get("number", "")
+    lines = original.get("items") or []
+    if not lines:
+        raise ValidationError("The referenced document has no lines to credit")
+    items: list[dict[str, Any]] = []
+    for row, line in enumerate(lines, start=1):
+        amounts = line.get("amounts") or {}
+        tax = line.get("tax") or {}
+        items.append(
+            {
+                "id": line.get("id"),
+                "title": line.get("title"),
+                "qty": float(line.get("qty_nc", line.get("qty", 0)) or 0),
+                "gross_price": float(amounts.get("gross_unit", 0) or 0),
+                "tax_id": tax.get("id"),
+                "reference_document": {"document_number": number, "document_row": row},
+            }
+        )
+    return items
+
+
 def _build_credit_note_body(
-    register_id: int,
-    reference_document_id: int,
+    original: dict[str, Any],
     reason: str,
-    items: list[DocumentItem],
-    client: ClientData | None,
     external_reference: str | None,
-    mode: DocumentMode | None = None,
+    mode: DocumentMode | None,
 ) -> dict[str, Any]:
-    # R13: reference_document_id is a required argument (typed int) — the type
-    # system enforces its presence. We only validate the reason here.
     if not reason or not reason.strip():
         raise ValidationError("Credit note requires a reason")
-
     body: dict[str, Any] = {
         "type": DocumentType.CREDIT_NOTE.value,
-        "register_id": register_id,
-        "reference_document_id": reference_document_id,
+        "register_id": original.get("register_id"),
         "notes": reason,
-        "items": _serialize_items(items),
+        "items": _credit_note_items_from_original(original),
     }
-    _apply_optional(body, client, external_reference, mode)
+    client = original.get("client")
+    if isinstance(client, dict):
+        slim = {k: client[k] for k in ("name", "fiscal_id") if client.get(k)}
+        if slim:
+            body["client"] = slim
+    if external_reference is not None:
+        body["external_reference"] = external_reference
+    if mode is not None:
+        body["mode"] = mode.value
     return body
 
 
@@ -164,11 +235,19 @@ def _build_credit_note_body(
 # ---------------------------------------------------------------------------
 
 
+def _parse_type(raw: Any) -> DocumentType:
+    """Map a Vendus type code to the enum, tolerating codes we do not model yet."""
+    try:
+        return DocumentType(raw)
+    except ValueError:
+        return DocumentType.UNKNOWN
+
+
 def _parse_document(data: dict[str, Any]) -> Document:
     """Convert raw Vendus JSON to Document."""
     return Document(
         id=int(data["id"]),
-        type=DocumentType(data.get("type", "FT")),
+        type=_parse_type(data.get("type", "FT")),
         subtype=data.get("subtype"),
         number=data.get("number", ""),
         date=data.get("date"),
@@ -238,6 +317,7 @@ class DocumentsService(BaseService):
         self,
         register_id: int,
         items: list[DocumentItem],
+        payments: list[Payment],
         client: ClientData | None = None,
         external_reference: str | None = None,
         mode: DocumentMode | None = None,
@@ -248,10 +328,19 @@ class DocumentsService(BaseService):
         acknowledges payment at once. Use it when the client pays immediately
         (typical for services and freelancers).
 
-        Client can be omitted (final consumer) or passed with/without fiscal_id.
-        Pass ``mode=DocumentMode.TESTS`` for a non-fiscal test document.
+        Args:
+            register_id: ID of the POS register configured in Vendus.
+            items: Line items.
+            payments: How the document was paid. **Required** — an FR records
+                payment on issue, and Vendus rejects it otherwise. Get the
+                account's method ids from :meth:`list_payment_methods`.
+            client: Client data — omit for final consumer.
+            external_reference: Your internal reference. Enables safe POST retries.
+            mode: ``DocumentMode.TESTS`` for a non-fiscal test document.
         """
-        body = _build_invoice_receipt_body(register_id, items, client, external_reference, mode)
+        body = _build_invoice_receipt_body(
+            register_id, items, payments, client, external_reference, mode
+        )
         response = self._request("POST", _PATH, json=body)
         return _parse_document(response.json())
 
@@ -259,11 +348,14 @@ class DocumentsService(BaseService):
         self,
         register_id: int,
         items: list[DocumentItem],
+        payments: list[Payment],
         client: ClientData | None = None,
         external_reference: str | None = None,
         mode: DocumentMode | None = None,
     ) -> Document:
-        body = _build_invoice_receipt_body(register_id, items, client, external_reference, mode)
+        body = _build_invoice_receipt_body(
+            register_id, items, payments, client, external_reference, mode
+        )
         response = await self._request_async("POST", _PATH, json=body)
         return _parse_document(response.json())
 
@@ -271,45 +363,42 @@ class DocumentsService(BaseService):
 
     def create_credit_note(
         self,
-        register_id: int,
         reference_document_id: int,
         reason: str,
-        items: list[DocumentItem],
-        client: ClientData | None = None,
         external_reference: str | None = None,
         mode: DocumentMode | None = None,
     ) -> Document:
-        """Issue a credit note (NC) referencing a previously-issued document.
+        """Issue a credit note (NC) crediting the **full** referenced document.
+
+        Vendus credits an invoice line by line: each credit line must reference an
+        existing line of the original. The SDK fetches the original (FT/FR) and
+        replicates every line, so you pass only the document id and a reason — the
+        client and amounts come from the original.
+
+        The original must be retrievable, i.e. a **real** (non-test) document;
+        test-mode documents are not addressable, so they cannot be credited.
+        Partial credits are not supported in v0.1.
 
         Args:
-            register_id: ID of the POS register configured in Vendus.
-            reference_document_id: ID of the original invoice being credited (R13).
-            reason: Free-text reason for the credit note. Required by AT.
-            items: Line items to credit.
-            client: Client data — should match the original invoice's client.
+            reference_document_id: id of the FT/FR being credited (R13).
+            reason: Free-text reason, stored as the document's notes.
             external_reference: Your internal reference. Enables safe POST retries.
-            mode: Working mode. ``DocumentMode.TESTS`` for a non-fiscal test
-                document; omit to use the register's configured mode.
+            mode: Working mode for the credit note itself.
         """
-        body = _build_credit_note_body(
-            register_id, reference_document_id, reason, items, client, external_reference, mode
-        )
+        original = self.get(reference_document_id).raw_response
+        body = _build_credit_note_body(original, reason, external_reference, mode)
         response = self._request("POST", _PATH, json=body)
         return _parse_document(response.json())
 
     async def create_credit_note_async(
         self,
-        register_id: int,
         reference_document_id: int,
         reason: str,
-        items: list[DocumentItem],
-        client: ClientData | None = None,
         external_reference: str | None = None,
         mode: DocumentMode | None = None,
     ) -> Document:
-        body = _build_credit_note_body(
-            register_id, reference_document_id, reason, items, client, external_reference, mode
-        )
+        original = (await self.get_async(reference_document_id)).raw_response
+        body = _build_credit_note_body(original, reason, external_reference, mode)
         response = await self._request_async("POST", _PATH, json=body)
         return _parse_document(response.json())
 
@@ -368,17 +457,40 @@ class DocumentsService(BaseService):
         return [_parse_document(item) for item in items]
 
     def cancel(self, document_id: int) -> Document:
-        """Cancel (void) a document by setting its status to cancelled (``A``).
+        """Cancel (void) a non-fiscal document.
 
-        Vendus has no API field for a cancellation reason — the document PATCH
-        endpoint accepts only ``status``/``mode`` — so the SDK sends none. Any
-        AT-required justification is handled in the Vendus backoffice.
+        Fiscal invoices (FT/FR) and credit notes (NC) communicated to the AT
+        **cannot** be cancelled — Vendus rejects it. To reverse an invoice, issue
+        a credit note with :meth:`create_credit_note`. The SDK fetches the document
+        and raises :class:`ValidationError` for these types **before** attempting
+        any change.
+
+        Vendus has no API field for a cancellation reason (the document PATCH
+        endpoint accepts only status/mode), so none is sent.
         """
+        _ensure_cancellable(self.get(document_id).type)
         response = self._request("PATCH", f"{_PATH}/{document_id}", json={"status": "A"})
         return _parse_document(response.json())
 
     async def cancel_async(self, document_id: int) -> Document:
+        doc = await self.get_async(document_id)
+        _ensure_cancellable(doc.type)
         response = await self._request_async(
             "PATCH", f"{_PATH}/{document_id}", json={"status": "A"}
         )
         return _parse_document(response.json())
+
+    # ----- payment methods --------------------------------------------------
+
+    def list_payment_methods(self) -> builtins.list[PaymentMethod]:
+        """List the account's configured payment methods (id, title, type).
+
+        Use the returned ``id`` as ``Payment.method_id`` when issuing a
+        Fatura-Recibo with :meth:`create_invoice_receipt`.
+        """
+        response = self._request("GET", _PATH_PAYMENTS)
+        return [PaymentMethod(**m) for m in response.json()]
+
+    async def list_payment_methods_async(self) -> builtins.list[PaymentMethod]:
+        response = await self._request_async("GET", _PATH_PAYMENTS)
+        return [PaymentMethod(**m) for m in response.json()]

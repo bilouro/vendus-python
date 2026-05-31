@@ -12,9 +12,13 @@ The Invoice-Receipt (FR) is **an invoice and a receipt in one document**: it bil
 
 ```python
 from decimal import Decimal
-from vendus import ClientData, DocumentItem, TaxCategory, VendusClient
+from vendus import ClientData, DocumentItem, Payment, TaxCategory, VendusClient
 
 client = VendusClient.from_env()
+
+# An FR records payment on issue, so you must say HOW it was paid.
+# Payment-method ids are account-specific — look them up once.
+cash = next(m for m in client.documents.list_payment_methods() if m.type == "NU")
 
 fr = client.documents.create_invoice_receipt(
     register_id=1,
@@ -27,6 +31,7 @@ fr = client.documents.create_invoice_receipt(
             tax_category=TaxCategory.NORMAL,
         ),
     ],
+    payments=[Payment(method_id=cash.id, amount=Decimal("90.00"))],
     external_reference="FR-2026-001",
 )
 
@@ -39,18 +44,18 @@ print(fr.atcud)
 ```python
 # 1. With NIF
 client.documents.create_invoice_receipt(
-    register_id=1, items=[...],
+    register_id=1, items=[...], payments=[...],
     client=ClientData(name="Acme Lda", fiscal_id="123456789"),
 )
 
 # 2. Name only (client did not provide NIF)
 client.documents.create_invoice_receipt(
-    register_id=1, items=[...],
+    register_id=1, items=[...], payments=[...],
     client=ClientData(name="João Silva"),
 )
 
 # 3. Final consumer (anonymous)
-client.documents.create_invoice_receipt(register_id=1, items=[...])
+client.documents.create_invoice_receipt(register_id=1, items=[...], payments=[...])
 ```
 
 ## Async variant
@@ -59,6 +64,7 @@ client.documents.create_invoice_receipt(register_id=1, items=[...])
 fr = await client.documents.create_invoice_receipt_async(
     register_id=1,
     items=[...],
+    payments=[...],
 )
 ```
 
@@ -72,6 +78,6 @@ fr = await client.documents.create_invoice_receipt_async(
 
 ## Notes
 
-1. **Immediate payment:** FR assumes payment happens at issue time. If you bill on credit, use `create_invoice` (FT) and issue the receipt (RC) when the client pays — RC comes in a future version.
-2. **Cancellation:** same API (`client.documents.cancel(id)`).
-3. **Credit note:** an FR can be credited via `create_credit_note` referencing the FR's `id`.
+1. **Immediate payment:** FR assumes payment happens at issue time, so `payments` is **required** — get the account's method ids from `list_payment_methods()`. If you bill on credit, use `create_invoice` (FT) instead.
+2. **Cancellation:** an FR **cannot be cancelled** — reverse it with a credit note (`create_credit_note(reference_document_id=fr.id, reason=...)`).
+3. **Credit note:** crediting an FR uses the same `create_credit_note` — it fetches the FR and credits its lines.

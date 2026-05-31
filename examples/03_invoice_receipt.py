@@ -3,19 +3,21 @@
 An FR bills and acknowledges payment in a single document. Use it when the
 client pays immediately — common for services and freelancers.
 
-All three client shapes are valid:
-- ClientData(name=..., fiscal_id=...)  — client gave NIF
-- ClientData(name=...)                  — client gave name only
-- (omit client)                         — final consumer, anonymous
+Because an FR records payment, you must say HOW it was paid (`payments`).
+Payment-method ids are account-specific — list them with list_payment_methods().
 """
 
 from __future__ import annotations
 
 from decimal import Decimal
 
-from vendus import ClientData, DocumentItem, TaxCategory, VendusClient
+from vendus import ClientData, DocumentItem, Payment, TaxCategory, VendusClient
 
 client = VendusClient.from_env()
+
+# Look up the account's payment methods once (e.g. cache the id you need).
+methods = client.documents.list_payment_methods()
+cash = next(m for m in methods if m.type == "NU")  # "Dinheiro"
 
 fr = client.documents.create_invoice_receipt(
     register_id=1,
@@ -28,6 +30,7 @@ fr = client.documents.create_invoice_receipt(
             tax_category=TaxCategory.NORMAL,
         ),
     ],
+    payments=[Payment(method_id=cash.id, amount=Decimal("90.00"))],
     external_reference="FR-2026-001",
 )
 

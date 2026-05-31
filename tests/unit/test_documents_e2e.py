@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 from decimal import Decimal
 
 import httpx
@@ -78,10 +79,27 @@ def test_create_invoice_end_to_end(
     assert "Consulting hours" in body
 
 
-def test_create_credit_note_end_to_end(
-    vendus: VendusClient,
-    items: list[DocumentItem],
-) -> None:
+def test_create_credit_note_end_to_end(vendus: VendusClient) -> None:
+    # create_credit_note GETs the original, then credits each of its lines.
+    original = {
+        "id": 12345,
+        "type": "FT",
+        "number": "FT 2026/1",
+        "register_id": 1,
+        "amount_gross": "18.45",
+        "amount_net": "15.00",
+        "client": {"name": "Acme", "fiscal_id": "123456789"},
+        "items": [
+            {
+                "id": 7,
+                "title": "x",
+                "qty": 1,
+                "qty_nc": 1,
+                "amounts": {"gross_unit": "18.45"},
+                "tax": {"id": "NOR"},
+            }
+        ],
+    }
     response = {
         "id": 999,
         "type": "NC",
@@ -91,16 +109,17 @@ def test_create_credit_note_end_to_end(
         "atcud": "X-1",
     }
     with respx.mock(base_url=_BASE) as router:
-        router.post("/v1.1/documents").mock(return_value=httpx.Response(200, json=response))
+        router.get("/v1.1/documents/12345").mock(return_value=httpx.Response(200, json=original))
+        route = router.post("/v1.1/documents").mock(return_value=httpx.Response(200, json=response))
         doc = vendus.documents.create_credit_note(
-            register_id=1,
-            reference_document_id=12345,
-            reason="Customer return",
-            items=items,
+            reference_document_id=12345, reason="Customer return"
         )
 
     assert doc.type == DocumentType.CREDIT_NOTE
     assert doc.id == 999
+    body = json.loads(route.calls.last.request.content)
+    assert body["items"][0]["id"] == 7
+    assert body["items"][0]["reference_document"]["document_number"] == "FT 2026/1"
 
 
 async def test_create_invoice_async_end_to_end(

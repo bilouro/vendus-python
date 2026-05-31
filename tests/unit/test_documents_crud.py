@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 from decimal import Decimal
 
 import httpx
@@ -9,10 +10,10 @@ import pytest
 import respx
 
 from vendus import (
-    ClientData,
     DocumentItem,
     DocumentType,
     TaxCategory,
+    ValidationError,
     VendusClient,
 )
 
@@ -97,8 +98,12 @@ class TestList:
 class TestCancel:
     def test_cancel_sync(self, vendus: VendusClient) -> None:
         with respx.mock(base_url=_BASE) as router:
+            # cancel() first GETs the document to check its type.
+            router.get("/v1.1/documents/9").mock(
+                return_value=httpx.Response(200, json=_doc(9, "OR"))
+            )
             route = router.patch("/v1.1/documents/9").mock(
-                return_value=httpx.Response(200, json=_doc(9))
+                return_value=httpx.Response(200, json=_doc(9, "OR"))
             )
             doc = vendus.documents.cancel(9)
         assert doc.id == 9
@@ -107,26 +112,93 @@ class TestCancel:
         assert '"status":"A"' in body or '"status": "A"' in body
         assert "notes" not in body
 
+    def test_cancel_rejects_fiscal_invoice(self, vendus: VendusClient) -> None:
+        # FT/FR/NC cannot be cancelled — the SDK refuses before any change.
+        with respx.mock(base_url=_BASE) as router:
+            router.get("/v1.1/documents/7").mock(
+                return_value=httpx.Response(200, json=_doc(7, "FT"))
+            )
+            with pytest.raises(ValidationError, match="credit note"):
+                vendus.documents.cancel(7)
+
     async def test_cancel_async(self, vendus: VendusClient) -> None:
         with respx.mock(base_url=_BASE) as router:
-            router.patch("/v1.1/documents/9").mock(return_value=httpx.Response(200, json=_doc(9)))
+            router.get("/v1.1/documents/9").mock(
+                return_value=httpx.Response(200, json=_doc(9, "OR"))
+            )
+            router.patch("/v1.1/documents/9").mock(
+                return_value=httpx.Response(200, json=_doc(9, "OR"))
+            )
             doc = await vendus.documents.cancel_async(9)
         assert doc.id == 9
 
 
-class TestCreditNoteAsync:
-    async def test_create_credit_note_async(
-        self, vendus: VendusClient, items: list[DocumentItem]
-    ) -> None:
+# A GET /documents/{id} response shape (subset) the credit-note builder reads.
+_ORIGINAL = {
+    "id": 1,
+    "type": "FT",
+    "number": "FT 2026/1",
+    "register_id": 1,
+    "amount_gross": "10.00",
+    "amount_net": "8.13",
+    "client": {"name": "Acme", "fiscal_id": "123456789"},
+    "items": [
+        {
+            "id": 50,
+            "title": "x",
+            "qty": 1,
+            "qty_nc": 1,
+            "amounts": {"gross_unit": "10.00"},
+            "tax": {"id": "NOR"},
+        }
+    ],
+}
+
+
+class TestCreditNote:
+    def test_create_credit_note_credits_original(self, vendus: VendusClient) -> None:
         with respx.mock(base_url=_BASE) as router:
+            router.get("/v1.1/documents/1").mock(return_value=httpx.Response(200, json=_ORIGINAL))
+            route = router.post("/v1.1/documents").mock(
+                return_value=httpx.Response(200, json=_doc(2, "NC"))
+            )
+            doc = vendus.documents.create_credit_note(reference_document_id=1, reason="Return")
+        assert doc.type == DocumentType.CREDIT_NOTE
+        body = json.loads(route.calls.last.request.content)
+        assert body["type"] == "NC"
+        ref = body["items"][0]["reference_document"]
+        assert ref == {"document_number": "FT 2026/1", "document_row": 1}
+        assert "reference_document_id" not in body  # the old, rejected field
+
+    async def test_create_credit_note_async(self, vendus: VendusClient) -> None:
+        with respx.mock(base_url=_BASE) as router:
+            router.get("/v1.1/documents/1").mock(return_value=httpx.Response(200, json=_ORIGINAL))
             router.post("/v1.1/documents").mock(
                 return_value=httpx.Response(200, json=_doc(2, "NC"))
             )
             doc = await vendus.documents.create_credit_note_async(
-                register_id=1,
-                reference_document_id=1,
-                reason="Return",
-                items=items,
-                client=ClientData(fiscal_id="123456789", name="Acme"),
+                reference_document_id=1, reason="Return"
             )
         assert doc.type == DocumentType.CREDIT_NOTE
+
+
+class TestPaymentMethods:
+    def test_list_payment_methods(self, vendus: VendusClient) -> None:
+        with respx.mock(base_url=_BASE) as router:
+            router.get("/v1.0/payments").mock(
+                return_value=httpx.Response(
+                    200,
+                    json=[{"id": 1, "title": "Dinheiro", "type": "NU", "status": "on", "x": 1}],
+                )
+            )
+            methods = vendus.documents.list_payment_methods()
+        assert methods[0].id == 1
+        assert methods[0].type == "NU"
+
+    async def test_list_payment_methods_async(self, vendus: VendusClient) -> None:
+        with respx.mock(base_url=_BASE) as router:
+            router.get("/v1.0/payments").mock(
+                return_value=httpx.Response(200, json=[{"id": 2, "title": "MB", "type": "CD"}])
+            )
+            methods = await vendus.documents.list_payment_methods_async()
+        assert methods[0].id == 2

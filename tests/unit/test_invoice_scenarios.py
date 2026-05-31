@@ -12,6 +12,7 @@ from vendus import (
     ClientData,
     DocumentItem,
     DocumentType,
+    Payment,
     TaxCategory,
     ValidationError,
     VendusClient,
@@ -35,6 +36,11 @@ def items() -> list[DocumentItem]:
             tax_category=TaxCategory.NORMAL,
         ),
     ]
+
+
+@pytest.fixture
+def payments() -> list[Payment]:
+    return [Payment(method_id=191432483, amount=Decimal("10"))]
 
 
 def _ok(doc_type: str) -> httpx.Response:
@@ -97,38 +103,57 @@ class TestInvoiceScenarios:
 
 
 class TestInvoiceReceiptScenarios:
-    def test_fr_with_nif(self, vendus: VendusClient, items: list[DocumentItem]) -> None:
+    def test_fr_with_nif(
+        self, vendus: VendusClient, items: list[DocumentItem], payments: list[Payment]
+    ) -> None:
         with respx.mock(base_url=_BASE) as router:
             route = router.post("/v1.1/documents").mock(return_value=_ok("FR"))
             doc = vendus.documents.create_invoice_receipt(
                 register_id=1,
                 items=items,
+                payments=payments,
                 client=ClientData(name="Acme Lda", fiscal_id="123456789"),
             )
         assert doc.type == DocumentType.INVOICE_RECEIPT
         body = route.calls.last.request.content.decode()
         assert '"type":"FR"' in body or '"type": "FR"' in body
+        assert "payments" in body  # an FR must carry payment(s)
 
-    def test_fr_name_only(self, vendus: VendusClient, items: list[DocumentItem]) -> None:
+    def test_fr_name_only(
+        self, vendus: VendusClient, items: list[DocumentItem], payments: list[Payment]
+    ) -> None:
         with respx.mock(base_url=_BASE) as router:
             router.post("/v1.1/documents").mock(return_value=_ok("FR"))
             doc = vendus.documents.create_invoice_receipt(
                 register_id=1,
                 items=items,
+                payments=payments,
                 client=ClientData(name="João Silva"),
             )
         assert doc.type == DocumentType.INVOICE_RECEIPT
 
-    def test_fr_final_consumer(self, vendus: VendusClient, items: list[DocumentItem]) -> None:
+    def test_fr_final_consumer(
+        self, vendus: VendusClient, items: list[DocumentItem], payments: list[Payment]
+    ) -> None:
         with respx.mock(base_url=_BASE) as router:
             router.post("/v1.1/documents").mock(return_value=_ok("FR"))
-            doc = vendus.documents.create_invoice_receipt(register_id=1, items=items)
+            doc = vendus.documents.create_invoice_receipt(
+                register_id=1, items=items, payments=payments
+            )
         assert doc.type == DocumentType.INVOICE_RECEIPT
 
-    async def test_fr_async(self, vendus: VendusClient, items: list[DocumentItem]) -> None:
+    def test_fr_requires_payment(self, vendus: VendusClient, items: list[DocumentItem]) -> None:
+        with pytest.raises(ValidationError, match="payment"):
+            vendus.documents.create_invoice_receipt(register_id=1, items=items, payments=[])
+
+    async def test_fr_async(
+        self, vendus: VendusClient, items: list[DocumentItem], payments: list[Payment]
+    ) -> None:
         with respx.mock(base_url=_BASE) as router:
             router.post("/v1.1/documents").mock(return_value=_ok("FR"))
-            doc = await vendus.documents.create_invoice_receipt_async(register_id=1, items=items)
+            doc = await vendus.documents.create_invoice_receipt_async(
+                register_id=1, items=items, payments=payments
+            )
         assert doc.type == DocumentType.INVOICE_RECEIPT
 
 
@@ -143,10 +168,14 @@ class TestValidationStillApplies:
         with pytest.raises(ValidationError, match="999999990"):
             vendus.documents.create_invoice(register_id=1, items=items, client=bad)
 
-    def test_rejects_999999990_on_fr(self, vendus: VendusClient, items: list[DocumentItem]) -> None:
+    def test_rejects_999999990_on_fr(
+        self, vendus: VendusClient, items: list[DocumentItem], payments: list[Payment]
+    ) -> None:
         bad = ClientData(name="Anyone", fiscal_id="999999990")
         with pytest.raises(ValidationError, match="999999990"):
-            vendus.documents.create_invoice_receipt(register_id=1, items=items, client=bad)
+            vendus.documents.create_invoice_receipt(
+                register_id=1, items=items, payments=payments, client=bad
+            )
 
     def test_rejects_invalid_pt_nif(self, vendus: VendusClient, items: list[DocumentItem]) -> None:
         bad = ClientData(name="X", fiscal_id="123456788")  # wrong check digit

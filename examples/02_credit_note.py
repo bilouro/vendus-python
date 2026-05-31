@@ -1,13 +1,13 @@
-"""Issue a credit note (NC) referencing a previously-issued invoice.
+"""Issue a credit note (NC) that credits a previously-issued invoice.
 
-R13: a credit note always references an existing document.
+R13: a credit note always references an existing document. The SDK fetches the
+original (a real FT/FR) and credits the full document — every line — so you pass
+only the document id and a reason. The client and amounts come from the original.
 """
 
 from __future__ import annotations
 
-from decimal import Decimal
-
-from vendus import ClientData, DocumentItem, TaxCategory, VendusClient
+from vendus import VendusClient
 
 client = VendusClient.from_env()
 
@@ -16,18 +16,8 @@ client = VendusClient.from_env()
 original_invoice_id = 12345
 
 credit_note = client.documents.create_credit_note(
-    register_id=1,
     reference_document_id=original_invoice_id,
-    reason="Customer returned 2 hours of consulting",
-    client=ClientData(fiscal_id="123456789", name="Acme Lda"),
-    items=[
-        DocumentItem(
-            description="Consulting hours (credited)",
-            quantity=Decimal("2"),
-            unit_price=Decimal("75.00"),
-            tax_category=TaxCategory.NORMAL,
-        ),
-    ],
+    reason="Customer returned the service",
     external_reference="refund-2026-0001",
 )
 

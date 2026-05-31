@@ -1318,7 +1318,7 @@
 <p>The Invoice-Receipt (FR) is <strong>an invoice and a receipt in one document</strong>: it bills the sale <strong>and</strong> acknowledges payment at the same time. It is the right document when the client <strong>pays on the spot</strong>.</p>
 <ul>
 <li>Very common for <strong>services</strong> (consultations, freelancers, independent professionals)</li>
-<li>Avoids issuing an FT and then a separate RC</li>
+<li>Avoids issuing an <a href="../invoice/">Invoice (FT)</a> and then a separate <a href="../receipt/">Receipt (RG)</a></li>
 <li>Client identification: can include NIF, name only, or be anonymous</li>
 </ul>
 <h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h2>
@@ -1389,7 +1389,7 @@
 </tr>
 <tr>
 <td>Acknowledges payment</td>
-<td>❌ (needs a separate RC)</td>
+<td>❌ (needs a separate <a href="../receipt/">Receipt (RG)</a>)</td>
 <td>✅</td>
 </tr>
 <tr>
@@ -1401,8 +1401,8 @@
 </table>
 <h2 id="notes">Notes<a class="headerlink" href="#notes" title="Permanent link">&para;</a></h2>
 <ol>
-<li><strong>Immediate payment:</strong> FR assumes payment happens at issue time, so <code>payments</code> is <strong>required</strong> — get the account's method ids from <code>list_payment_methods()</code>. If you bill on credit, use <code>create_invoice</code> (FT) instead.</li>
-<li><strong>Cancellation:</strong> an FR <strong>cannot be cancelled</strong> — reverse it with a credit note (<code>create_credit_note(reference_document_id=fr.id, reason=...)</code>).</li>
+<li><strong>Immediate payment:</strong> FR assumes payment happens at issue time, so <code>payments</code> is <strong>required</strong> — get the account's method ids from <code>list_payment_methods()</code>. If you bill on credit, use <a href="../invoice/"><code>create_invoice</code></a> (FT) instead.</li>
+<li><strong>Cancellation:</strong> an FR <strong>cannot be cancelled</strong> — reverse it with a <a href="../credit-note/">credit note</a> (<code>create_credit_note(reference_document_id=fr.id, reason=...)</code>).</li>
 <li><strong>Credit note:</strong> crediting an FR uses the same <code>create_credit_note</code> — it fetches the FR and credits its lines.</li>
 </ol>
 

@@ -1320,7 +1320,7 @@
 <p>A Fatura-Recibo (FR) é <strong>fatura e recibo num só documento</strong>: factura a venda <strong>e</strong> dá quitação do pagamento ao mesmo tempo. É o documento certo quando o cliente <strong>paga na hora</strong>.</p>
 <ul>
 <li>Muito comum em <strong>serviços</strong> (consultas, freelancers, profissionais liberais)</li>
-<li>Evita emitir uma FT e depois um RC separado</li>
+<li>Evita emitir uma <a href="../invoice/">Fatura (FT)</a> e depois um <a href="../receipt/">Recibo (RG)</a> separado</li>
 <li>Identificação do cliente: pode ter NIF, só nome, ou ser anónima</li>
 </ul>
 <h2 id="exemplo">Exemplo<a class="headerlink" href="#exemplo" title="Permanent link">&para;</a></h2>
@@ -1391,7 +1391,7 @@
 </tr>
 <tr>
 <td>Dá quitação do pagamento</td>
-<td>❌ (precisa de RC à parte)</td>
+<td>❌ (precisa de um <a href="../receipt/">Recibo (RG)</a> à parte)</td>
 <td>✅</td>
 </tr>
 <tr>
@@ -1403,8 +1403,8 @@
 </table>
 <h2 id="notas">Notas<a class="headerlink" href="#notas" title="Permanent link">&para;</a></h2>
 <ol>
-<li><strong>Pagamento imediato:</strong> a FR pressupõe pagamento no momento da emissão, por isso <code>payments</code> é <strong>obrigatório</strong> — obtém os ids dos métodos com <code>list_payment_methods()</code>. Se faturas a crédito, usa <code>create_invoice</code> (FT).</li>
-<li><strong>Cancelamento:</strong> uma FR <strong>não pode ser cancelada</strong> — reverte-a com uma nota de crédito (<code>create_credit_note(reference_document_id=fr.id, reason=...)</code>).</li>
+<li><strong>Pagamento imediato:</strong> a FR pressupõe pagamento no momento da emissão, por isso <code>payments</code> é <strong>obrigatório</strong> — obtém os ids dos métodos com <code>list_payment_methods()</code>. Se faturas a crédito, usa <a href="../invoice/"><code>create_invoice</code></a> (FT).</li>
+<li><strong>Cancelamento:</strong> uma FR <strong>não pode ser cancelada</strong> — reverte-a com uma <a href="../credit-note/">nota de crédito</a> (<code>create_credit_note(reference_document_id=fr.id, reason=...)</code>).</li>
 <li><strong>Nota de crédito:</strong> creditar uma FR usa o mesmo <code>create_credit_note</code> — ele vai buscar a FR e credita as suas linhas.</li>
 </ol>
 

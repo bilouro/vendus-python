@@ -2,7 +2,7 @@
 
 ## O que é
 
-Uma Nota de Crédito (NC) credita uma fatura emitida anteriormente (FT ou FR). É o mecanismo legal para devoluções, reembolsos e correções — e a **única** forma de reverter uma fatura fiscal, que não pode ser cancelada.
+Uma Nota de Crédito (NC) credita uma fatura emitida anteriormente ([FT](invoice.md), [FS](simplified-invoice.md) ou [FR](invoice-receipt.md)). É o mecanismo legal para devoluções, reembolsos e correções — e a **única** forma de reverter uma fatura fiscal, que não pode ser cancelada.
 
 - **Referencia sempre** um documento original (`reference_document_id`)
 - **Motivo obrigatório** (`reason`) — exigido pela AT

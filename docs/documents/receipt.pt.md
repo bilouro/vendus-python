@@ -3,7 +3,7 @@
 ## O que é
 
 Um **Recibo (RG)** dá quitação do pagamento de uma ou mais faturas já emitidas (ex.: uma
-FT). Referencia as faturas pelo seu **número de documento** e regista os `payments` — não
+[FT](invoice.md)). Referencia as faturas pelo seu **número de documento** e regista os `payments` — não
 tem linhas próprias. Usa-o quando emitiste uma fatura por pagar (FT) e o cliente paga
 depois.
 

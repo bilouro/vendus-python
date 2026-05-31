@@ -5,7 +5,7 @@
 A Fatura-Recibo (FR) é **fatura e recibo num só documento**: factura a venda **e** dá quitação do pagamento ao mesmo tempo. É o documento certo quando o cliente **paga na hora**.
 
 - Muito comum em **serviços** (consultas, freelancers, profissionais liberais)
-- Evita emitir uma FT e depois um RC separado
+- Evita emitir uma [Fatura (FT)](invoice.md) e depois um [Recibo (RG)](receipt.md) separado
 - Identificação do cliente: pode ter NIF, só nome, ou ser anónima
 
 ## Exemplo
@@ -73,11 +73,11 @@ fr = await client.documents.create_invoice_receipt_async(
 | | Fatura (FT) | Fatura-Recibo (FR) |
 |---|---|---|
 | Factura a venda | ✅ | ✅ |
-| Dá quitação do pagamento | ❌ (precisa de RC à parte) | ✅ |
+| Dá quitação do pagamento | ❌ (precisa de um [Recibo (RG)](receipt.md) à parte) | ✅ |
 | Quando usar | Cliente paga depois (a crédito, a 30 dias) | Cliente paga **na hora** |
 
 ## Notas
 
-1. **Pagamento imediato:** a FR pressupõe pagamento no momento da emissão, por isso `payments` é **obrigatório** — obtém os ids dos métodos com `list_payment_methods()`. Se faturas a crédito, usa `create_invoice` (FT).
-2. **Cancelamento:** uma FR **não pode ser cancelada** — reverte-a com uma nota de crédito (`create_credit_note(reference_document_id=fr.id, reason=...)`).
+1. **Pagamento imediato:** a FR pressupõe pagamento no momento da emissão, por isso `payments` é **obrigatório** — obtém os ids dos métodos com `list_payment_methods()`. Se faturas a crédito, usa [`create_invoice`](invoice.md) (FT).
+2. **Cancelamento:** uma FR **não pode ser cancelada** — reverte-a com uma [nota de crédito](credit-note.md) (`create_credit_note(reference_document_id=fr.id, reason=...)`).
 3. **Nota de crédito:** creditar uma FR usa o mesmo `create_credit_note` — ele vai buscar a FR e credita as suas linhas.

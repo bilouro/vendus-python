@@ -5,7 +5,7 @@
 The Invoice-Receipt (FR) is **an invoice and a receipt in one document**: it bills the sale **and** acknowledges payment at the same time. It is the right document when the client **pays on the spot**.
 
 - Very common for **services** (consultations, freelancers, independent professionals)
-- Avoids issuing an FT and then a separate RC
+- Avoids issuing an [Invoice (FT)](invoice.md) and then a separate [Receipt (RG)](receipt.md)
 - Client identification: can include NIF, name only, or be anonymous
 
 ## Example
@@ -73,11 +73,11 @@ fr = await client.documents.create_invoice_receipt_async(
 | | Invoice (FT) | Invoice-Receipt (FR) |
 |---|---|---|
 | Bills the sale | ✅ | ✅ |
-| Acknowledges payment | ❌ (needs a separate RC) | ✅ |
+| Acknowledges payment | ❌ (needs a separate [Receipt (RG)](receipt.md)) | ✅ |
 | When to use | Client pays later (on credit, net 30) | Client pays **on the spot** |
 
 ## Notes
 
-1. **Immediate payment:** FR assumes payment happens at issue time, so `payments` is **required** — get the account's method ids from `list_payment_methods()`. If you bill on credit, use `create_invoice` (FT) instead.
-2. **Cancellation:** an FR **cannot be cancelled** — reverse it with a credit note (`create_credit_note(reference_document_id=fr.id, reason=...)`).
+1. **Immediate payment:** FR assumes payment happens at issue time, so `payments` is **required** — get the account's method ids from `list_payment_methods()`. If you bill on credit, use [`create_invoice`](invoice.md) (FT) instead.
+2. **Cancellation:** an FR **cannot be cancelled** — reverse it with a [credit note](credit-note.md) (`create_credit_note(reference_document_id=fr.id, reason=...)`).
 3. **Credit note:** crediting an FR uses the same `create_credit_note` — it fetches the FR and credits its lines.

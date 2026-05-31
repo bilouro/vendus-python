@@ -29,7 +29,7 @@ from vendus._config import (
     PATH_PAYMENTS,
     PATH_REGISTERS,
 )
-from vendus._validators import validate_nif_pt
+from vendus._validators import is_pt_nif_candidate, nif_digits, nif_error
 from vendus.exceptions import NotFoundError, ValidationError
 from vendus.models.client import ClientData
 from vendus.models.document import (
@@ -70,13 +70,15 @@ def _serialize_client(client: ClientData | None) -> dict[str, Any] | None:
         return None
     fiscal_id = client.fiscal_id
     if fiscal_id is not None:
-        if fiscal_id == FINAL_CONSUMER_FORBIDDEN_NIF:
+        if nif_digits(fiscal_id) == FINAL_CONSUMER_FORBIDDEN_NIF:
             raise ValidationError(
                 "Do not pass fiscal_id='999999990' for final consumer invoices. "
                 "Omit the client argument entirely."
             )
-        if fiscal_id.isdigit() and len(fiscal_id) == 9 and not validate_nif_pt(fiscal_id):
-            raise ValidationError(f"Invalid Portuguese NIF: {fiscal_id}")
+        if is_pt_nif_candidate(fiscal_id):
+            reason = nif_error(fiscal_id)
+            if reason is not None:
+                raise ValidationError(f"Invalid Portuguese NIF '{fiscal_id}': {reason}")
     return client.model_dump(exclude_none=True)
 
 

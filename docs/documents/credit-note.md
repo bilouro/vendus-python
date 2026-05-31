@@ -2,7 +2,7 @@
 
 ## What it is
 
-A Credit Note (NC) credits a previously issued invoice (FT or FR). It is the legal mechanism for returns, refunds, and corrections — and the **only** way to reverse a fiscal invoice, which cannot be cancelled.
+A Credit Note (NC) credits a previously issued invoice ([FT](invoice.md), [FS](simplified-invoice.md) or [FR](invoice-receipt.md)). It is the legal mechanism for returns, refunds, and corrections — and the **only** way to reverse a fiscal invoice, which cannot be cancelled.
 
 - **Always references** an original document (`reference_document_id`)
 - **Reason is mandatory** (`reason`) — required by AT

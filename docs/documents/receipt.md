@@ -3,7 +3,7 @@
 ## What it is
 
 A **Recibo (RG)** acknowledges payment of one or more previously-issued invoices (e.g. an
-FT). It references the invoices by their **document number** and records the `payments` —
+[FT](invoice.md)). It references the invoices by their **document number** and records the `payments` —
 it carries no line items of its own. Use it when you issued an unpaid invoice (FT) and the
 client pays afterwards.
 

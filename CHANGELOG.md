@@ -6,10 +6,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
-### Added
-- Release workflow (`release.yml`) — publishes to PyPI via Trusted Publishing (OIDC) when
-  a GitHub Release is published; no tokens or secrets.
-
 ## [0.1.0] - 2026-05-31
 
 ### Added
@@ -63,6 +59,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - 10 runnable examples, including an all-scenarios reference
 - CI workflow (ruff, mypy --strict, pytest on Python 3.9–3.13)
 - Docs auto-deploy to GitHub Pages
+- Release workflow (`release.yml`) — publishes to PyPI via Trusted Publishing (OIDC) on a
+  GitHub Release; no tokens or secrets
 - Issue/PR templates and Dependabot config
 
 ### Changed

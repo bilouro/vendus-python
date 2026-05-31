@@ -1442,8 +1442,8 @@
 
 <h1 id="contributing-development">Contributing &amp; Development<a class="headerlink" href="#contributing-development" title="Permanent link">&para;</a></h1>
 <p>Thanks for your interest in <code>vendus</code>. This project aims at production quality — the
-guiding rules live in <a href="https://github.com/bilouro/vendus-python/blob/main/CLAUDE.md"><code>CLAUDE.md</code></a>
-at the repo root; read it before any substantial change.</p>
+guiding rules and conventions are summarized below; read them before any substantial
+change.</p>
 <h2 id="setup">Setup<a class="headerlink" href="#setup" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/bilouro/vendus-python.git
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="nb">cd</span><span class="w"> </span>vendus-python
@@ -1507,8 +1507,7 @@ permanent fiscal record; reverse an invoice with a credit note (see below).</p>
 <p>The Vendus reference docs are not always complete — <strong>validate the wire shape against
 the real API before claiming an operation works.</strong> Several real bugs were caught only
 this way (the SDK's <code>create_invoice</code> never actually worked until live validation fixed
-the line-item fields). These are recorded as live-verified facts in <code>CLAUDE.md</code> (rule
-R16). The ones a contributor must respect:</p>
+the line-item fields). The live-verified facts a contributor must respect:</p>
 <ul>
 <li><strong>Line items</strong> send <code>tax_id</code> (a <code>TaxCategory</code> code: NOR/INT/RED/ISE/OUT), not
   <code>tax_rate</code>; <code>discount_percentage</code>, not <code>discount</code>; <code>id</code> for a product line, not
@@ -1537,7 +1536,6 @@ R16). The ones a contributor must respect:</p>
 <li>Money is <code>Decimal</code> everywhere; convert with <code>float()</code> only at the wire boundary.</li>
 <li>Every method has a sync and an <code>_async</code> variant.</li>
 </ul>
-<p>Full detail (rules R1–R16, the unified vocabulary, the playbook) is in <code>CLAUDE.md</code>.</p>
 <h2 id="adding-a-new-document-type">Adding a new document type<a class="headerlink" href="#adding-a-new-document-type" title="Permanent link">&para;</a></h2>
 <p>Use <code>services/documents.py::create_invoice</code> as the reference.</p>
 <ol>
@@ -1553,8 +1551,7 @@ R16). The ones a contributor must respect:</p>
    fixtures in <code>tests/fixtures/</code>.</li>
 <li>Add a runnable example in <code>examples/</code> and a doc page <code>docs/documents/X.md</code> (+ the
    Portuguese <code>X.pt.md</code>).</li>
-<li>Update <code>CHANGELOG.md</code>, and <code>CLAUDE.md</code> (roadmap, and the R1 vocabulary table if a new
-   field appears).</li>
+<li>Update <code>CHANGELOG.md</code>.</li>
 </ol>
 <h2 id="pull-requests">Pull Requests<a class="headerlink" href="#pull-requests" title="Permanent link">&para;</a></h2>
 <ul>

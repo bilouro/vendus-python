@@ -1444,8 +1444,7 @@
 
 <h1 id="contribuir-desenvolvimento">Contribuir &amp; Desenvolvimento<a class="headerlink" href="#contribuir-desenvolvimento" title="Permanent link">&para;</a></h1>
 <p>Obrigado pelo interesse em <code>vendus</code>. Este projeto visa qualidade de produção — as regras
-estão em <a href="https://github.com/bilouro/vendus-python/blob/main/CLAUDE.md"><code>CLAUDE.md</code></a> na
-raiz do repositório; lê-o antes de qualquer mudança substancial.</p>
+e convenções estão resumidas abaixo; lê-as antes de qualquer mudança substancial.</p>
 <h2 id="setup">Setup<a class="headerlink" href="#setup" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/bilouro/vendus-python.git
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="nb">cd</span><span class="w"> </span>vendus-python
@@ -1510,8 +1509,8 @@ permanente; reverte uma fatura com uma nota de crédito (ver abaixo).</p>
 <p>A documentação de referência da Vendus nem sempre está completa — <strong>valida a forma do
 body contra a API real antes de afirmar que uma operação funciona.</strong> Vários bugs reais só
 foram apanhados assim (o <code>create_invoice</code> do SDK nunca funcionou até a validação ao vivo
-corrigir os campos das linhas). Estão registados como factos verificados no <code>CLAUDE.md</code>
-(regra R16). Os que um contribuidor tem de respeitar:</p>
+corrigir os campos das linhas). Os factos verificados ao vivo que um contribuidor tem de
+respeitar:</p>
 <ul>
 <li><strong>Linhas</strong> enviam <code>tax_id</code> (um código <code>TaxCategory</code>: NOR/INT/RED/ISE/OUT), não
   <code>tax_rate</code>; <code>discount_percentage</code>, não <code>discount</code>; <code>id</code> para uma linha de produto, não
@@ -1540,7 +1539,6 @@ corrigir os campos das linhas). Estão registados como factos verificados no <co
 <li>Dinheiro é <code>Decimal</code> em todo o lado; converte com <code>float()</code> só na fronteira do wire.</li>
 <li>Cada método tem uma variante sync e uma <code>_async</code>.</li>
 </ul>
-<p>Detalhe completo (regras R1–R16, o vocabulário unificado, o playbook) está no <code>CLAUDE.md</code>.</p>
 <h2 id="adicionar-um-novo-tipo-de-documento">Adicionar um novo tipo de documento<a class="headerlink" href="#adicionar-um-novo-tipo-de-documento" title="Permanent link">&para;</a></h2>
 <p>Usa <code>services/documents.py::create_invoice</code> como referência.</p>
 <ol>
@@ -1556,8 +1554,7 @@ corrigir os campos das linhas). Estão registados como factos verificados no <co
    resposta em <code>tests/fixtures/</code>.</li>
 <li>Adiciona um exemplo executável em <code>examples/</code> e uma página <code>docs/documents/X.md</code> (+ a
    versão portuguesa <code>X.pt.md</code>).</li>
-<li>Atualiza o <code>CHANGELOG.md</code>, e o <code>CLAUDE.md</code> (roadmap, e a tabela de vocabulário R1 se
-   surgir um campo novo).</li>
+<li>Atualiza o <code>CHANGELOG.md</code>.</li>
 </ol>
 <h2 id="pull-requests">Pull Requests<a class="headerlink" href="#pull-requests" title="Permanent link">&para;</a></h2>
 <ul>

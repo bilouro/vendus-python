@@ -68,6 +68,11 @@ plugins = ["pydantic.mypy"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-addopts = "--cov=vendus --cov-report=term-missing --cov-fail-under=85"
+# Integration tests hit the real Vendus API, so they are excluded by default.
+# Run them explicitly with `pytest -m integration --no-cov` (needs VENDUS_API_KEY
+# + VENDUS_REGISTER_ID; they issue test-mode, non-fiscal documents).
+addopts = "--cov=vendus --cov-report=term-missing --cov-fail-under=85 -m 'not integration'"
 asyncio_mode = "auto"
-markers = ["integration: tests against vendus sandbox (deselect with '-m not integration')"]
+markers = [
+    "integration: live tests against the real Vendus API in test mode (run with '-m integration')",
+]

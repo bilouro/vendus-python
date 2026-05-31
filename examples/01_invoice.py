@@ -7,7 +7,7 @@ from __future__ import annotations
 
 from decimal import Decimal
 
-from vendus import ClientData, DocumentItem, VendusClient
+from vendus import ClientData, DocumentItem, TaxCategory, VendusClient
 
 client = VendusClient.from_env()  # reads VENDUS_API_KEY
 
@@ -23,7 +23,7 @@ invoice = client.documents.create_invoice(
             description="Consulting hours",
             quantity=Decimal("10"),
             unit_price=Decimal("75.00"),  # gross (includes tax)
-            tax_rate=Decimal("23"),
+            tax_category=TaxCategory.NORMAL,
         ),
     ],
     external_reference="order-2026-0001",  # enables safe POST retries (R3)

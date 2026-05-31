@@ -8,7 +8,14 @@ import httpx
 import pytest
 import respx
 
-from vendus import ClientData, DocumentItem, DocumentType, ValidationError, VendusClient
+from vendus import (
+    ClientData,
+    DocumentItem,
+    DocumentType,
+    TaxCategory,
+    ValidationError,
+    VendusClient,
+)
 
 _BASE = "https://www.vendus.pt/ws"
 
@@ -25,7 +32,7 @@ def items() -> list[DocumentItem]:
             description="x",
             quantity=Decimal("1"),
             unit_price=Decimal("10"),
-            tax_rate=Decimal("23"),
+            tax_category=TaxCategory.NORMAL,
         ),
     ]
 

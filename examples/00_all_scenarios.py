@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from decimal import Decimal
 
-from vendus import ClientData, DocumentItem, VendusClient
+from vendus import ClientData, DocumentItem, TaxCategory, VendusClient
 
 client = VendusClient.from_env()
 
@@ -20,7 +20,7 @@ items = [
         description="Service",
         quantity=Decimal("1"),
         unit_price=Decimal("100.00"),
-        tax_rate=Decimal("23"),
+        tax_category=TaxCategory.NORMAL,
     ),
 ]
 

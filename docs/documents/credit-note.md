@@ -32,7 +32,7 @@ sequenceDiagram
 
 ```python
 from decimal import Decimal
-from vendus import VendusClient, ClientData, DocumentItem
+from vendus import ClientData, DocumentItem, TaxCategory, VendusClient
 
 client = VendusClient.from_env()
 
@@ -49,7 +49,7 @@ nc = client.documents.create_credit_note(
             description="Consulting (credited)",
             quantity=Decimal("2"),
             unit_price=Decimal("75.00"),
-            tax_rate=Decimal("23"),
+            tax_category=TaxCategory.NORMAL,
         ),
     ],
     external_reference="REFUND-2026-001",
@@ -84,5 +84,5 @@ nc = await client.documents.create_credit_note_async(
 ## Notes
 
 1. **Full vs partial NC:** if refunding the whole amount, replicate all items. For partial refunds, include only the items/quantities to credit.
-2. **NC is not cancellation:** an NC **credits** the value but keeps the original document. To fully void, use `client.documents.cancel(id, reason)` instead.
+2. **NC is not cancellation:** an NC **credits** the value but keeps the original document. To fully void, use `client.documents.cancel(id)` instead.
 3. **Consistent client:** if the original was to Final Consumer, the NC should also omit `client`.

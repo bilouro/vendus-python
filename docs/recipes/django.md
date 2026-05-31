@@ -7,7 +7,7 @@ Service + view to issue invoices and store the ID locally for future NCs.
 ```python
 # billing/services.py
 from decimal import Decimal
-from vendus import VendusClient, ClientData, DocumentItem
+from vendus import ClientData, DocumentItem, TaxCategory, VendusClient
 
 _vendus = VendusClient.from_env()
 
@@ -31,7 +31,7 @@ def issue_invoice_for_order(order):
             description=line.description,
             quantity=Decimal(str(line.quantity)),
             unit_price=Decimal(str(line.gross_unit_price)),
-            tax_rate=Decimal(str(line.tax_rate)),
+            tax_category=TaxCategory(line.tax_category),
         )
         for line in order.lines.all()
     ]

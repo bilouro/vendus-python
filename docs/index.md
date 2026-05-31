@@ -13,7 +13,7 @@ Python SDK for [Vendus](https://www.vendus.pt), Portugal's AT-certified invoicin
 
 ```python
 from decimal import Decimal
-from vendus import VendusClient, ClientData, DocumentItem
+from vendus import ClientData, DocumentItem, TaxCategory, VendusClient
 
 client = VendusClient(api_key="your-api-key")
 
@@ -25,7 +25,7 @@ invoice = client.documents.create_invoice(
             description="Consulting hours",
             quantity=Decimal("10"),
             unit_price=Decimal("75.00"),
-            tax_rate=Decimal("23"),
+            tax_category=TaxCategory.NORMAL,
         ),
     ],
 )

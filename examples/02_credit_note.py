@@ -7,7 +7,7 @@ from __future__ import annotations
 
 from decimal import Decimal
 
-from vendus import ClientData, DocumentItem, VendusClient
+from vendus import ClientData, DocumentItem, TaxCategory, VendusClient
 
 client = VendusClient.from_env()
 
@@ -25,7 +25,7 @@ credit_note = client.documents.create_credit_note(
             description="Consulting hours (credited)",
             quantity=Decimal("2"),
             unit_price=Decimal("75.00"),
-            tax_rate=Decimal("23"),
+            tax_category=TaxCategory.NORMAL,
         ),
     ],
     external_reference="refund-2026-0001",

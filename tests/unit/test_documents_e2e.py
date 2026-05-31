@@ -13,6 +13,7 @@ from vendus import (
     Document,
     DocumentItem,
     DocumentType,
+    TaxCategory,
     VendusClient,
 )
 
@@ -31,7 +32,7 @@ def items() -> list[DocumentItem]:
             description="Consulting hours",
             quantity=Decimal("10"),
             unit_price=Decimal("75.00"),
-            tax_rate=Decimal("23"),
+            tax_category=TaxCategory.NORMAL,
         ),
     ]
 

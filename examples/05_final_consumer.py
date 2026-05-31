@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from decimal import Decimal
 
-from vendus import DocumentItem, VendusClient
+from vendus import DocumentItem, TaxCategory, VendusClient
 
 client = VendusClient.from_env()
 
@@ -21,7 +21,7 @@ invoice = client.documents.create_invoice(
             description="Coffee",
             quantity=Decimal("1"),
             unit_price=Decimal("2.50"),
-            tax_rate=Decimal("13"),
+            tax_category=TaxCategory.INTERMEDIATE,
         ),
     ],
     external_reference="POS-2026-9001",
@@ -37,7 +37,7 @@ fr = client.documents.create_invoice_receipt(
             description="Coffee",
             quantity=Decimal("1"),
             unit_price=Decimal("2.50"),
-            tax_rate=Decimal("13"),
+            tax_category=TaxCategory.INTERMEDIATE,
         ),
     ],
     external_reference="POS-2026-9002",

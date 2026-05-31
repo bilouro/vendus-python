@@ -1,16 +1,37 @@
-"""Tax models and AT exemption codes."""
+"""Tax models, VAT categories, and AT exemption codes."""
 
 from __future__ import annotations
 
 from enum import Enum
 
 
+class TaxCategory(str, Enum):
+    """VAT category for a line item (Vendus ``tax_id``).
+
+    Vendus (and the AT) classify VAT by *category*, not by a numeric rate — the
+    actual percentage (e.g. 23%) is defined by the category in the merchant's
+    Vendus configuration and may differ by region (mainland / Madeira / Azores).
+
+    - ``NORMAL`` (NOR) — standard rate
+    - ``INTERMEDIATE`` (INT) — intermediate rate
+    - ``REDUCED`` (RED) — reduced rate
+    - ``EXEMPT`` (ISE) — exempt; pair with a ``TaxExemption`` reason
+    - ``OTHER`` (OUT) — other
+    """
+
+    NORMAL = "NOR"
+    INTERMEDIATE = "INT"
+    REDUCED = "RED"
+    EXEMPT = "ISE"
+    OTHER = "OUT"
+
+
 class TaxExemption(str, Enum):
     """AT-mandated VAT exemption reason codes (M01-M99).
 
-    Use when a line item has tax_rate == 0 and an exemption reason is required.
-    Full list is published by Autoridade Tributária. The codes here are the most
-    common; add to this enum as needed.
+    Use when a line item has ``tax_category=TaxCategory.EXEMPT`` and an exemption
+    reason is required. Full list is published by Autoridade Tributária. The codes
+    here are the most common; add to this enum as needed.
     """
 
     M01 = "M01"  # Artigo 16.º, n.º 6 do CIVA

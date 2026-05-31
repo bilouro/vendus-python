@@ -32,7 +32,7 @@ sequenceDiagram
 
 ```python
 from decimal import Decimal
-from vendus import VendusClient, ClientData, DocumentItem
+from vendus import ClientData, DocumentItem, TaxCategory, VendusClient
 
 client = VendusClient.from_env()
 
@@ -52,7 +52,7 @@ invoice = client.documents.create_invoice(
             description="Consulting",
             quantity=Decimal("10"),
             unit_price=Decimal("75.00"),
-            tax_rate=Decimal("23"),
+            tax_category=TaxCategory.NORMAL,
         ),
     ],
     external_reference="ORD-2026-001",
@@ -105,7 +105,7 @@ invoice = await client.documents.create_invoice_async(
 
 ## VAT-exempt items
 
-When `tax_rate=0`, AT requires an exemption code (M01-M99):
+When `tax_category=TaxCategory.EXEMPT`, AT requires an exemption code (M01-M99):
 
 ```python
 from vendus import DocumentItem, TaxExemption
@@ -114,7 +114,7 @@ DocumentItem(
     description="Education service",
     quantity=Decimal("1"),
     unit_price=Decimal("100.00"),
-    tax_rate=Decimal("0"),
+    tax_category=TaxCategory.EXEMPT,
     tax_exemption=TaxExemption.M07,  # Exempt Article 9.º CIVA
 )
 ```
@@ -132,13 +132,10 @@ Common codes:
 ## Cancel an invoice
 
 ```python
-cancelled = client.documents.cancel(
-    document_id=invoice.id,
-    reason="Wrong client",
-)
+cancelled = client.documents.cancel(document_id=invoice.id)
 ```
 
-AT requires `reason`. Cancellation is non-idempotent — do not pass max_retries > 0.
+Vendus has no API field for a cancellation reason, so none is sent. Cancellation is non-idempotent — do not pass max_retries > 0.
 
 ## Notes
 

@@ -8,6 +8,47 @@ Unofficial Python SDK for the [Vendus](https://www.vendus.pt) invoicing API (Por
 
 Vendus is an AT-certified (Autoridade Tributária) invoicing/POS SaaS. The Vendus backend handles all communication with the AT (SAF-T, ATCUD, QR code, document hash). This SDK talks to Vendus; Vendus talks to AT. The SDK never communicates with the AT directly.
 
+## Working Principle: Always Honest, Never Assume (non-negotiable)
+
+This rule overrides convenience. It applies to code, comments, docs, commit messages, and every reply to the user.
+
+- **State only what is verified.** If something is not confirmed, say so explicitly and label it as an assumption or unknown — never present a guess or general knowledge as established fact.
+- **Cite the source for any claim about the Vendus API or AT behavior.** No source → mark it `TBD` in the code/docs and flag it for verification. Do not write unsourced assertions into user-facing docs.
+- **When asked "how do we know X?"**, if there is no verified source, say so plainly instead of rationalizing after the fact.
+- **When uncertain, verify or ask before acting.** Don't fill gaps with plausible-sounding details.
+- **No contradictions between artifacts.** If the docs claim something the code/CLAUDE.md still lists as `TBD`, that is a bug — resolve it, don't paper over it.
+
+> Origin: the docs once stated "Vendus has no public sandbox" as fact, with no cited source, while CLAUDE.md still listed sandbox as `TBD — investigate`. That unsourced assertion is exactly what this rule forbids.
+
+## Build Playbook — `eupago-reference.md` is the foundation
+
+The canonical playbook for building this SDK is [`eupago-reference.md`](eupago-reference.md) at the repo root — the distilled engineering discipline from the sibling `eupago-python` SDK. **Read it before any substantial work.** It is the *why*; the rules in this file are the Vendus-specific *how*.
+
+- **R1–R15 below are the Vendus application of that playbook.** Adapt, don't copy: where the Vendus domain demands a different choice, diverge **deliberately and document it** — e.g. R3's conditional POST retries vs. the playbook's blanket no-retry, because Vendus accepts `external_reference` as a dedup anchor.
+- The playbook's identity, architecture, naming, money/PII/validation and quality rules are already encoded as R1–R15 and the Architecture section. The two disciplines below are imported here explicitly because they are **not** yet encoded elsewhere in this file and this project has already been bitten by their absence.
+
+### Live-validation discipline (`eupago-reference.md` §4, §8) — non-negotiable
+
+Two test layers, both required:
+
+| Layer | Tool | Runs | Purpose |
+|---|---|---|---|
+| Unit | `pytest` + `respx` | every commit / CI | guard the **exact wire body**, validation, sync/async parity |
+| Live | `pytest -m integration` | on demand | prove the SDK works against the **real Vendus API** end-to-end |
+
+- Unit tests **assert the exact JSON sent on the wire**, not just the return value — that is how latent field-name/shape bugs are caught (`body = json.loads(route.calls[0].request.content); assert body == {...}`).
+- Live tests live in `tests/integration/`, are marked `@pytest.mark.integration` (excluded from the default `pytest` run), and **auto-skip** when `VENDUS_API_KEY` is absent — no false failures on machines without creds.
+- **One live test per operation**, exercising the full loop (SDK → Vendus → parse). Run them against the **test-mode register configured in `.env`** (`VENDUS_REGISTER_ID`, a register whose `mode` is `tests`) so live tests issue **non-fiscal** documents that are never reported to the AT. Concretely: assert a created test document comes back with an empty `tax_authority_id` (that field is only set once Vendus has communicated the document to the AT).
+- **"If you didn't run it against the real Vendus API, it isn't done."** The Vendus `.doc` reference pages describe what *should* happen; verify the actual wire shape live before claiming an operation works. This is the operational form of the *Always Honest, Never Assume* rule above.
+
+### Honesty in status reporting (`eupago-reference.md` §4, §8.1, §10.3)
+
+- README / CHANGELOG / roadmap use a **per-operation matrix** (Unit ✅ / Live ✅), never a blanket "service done".
+- Never mark a row **Done** without a live test — or a live test that **skips with a documented reason**. A skipped-with-reason test is honest; a green test that never hit the API is a trap.
+- When the upstream docs turn out wrong or incomplete: fix the SDK, add a unit test asserting the **corrected** wire body, then the live test passes — and record the divergence (with the Vendus error it fixed) in the CHANGELOG.
+
+For situations not covered here — webhooks, multiple identifiers for one resource, form-vs-JSON bodies, operations that don't return a field the docs promise — consult `eupago-reference.md` §7–§8 when they arise.
+
 ## Scope (v0.1.0 — MVP)
 
 - Issue invoices (FT)
@@ -102,6 +143,7 @@ The Vendus API uses Portuguese-influenced naming (`fiscal_id`, `amount_gross`). 
 | Document number | `number` | `number` | `str` |
 | Document type | `type` | `type` | `DocumentType` enum |
 | Subtype | `subtype` | `subtype` | `str` |
+| Working mode | `mode` | `mode` | `DocumentMode` enum |
 | Date issued | `date` | `date` | `datetime` |
 | Local time | `local_time` | `local_time` | `datetime` |
 | System time | `system_time` | `system_time` | `datetime` |
@@ -110,13 +152,16 @@ The Vendus API uses Portuguese-influenced naming (`fiscal_id`, `amount_gross`). 
 | Tax amount | `tax_amount` | (derived) | `Decimal` |
 | AT hash | `hash` | `hash` | `str` |
 | ATCUD | `atcud` | `atcud` | `str` |
+| AT document ID | `tax_authority_id` | `tax_authority_id` | `str` |
 | QR code data | `qrcode` | `qrcode` | `str` |
 | External reference | `external_reference` | `external_reference` | `str` |
 | Reference document | `reference_document_id` | (credit note ref) | `int` |
 | Item description | `description` | `title` | `str` |
 | Item quantity | `quantity` | `qty` | `Decimal` |
 | Item unit price | `unit_price` | `gross_price` | `Decimal` |
-| Tax rate | `tax_rate` | `tax_rate` | `Decimal` |
+| Item discount % | `discount` | `discount_percentage` | `Decimal` |
+| Product id | `product_id` | `id` | `int` |
+| Tax category | `tax_category` | `tax_id` | `TaxCategory` enum |
 | Tax exemption | `tax_exemption` | `tax_exemption` | `TaxExemption` enum |
 
 **When adding a new resource:** look at its API fields. Use the table. If a new concept appears, add it here and use it consistently.
@@ -308,7 +353,7 @@ async def create_receipt_async(self, ...) -> Document: ...
 ### Base URLs
 - Production: `https://www.vendus.pt/ws/`
 - Spain: `https://www.vendus.es/ws/`
-- Sandbox: TBD — investigate during v0.1 dev
+- Sandbox: **none.** Vendus has no separate sandbox host. Testing is done via a document-level test mode — pass `mode=tests` on a create call, or use a register configured in `tests` mode (new accounts default to this). Test documents are non-fiscal and not communicated to the AT (their `tax_authority_id` stays empty). Sources: [documents.doc](https://www.vendus.pt/ws/v1.1/documents.doc), [registers.doc](https://www.vendus.pt/ws/v1.1/registers.doc), [Modo de Formação/Testes](https://www.vendus.cv/ajuda/modo-formacao-testes/). Not yet live-verified: whether a per-request `mode=tests` overrides a `normal` register.
 
 ### Endpoint Versions
 - Documents: `v1.1` (`/ws/v1.1/documents/`)

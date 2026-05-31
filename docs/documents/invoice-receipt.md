@@ -12,7 +12,7 @@ The Invoice-Receipt (FR) is **an invoice and a receipt in one document**: it bil
 
 ```python
 from decimal import Decimal
-from vendus import VendusClient, ClientData, DocumentItem
+from vendus import ClientData, DocumentItem, TaxCategory, VendusClient
 
 client = VendusClient.from_env()
 
@@ -24,7 +24,7 @@ fr = client.documents.create_invoice_receipt(
             description="Consulting session (paid on the spot)",
             quantity=Decimal("1"),
             unit_price=Decimal("90.00"),
-            tax_rate=Decimal("23"),
+            tax_category=TaxCategory.NORMAL,
         ),
     ],
     external_reference="FR-2026-001",
@@ -73,5 +73,5 @@ fr = await client.documents.create_invoice_receipt_async(
 ## Notes
 
 1. **Immediate payment:** FR assumes payment happens at issue time. If you bill on credit, use `create_invoice` (FT) and issue the receipt (RC) when the client pays — RC comes in a future version.
-2. **Cancellation:** same API (`client.documents.cancel(id, reason)`).
+2. **Cancellation:** same API (`client.documents.cancel(id)`).
 3. **Credit note:** an FR can be credited via `create_credit_note` referencing the FR's `id`.

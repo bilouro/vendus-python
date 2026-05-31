@@ -20,6 +20,7 @@ invoices = client.documents.list(
 for inv in invoices:
     print(f"  {inv.number}  {inv.gross_amount} EUR")
 
-# Cancel a document (reason required by AT)
-cancelled = client.documents.cancel(12345, reason="Issued in error")
+# Cancel (void) a document. Vendus has no API field for a cancellation reason,
+# so none is passed — any AT justification is handled in the Vendus backoffice.
+cancelled = client.documents.cancel(12345)
 print(f"Cancelled: {cancelled.number} ({cancelled.status})")

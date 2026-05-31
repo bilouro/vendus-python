@@ -45,7 +45,7 @@ O SDK valida localmente **antes** de tocar na API:
 
 - **NIF português:** algoritmo mod 11 (rejeita check digits errados)
 - **NIF 999999990:** explicitamente rejeitado
-- **Items:** pelo menos um, `quantity > 0`, `0 ≤ tax_rate ≤ 100`
+- **Items:** pelo menos um, `quantity > 0`, uma `tax_category` (NORMAL/INTERMEDIATE/REDUCED/EXEMPT/OTHER)
 - **Nota de Crédito:** exige `reference_document_id` e `reason`
 - **Cancelamento:** exige `reason`
 

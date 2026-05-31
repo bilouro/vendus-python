@@ -15,6 +15,7 @@ from vendus import (
     ClientData,
     DocumentItem,
     RateLimitError,
+    TaxCategory,
     TransportError,
     ValidationError,
     VendusClient,
@@ -28,7 +29,7 @@ class ItemIn(BaseModel):
     description: str
     quantity: Decimal
     unit_price: Decimal
-    tax_rate: Decimal
+    tax_category: TaxCategory
 
 
 class InvoiceRequest(BaseModel):
@@ -50,7 +51,7 @@ async def create_invoice(req: InvoiceRequest) -> dict[str, object]:
             description=i.description,
             quantity=i.quantity,
             unit_price=i.unit_price,
-            tax_rate=i.tax_rate,
+            tax_category=i.tax_category,
         )
         for i in req.items
     ]

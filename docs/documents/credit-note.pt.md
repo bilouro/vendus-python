@@ -32,7 +32,7 @@ sequenceDiagram
 
 ```python
 from decimal import Decimal
-from vendus import VendusClient, ClientData, DocumentItem
+from vendus import ClientData, DocumentItem, TaxCategory, VendusClient
 
 client = VendusClient.from_env()
 
@@ -49,7 +49,7 @@ nc = client.documents.create_credit_note(
             description="Consultoria (creditada)",
             quantity=Decimal("2"),
             unit_price=Decimal("75.00"),
-            tax_rate=Decimal("23"),
+            tax_category=TaxCategory.NORMAL,
         ),
     ],
     external_reference="REFUND-2026-001",
@@ -84,5 +84,5 @@ nc = await client.documents.create_credit_note_async(
 ## Notas
 
 1. **NC total vs parcial:** se devolves o total, replica todos os itens. Se devolves uma parte, inclui só os itens/quantidades a creditar.
-2. **Não é cancelamento:** uma NC **credita** o valor mas mantém o documento original. Para cancelar completamente, usa `client.documents.cancel(id, reason)` em alternativa.
+2. **Não é cancelamento:** uma NC **credita** o valor mas mantém o documento original. Para cancelar completamente, usa `client.documents.cancel(id)` em alternativa.
 3. **Cliente coerente:** se o original foi a Consumidor Final, a NC também deve omitir `client`.

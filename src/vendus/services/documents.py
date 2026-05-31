@@ -28,7 +28,7 @@ from vendus._config import (
 from vendus._validators import validate_nif_pt
 from vendus.exceptions import ValidationError
 from vendus.models.client import ClientData
-from vendus.models.document import Document, DocumentItem, DocumentType
+from vendus.models.document import Document, DocumentItem, DocumentMode, DocumentType
 from vendus.services._base import BaseService
 
 _PATH = f"/{API_VERSION_DOCUMENTS}{PATH_DOCUMENTS}"
@@ -67,18 +67,39 @@ def _serialize_items(items: list[DocumentItem]) -> list[dict[str, Any]]:
             "title": item.description,
             "qty": float(item.quantity),
             "gross_price": float(item.unit_price),
-            "tax_rate": float(item.tax_rate),
+            # Vendus models VAT by category code (tax_id), not a numeric rate.
+            "tax_id": item.tax_category.value,
             **(
                 {"tax_exemption": item.tax_exemption.value}
                 if item.tax_exemption is not None
                 else {}
             ),
-            **({"discount": float(item.discount)} if item.discount is not None else {}),
-            **({"product_id": item.product_id} if item.product_id is not None else {}),
+            # `discount` is a percentage (0-100) -> Vendus `discount_percentage`.
+            **({"discount_percentage": float(item.discount)} if item.discount is not None else {}),
+            # `product_id` references an existing Vendus product -> `id`.
+            # (not yet live-verified; serialized per the documented field list.)
+            **({"id": item.product_id} if item.product_id is not None else {}),
             **({"reference": item.reference} if item.reference is not None else {}),
         }
         for item in items
     ]
+
+
+def _apply_optional(
+    body: dict[str, Any],
+    client: ClientData | None,
+    external_reference: str | None,
+    mode: DocumentMode | None,
+) -> None:
+    """Attach the fields shared by every create call, only when provided."""
+    serialized_client = _serialize_client(client)
+    if serialized_client is not None:
+        body["client"] = serialized_client
+    if external_reference is not None:
+        body["external_reference"] = external_reference
+    # Omit `mode` to let Vendus fall back to the register's configured mode.
+    if mode is not None:
+        body["mode"] = mode.value
 
 
 def _build_invoice_body(
@@ -86,17 +107,14 @@ def _build_invoice_body(
     items: list[DocumentItem],
     client: ClientData | None,
     external_reference: str | None,
+    mode: DocumentMode | None = None,
 ) -> dict[str, Any]:
     body: dict[str, Any] = {
         "type": DocumentType.INVOICE.value,
         "register_id": register_id,
         "items": _serialize_items(items),
     }
-    serialized_client = _serialize_client(client)
-    if serialized_client is not None:
-        body["client"] = serialized_client
-    if external_reference is not None:
-        body["external_reference"] = external_reference
+    _apply_optional(body, client, external_reference, mode)
     return body
 
 
@@ -105,17 +123,14 @@ def _build_invoice_receipt_body(
     items: list[DocumentItem],
     client: ClientData | None,
     external_reference: str | None,
+    mode: DocumentMode | None = None,
 ) -> dict[str, Any]:
     body: dict[str, Any] = {
         "type": DocumentType.INVOICE_RECEIPT.value,
         "register_id": register_id,
         "items": _serialize_items(items),
     }
-    serialized_client = _serialize_client(client)
-    if serialized_client is not None:
-        body["client"] = serialized_client
-    if external_reference is not None:
-        body["external_reference"] = external_reference
+    _apply_optional(body, client, external_reference, mode)
     return body
 
 
@@ -126,6 +141,7 @@ def _build_credit_note_body(
     items: list[DocumentItem],
     client: ClientData | None,
     external_reference: str | None,
+    mode: DocumentMode | None = None,
 ) -> dict[str, Any]:
     # R13: reference_document_id is a required argument (typed int) — the type
     # system enforces its presence. We only validate the reason here.
@@ -139,11 +155,7 @@ def _build_credit_note_body(
         "notes": reason,
         "items": _serialize_items(items),
     }
-    serialized_client = _serialize_client(client)
-    if serialized_client is not None:
-        body["client"] = serialized_client
-    if external_reference is not None:
-        body["external_reference"] = external_reference
+    _apply_optional(body, client, external_reference, mode)
     return body
 
 
@@ -166,6 +178,7 @@ def _parse_document(data: dict[str, Any]) -> Document:
         net_amount=Decimal(str(data.get("amount_net", "0"))),
         hash=data.get("hash"),
         atcud=data.get("atcud"),
+        tax_authority_id=data.get("tax_authority_id"),
         qrcode=data.get("qrcode"),
         output=data.get("output"),
         output_data=data.get("output_data"),
@@ -189,6 +202,7 @@ class DocumentsService(BaseService):
         items: list[DocumentItem],
         client: ClientData | None = None,
         external_reference: str | None = None,
+        mode: DocumentMode | None = None,
     ) -> Document:
         """Issue an invoice (FT).
 
@@ -198,8 +212,11 @@ class DocumentsService(BaseService):
             client: Client data — upserted by fiscal_id. Omit for final consumer.
             external_reference: Your internal reference. Required to enable
                 safe POST retries (R3).
+            mode: Working mode. Pass ``DocumentMode.TESTS`` to issue a non-fiscal
+                test document that is not reported to the AT. Omit to use the
+                register's configured mode.
         """
-        body = _build_invoice_body(register_id, items, client, external_reference)
+        body = _build_invoice_body(register_id, items, client, external_reference, mode)
         response = self._request("POST", _PATH, json=body)
         return _parse_document(response.json())
 
@@ -209,8 +226,9 @@ class DocumentsService(BaseService):
         items: list[DocumentItem],
         client: ClientData | None = None,
         external_reference: str | None = None,
+        mode: DocumentMode | None = None,
     ) -> Document:
-        body = _build_invoice_body(register_id, items, client, external_reference)
+        body = _build_invoice_body(register_id, items, client, external_reference, mode)
         response = await self._request_async("POST", _PATH, json=body)
         return _parse_document(response.json())
 
@@ -222,6 +240,7 @@ class DocumentsService(BaseService):
         items: list[DocumentItem],
         client: ClientData | None = None,
         external_reference: str | None = None,
+        mode: DocumentMode | None = None,
     ) -> Document:
         """Issue a Fatura-Recibo (FR).
 
@@ -230,8 +249,9 @@ class DocumentsService(BaseService):
         (typical for services and freelancers).
 
         Client can be omitted (final consumer) or passed with/without fiscal_id.
+        Pass ``mode=DocumentMode.TESTS`` for a non-fiscal test document.
         """
-        body = _build_invoice_receipt_body(register_id, items, client, external_reference)
+        body = _build_invoice_receipt_body(register_id, items, client, external_reference, mode)
         response = self._request("POST", _PATH, json=body)
         return _parse_document(response.json())
 
@@ -241,8 +261,9 @@ class DocumentsService(BaseService):
         items: list[DocumentItem],
         client: ClientData | None = None,
         external_reference: str | None = None,
+        mode: DocumentMode | None = None,
     ) -> Document:
-        body = _build_invoice_receipt_body(register_id, items, client, external_reference)
+        body = _build_invoice_receipt_body(register_id, items, client, external_reference, mode)
         response = await self._request_async("POST", _PATH, json=body)
         return _parse_document(response.json())
 
@@ -256,6 +277,7 @@ class DocumentsService(BaseService):
         items: list[DocumentItem],
         client: ClientData | None = None,
         external_reference: str | None = None,
+        mode: DocumentMode | None = None,
     ) -> Document:
         """Issue a credit note (NC) referencing a previously-issued document.
 
@@ -266,9 +288,11 @@ class DocumentsService(BaseService):
             items: Line items to credit.
             client: Client data — should match the original invoice's client.
             external_reference: Your internal reference. Enables safe POST retries.
+            mode: Working mode. ``DocumentMode.TESTS`` for a non-fiscal test
+                document; omit to use the register's configured mode.
         """
         body = _build_credit_note_body(
-            register_id, reference_document_id, reason, items, client, external_reference
+            register_id, reference_document_id, reason, items, client, external_reference, mode
         )
         response = self._request("POST", _PATH, json=body)
         return _parse_document(response.json())
@@ -281,9 +305,10 @@ class DocumentsService(BaseService):
         items: list[DocumentItem],
         client: ClientData | None = None,
         external_reference: str | None = None,
+        mode: DocumentMode | None = None,
     ) -> Document:
         body = _build_credit_note_body(
-            register_id, reference_document_id, reason, items, client, external_reference
+            register_id, reference_document_id, reason, items, client, external_reference, mode
         )
         response = await self._request_async("POST", _PATH, json=body)
         return _parse_document(response.json())
@@ -342,19 +367,18 @@ class DocumentsService(BaseService):
         items = data if isinstance(data, list) else data.get("data", [])
         return [_parse_document(item) for item in items]
 
-    def cancel(self, document_id: int, reason: str) -> Document:
-        """Cancel a document. Reason is required by AT."""
-        if not reason or not reason.strip():
-            raise ValidationError("Cancellation reason is required")
-        response = self._request(
-            "PATCH", f"{_PATH}/{document_id}", json={"status": "A", "notes": reason}
-        )
+    def cancel(self, document_id: int) -> Document:
+        """Cancel (void) a document by setting its status to cancelled (``A``).
+
+        Vendus has no API field for a cancellation reason — the document PATCH
+        endpoint accepts only ``status``/``mode`` — so the SDK sends none. Any
+        AT-required justification is handled in the Vendus backoffice.
+        """
+        response = self._request("PATCH", f"{_PATH}/{document_id}", json={"status": "A"})
         return _parse_document(response.json())
 
-    async def cancel_async(self, document_id: int, reason: str) -> Document:
-        if not reason or not reason.strip():
-            raise ValidationError("Cancellation reason is required")
+    async def cancel_async(self, document_id: int) -> Document:
         response = await self._request_async(
-            "PATCH", f"{_PATH}/{document_id}", json={"status": "A", "notes": reason}
+            "PATCH", f"{_PATH}/{document_id}", json={"status": "A"}
         )
         return _parse_document(response.json())

@@ -60,13 +60,31 @@ logging.getLogger("vendus").setLevel(logging.DEBUG)
 !!! warning "Nunca faças bypass ao logger"
     Não imprimas payloads diretamente com `print(json)` ou outro logger. Usa sempre `logging.getLogger("vendus")` para que a redação se aplique.
 
-## Sandbox
+## Testes
 
-A Vendus **não tem ambiente de sandbox público** documentado. Toda chamada autenticada atinge produção e pode criar documentos fiscais reais com implicações fiscais com a AT.
+A Vendus **não tem um host de sandbox separado** — não há URL de testes; todos os pedidos vão para `www.vendus.pt`. O que a Vendus tem é um **modo de testes ao nível do documento** ("Modo de Formação/Testes"): documentos emitidos em modo testes **não têm validade fiscal** e **nunca são comunicados à AT**.
 
-Estratégias recomendadas:
+O modo de testes controla-se de duas formas:
 
-1. **Conta dedicada para testes** — Vendus aceita criar contas de demonstração comerciais
-2. **Série dedicada** — configura uma série de documentos exclusiva para testes ("FT-TESTE") na conta de produção
-3. **Cancelar imediatamente** — todos os documentos de teste devem ser cancelados via `client.documents.cancel(id, reason="teste")`
-4. **Mocks em testes unitários** — usa `respx` para fingir respostas, evitando completamente chamadas à API real
+1. **Por caixa (register).** Cada caixa tem um modo de funcionamento (`normal` ou `tests`), configurado no backoffice da Vendus (*Configuração → Definições → Lojas e Caixas*). **Contas novas vêm em `tests`** — uma conta acabada de criar emite documentos sem validade fiscal até a passares para `normal`.
+2. **Por pedido.** Passa `mode` a qualquer método de criação:
+
+```python
+from vendus import DocumentMode
+
+invoice = client.documents.create_invoice(
+    register_id=1,
+    items=[...],
+    mode=DocumentMode.TESTS,   # não-fiscal — não comunicado à AT
+)
+```
+
+Se omitires `mode`, a Vendus usa o modo configurado na caixa. Um documento de teste recebe na mesma um `number` e é impresso com a nota "sem validade fiscal". Confirmas que um documento **não** foi comunicado à AT porque o `tax_authority_id` vem vazio (esse campo só é preenchido quando a Vendus comunica o documento à AT).
+
+!!! note "O que está verificado e o que não está"
+    O comportamento acima vem da documentação oficial: o campo `mode` ([documents.doc](https://www.vendus.pt/ws/v1.1/documents.doc)), o modo por caixa ([registers.doc](https://www.vendus.pt/ws/v1.1/registers.doc)) e a página de ajuda [Modo de Formação/Testes](https://www.vendus.cv/ajuda/modo-formacao-testes/). O que ainda **não** confirmámos contra a API ao vivo é se um `mode=tests` por pedido é respeitado numa caixa configurada como `normal`. O caminho fiável e verificado é usar uma caixa que esteja ela própria em modo `tests`.
+
+### Setup recomendado
+
+- **Testes unitários** — mock com `respx`; nunca tocar na API real.
+- **Testes de integração** — correr contra uma caixa em modo `tests`, assertar que `tax_authority_id` está vazio e cancelar o que for criado (ver `tests/integration/`).

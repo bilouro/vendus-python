@@ -12,7 +12,7 @@ from vendus import (
     ClientData,
     DocumentItem,
     DocumentType,
-    ValidationError,
+    TaxCategory,
     VendusClient,
 )
 
@@ -31,7 +31,7 @@ def items() -> list[DocumentItem]:
             description="x",
             quantity=Decimal("1"),
             unit_price=Decimal("10"),
-            tax_rate=Decimal("23"),
+            tax_category=TaxCategory.NORMAL,
         ),
     ]
 
@@ -97,23 +97,21 @@ class TestList:
 class TestCancel:
     def test_cancel_sync(self, vendus: VendusClient) -> None:
         with respx.mock(base_url=_BASE) as router:
-            router.patch("/v1.1/documents/9").mock(return_value=httpx.Response(200, json=_doc(9)))
-            doc = vendus.documents.cancel(9, reason="Mistake")
+            route = router.patch("/v1.1/documents/9").mock(
+                return_value=httpx.Response(200, json=_doc(9))
+            )
+            doc = vendus.documents.cancel(9)
         assert doc.id == 9
-
-    def test_cancel_requires_reason(self, vendus: VendusClient) -> None:
-        with pytest.raises(ValidationError, match="reason"):
-            vendus.documents.cancel(9, reason="")
+        # Wire shape: only status is sent — Vendus rejects `notes` on this endpoint.
+        body = route.calls.last.request.content.decode()
+        assert '"status":"A"' in body or '"status": "A"' in body
+        assert "notes" not in body
 
     async def test_cancel_async(self, vendus: VendusClient) -> None:
         with respx.mock(base_url=_BASE) as router:
             router.patch("/v1.1/documents/9").mock(return_value=httpx.Response(200, json=_doc(9)))
-            doc = await vendus.documents.cancel_async(9, reason="x")
+            doc = await vendus.documents.cancel_async(9)
         assert doc.id == 9
-
-    async def test_cancel_async_requires_reason(self, vendus: VendusClient) -> None:
-        with pytest.raises(ValidationError, match="reason"):
-            await vendus.documents.cancel_async(9, reason="   ")
 
 
 class TestCreditNoteAsync:

@@ -9,7 +9,7 @@ from typing import Any, Optional
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from vendus.models.tax import TaxExemption
+from vendus.models.tax import TaxCategory, TaxExemption
 
 
 class DocumentType(str, Enum):
@@ -23,6 +23,20 @@ class DocumentType(str, Enum):
     RECEIPT = "RC"
     QUOTE = "OR"
     DELIVERY_NOTE = "GT"
+
+
+class DocumentMode(str, Enum):
+    """Working mode for a document (Vendus ``mode`` field).
+
+    NORMAL issues a real fiscal document that Vendus communicates to the AT.
+    TESTS issues a non-fiscal "Modo de Formação/Testes" document that is **not**
+    communicated to the AT (no fiscal validity) — the safe way to test.
+
+    When omitted on a create call, Vendus uses the register's configured mode.
+    """
+
+    NORMAL = "normal"
+    TESTS = "tests"
 
 
 class DocumentStatus(str, Enum):
@@ -60,12 +74,13 @@ class DocumentItem(BaseModel):
     description: str = Field(..., description="Description shown on the document line.")
     quantity: Decimal = Field(..., gt=0)
     unit_price: Decimal = Field(..., ge=0, description="Gross unit price including tax.")
-    tax_rate: Decimal = Field(
-        ..., ge=0, le=100, description="VAT rate as a percentage (e.g. 23 for 23%)."
+    tax_category: TaxCategory = Field(
+        ...,
+        description="VAT category. Maps to Vendus tax_id (e.g. NORMAL -> 'NOR').",
     )
     tax_exemption: Optional[TaxExemption] = Field(
         default=None,
-        description="Required by AT when tax_rate is 0. Use an M01-M99 code.",
+        description="Required by AT when tax_category is EXEMPT. Use an M01-M99 code.",
     )
     discount: Optional[Decimal] = Field(default=None, ge=0, le=100)
     product_id: Optional[int] = None
@@ -89,6 +104,13 @@ class Document(BaseModel):
     tax_amount: Optional[Decimal] = None
     hash: Optional[str] = None
     atcud: Optional[str] = None
+    tax_authority_id: Optional[str] = Field(
+        default=None,
+        description=(
+            "AT-generated document id. Only set once Vendus has communicated the "
+            "document to the AT; empty for test-mode (non-fiscal) documents."
+        ),
+    )
     qrcode: Optional[str] = Field(default=None, description="AT QR code payload.")
     output: Optional[str] = None
     output_data: Optional[str] = None

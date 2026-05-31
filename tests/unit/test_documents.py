@@ -14,12 +14,15 @@ from vendus import (
     ClientData,
     Document,
     DocumentItem,
+    DocumentMode,
     DocumentType,
+    TaxCategory,
     ValidationError,
 )
 from vendus.services.documents import (
     _build_credit_note_body,
     _build_invoice_body,
+    _build_invoice_receipt_body,
     _parse_document,
 )
 
@@ -31,7 +34,7 @@ def items() -> list[DocumentItem]:
             description="Consulting hours",
             quantity=Decimal("10"),
             unit_price=Decimal("75.00"),
-            tax_rate=Decimal("23"),
+            tax_category=TaxCategory.NORMAL,
         ),
     ]
 
@@ -50,6 +53,9 @@ class TestBuildInvoiceBody:
         assert "external_reference" not in body
         assert len(body["items"]) == 1
         assert body["items"][0]["title"] == "Consulting hours"
+        # Wire shape: Vendus wants a tax category id, never a numeric tax_rate.
+        assert body["items"][0]["tax_id"] == "NOR"
+        assert "tax_rate" not in body["items"][0]
 
     def test_with_client(self, items: list[DocumentItem], client_data: ClientData) -> None:
         body = _build_invoice_body(1, items, client_data, None)
@@ -91,6 +97,28 @@ class TestBuildCreditNoteBody:
             _build_credit_note_body(1, 999, "   ", items, None, None)
 
 
+class TestMode:
+    """The `mode` field controls fiscal vs. test (non-fiscal) documents."""
+
+    def test_omitted_by_default(self, items: list[DocumentItem]) -> None:
+        # Omitting mode lets Vendus use the register's configured mode.
+        assert "mode" not in _build_invoice_body(1, items, None, None)
+        assert "mode" not in _build_invoice_receipt_body(1, items, None, None)
+        assert "mode" not in _build_credit_note_body(1, 9, "r", items, None, None)
+
+    def test_tests_mode_on_wire(self, items: list[DocumentItem]) -> None:
+        body = _build_invoice_body(1, items, None, None, mode=DocumentMode.TESTS)
+        assert body["mode"] == "tests"
+
+    def test_normal_mode_on_wire(self, items: list[DocumentItem]) -> None:
+        body = _build_invoice_receipt_body(1, items, None, None, mode=DocumentMode.NORMAL)
+        assert body["mode"] == "normal"
+
+    def test_credit_note_mode_on_wire(self, items: list[DocumentItem]) -> None:
+        body = _build_credit_note_body(1, 9, "Return", items, None, None, mode=DocumentMode.TESTS)
+        assert body["mode"] == "tests"
+
+
 class TestParseDocument:
     def test_parses_invoice_response(self, load_fixture: Any) -> None:
         data = load_fixture("invoice_created.json")
@@ -100,7 +128,14 @@ class TestParseDocument:
         assert doc.number == "FT 2026/123"
         assert doc.gross_amount == Decimal("92.25")
         assert doc.atcud == "AAAAAAAA-123"
+        # Fixture has no tax_authority_id → not communicated to the AT.
+        assert doc.tax_authority_id is None
         assert doc.raw_response == data
+
+    def test_parses_tax_authority_id_when_present(self, load_fixture: Any) -> None:
+        data = {**load_fixture("invoice_created.json"), "tax_authority_id": "AT-987654"}
+        doc = _parse_document(data)
+        assert doc.tax_authority_id == "AT-987654"
 
     def test_parses_credit_note_response(self, load_fixture: Any) -> None:
         data = load_fixture("credit_note_created.json")

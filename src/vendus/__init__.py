@@ -18,8 +18,10 @@ from vendus.models import (
     ClientData,
     Document,
     DocumentItem,
+    DocumentMode,
     DocumentStatus,
     DocumentType,
+    TaxCategory,
     TaxExemption,
 )
 
@@ -30,10 +32,12 @@ __all__ = [
     "ClientData",
     "Document",
     "DocumentItem",
+    "DocumentMode",
     "DocumentStatus",
     "DocumentType",
     "NotFoundError",
     "RateLimitError",
+    "TaxCategory",
     "TaxExemption",
     "TransportError",
     "ValidationError",

@@ -9,7 +9,7 @@ from __future__ import annotations
 import asyncio
 from decimal import Decimal
 
-from vendus import ClientData, DocumentItem, VendusClient
+from vendus import ClientData, DocumentItem, TaxCategory, VendusClient
 
 
 async def main() -> None:
@@ -23,7 +23,7 @@ async def main() -> None:
                 description="Service",
                 quantity=Decimal("1"),
                 unit_price=Decimal("100"),
-                tax_rate=Decimal("23"),
+                tax_category=TaxCategory.NORMAL,
             ),
         ],
         external_reference="ASYNC-2026-001",

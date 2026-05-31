@@ -7,10 +7,7 @@ Sync route to issue an invoice.
 from decimal import Decimal
 from flask import Flask, request, jsonify
 
-from vendus import (
-    VendusClient, ClientData, DocumentItem,
-    ValidationError, RateLimitError, APIError, TransportError,
-)
+from vendus import APIError, ClientData, DocumentItem, RateLimitError, TaxCategory, TransportError, ValidationError, VendusClient
 
 app = Flask(__name__)
 vendus = VendusClient.from_env()
@@ -29,7 +26,7 @@ def create_invoice():
             description=i["description"],
             quantity=Decimal(i["quantity"]),
             unit_price=Decimal(i["unit_price"]),
-            tax_rate=Decimal(i["tax_rate"]),
+            tax_category=TaxCategory(i["tax_category"]),
         )
         for i in data["items"]
     ]

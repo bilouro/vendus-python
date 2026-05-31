@@ -13,7 +13,7 @@ from __future__ import annotations
 
 from decimal import Decimal
 
-from vendus import ClientData, DocumentItem, VendusClient
+from vendus import ClientData, DocumentItem, TaxCategory, VendusClient
 
 client = VendusClient.from_env()
 
@@ -25,7 +25,7 @@ fr = client.documents.create_invoice_receipt(
             description="Consulting session (paid on the spot)",
             quantity=Decimal("1"),
             unit_price=Decimal("90.00"),
-            tax_rate=Decimal("23"),
+            tax_category=TaxCategory.NORMAL,
         ),
     ],
     external_reference="FR-2026-001",

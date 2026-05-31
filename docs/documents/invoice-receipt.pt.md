@@ -12,7 +12,7 @@ A Fatura-Recibo (FR) é **fatura e recibo num só documento**: factura a venda *
 
 ```python
 from decimal import Decimal
-from vendus import VendusClient, ClientData, DocumentItem
+from vendus import ClientData, DocumentItem, TaxCategory, VendusClient
 
 client = VendusClient.from_env()
 
@@ -24,7 +24,7 @@ fr = client.documents.create_invoice_receipt(
             description="Sessão de consultoria (paga na hora)",
             quantity=Decimal("1"),
             unit_price=Decimal("90.00"),
-            tax_rate=Decimal("23"),
+            tax_category=TaxCategory.NORMAL,
         ),
     ],
     external_reference="FR-2026-001",
@@ -73,5 +73,5 @@ fr = await client.documents.create_invoice_receipt_async(
 ## Notas
 
 1. **Pagamento imediato:** a FR pressupõe que o pagamento ocorre no momento da emissão. Se faturas a crédito, usa `create_invoice` (FT) e emite o recibo (RC) quando o cliente pagar — RC chega numa versão futura.
-2. **Cancelamento:** mesma API (`client.documents.cancel(id, reason)`).
+2. **Cancelamento:** mesma API (`client.documents.cancel(id)`).
 3. **Nota de crédito:** uma FR pode ser creditada via `create_credit_note` referenciando o `id` da FR.

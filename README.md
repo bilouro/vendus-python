@@ -27,7 +27,7 @@ Requires Python 3.9+. No additional dependencies beyond [httpx](https://www.pyth
 
 ```python
 from decimal import Decimal
-from vendus import VendusClient, ClientData, DocumentItem
+from vendus import ClientData, DocumentItem, TaxCategory, VendusClient
 
 client = VendusClient(api_key="your-api-key")
 
@@ -40,7 +40,7 @@ invoice = client.documents.create_invoice(
             description="Consulting hours",
             quantity=Decimal("10"),
             unit_price=Decimal("75.00"),  # gross (includes tax)
-            tax_rate=Decimal("23"),
+            tax_category=TaxCategory.NORMAL,
         ),
     ],
     external_reference="ORD-2026-001",   # enables safe POST retries
@@ -100,7 +100,7 @@ credit_note = client.documents.create_credit_note(
             description="Consulting hours (credited)",
             quantity=Decimal("2"),
             unit_price=Decimal("75.00"),
-            tax_rate=Decimal("23"),
+            tax_category=TaxCategory.NORMAL,
         ),
     ],
     external_reference="REFUND-2026-001",
@@ -167,6 +167,20 @@ client = VendusClient.from_env()
 | Orçamento | OR | — | v0.2 |
 | Guia de Transporte | GT | — | v0.2 |
 | Nota de Débito | ND | — | v0.2 |
+
+### Validation status
+
+The wire format of every operation is asserted by unit tests (respx mocks). Live validation runs against the real Vendus API in **test mode** (`mode=tests`) — non-fiscal documents that are never reported to the AT:
+
+| Operation | Unit | Live |
+|---|:-:|---|
+| `create_invoice` (FT) | ✅ | ✅ test mode — non-fiscal, `tax_authority_id` empty |
+| `create_invoice_receipt` (FR) | ✅ | ⚠️ not yet run live |
+| `create_credit_note` (NC) | ✅ | ⚠️ not yet run live |
+| `get` / `list` | ✅ | ✅ read-only, against real documents |
+| `cancel` | ✅ | ⚠️ not live-validated (see note) |
+
+> Test-mode documents ("Modo de Formação") are non-fiscal and never reported to the AT. Vendus stores them in a separate space, so they can't be retrieved or cancelled via `/documents/{id}`. Live `get`/`list` are validated read-only against real documents; `cancel` is not live-validated because voiding a real fiscal document is destructive.
 
 ## Why This SDK
 

@@ -60,13 +60,31 @@ logging.getLogger("vendus").setLevel(logging.DEBUG)
 !!! warning "Never bypass the logger"
     Don't print payloads directly with `print(json)` or another logger. Always use `logging.getLogger("vendus")` so redaction applies.
 
-## Sandbox
+## Testing
 
-Vendus **does not have a publicly documented sandbox environment**. Every authenticated call hits production and may create real fiscal documents with AT-reporting implications.
+Vendus has **no separate sandbox host** — there is no test URL; every request goes to `www.vendus.pt`. What Vendus does have is a document-level **test mode** ("Modo de Formação/Testes"): documents issued in test mode have **no fiscal validity** and are **never communicated to the AT**.
 
-Recommended strategies:
+Test mode is controlled two ways:
 
-1. **Dedicated test account** — Vendus accepts creating commercial demo accounts
-2. **Dedicated series** — configure a document series exclusively for tests ("FT-TEST") on the production account
-3. **Cancel immediately** — every test document should be cancelled via `client.documents.cancel(id, reason="test")`
-4. **Mocks in unit tests** — use `respx` to fake responses and avoid real API calls entirely
+1. **Per register (caixa).** Each register has a working mode (`normal` or `tests`), set in the Vendus backoffice (*Configuração → Definições → Lojas e Caixas*). **New accounts default to `tests`** — a fresh account issues non-fiscal documents until you switch it to `normal`.
+2. **Per request.** Pass `mode` to any create method:
+
+```python
+from vendus import DocumentMode
+
+invoice = client.documents.create_invoice(
+    register_id=1,
+    items=[...],
+    mode=DocumentMode.TESTS,   # non-fiscal — not reported to the AT
+)
+```
+
+Omit `mode` and Vendus uses the register's configured mode. A test document still gets a `number` and prints with a "sem validade fiscal" note. You can confirm a document was **not** reported to the AT because its `tax_authority_id` is empty (that field is only set once Vendus communicates the document to the AT).
+
+!!! note "What's verified, and what isn't"
+    The behaviour above is taken from the official docs: the `mode` field ([documents.doc](https://www.vendus.pt/ws/v1.1/documents.doc)), the per-register mode ([registers.doc](https://www.vendus.pt/ws/v1.1/registers.doc)), and the help page [Modo de Formação/Testes](https://www.vendus.cv/ajuda/modo-formacao-testes/). What we have **not** yet confirmed against the live API is whether a per-request `mode=tests` is honoured on a register configured as `normal`. The reliable, verified path is to use a register that is itself in `tests` mode.
+
+### Recommended setup
+
+- **Unit tests** — mock with `respx`; never hit the real API.
+- **Integration tests** — run against a register in `tests` mode, assert `tax_authority_id` is empty, and cancel what you create (see `tests/integration/`).

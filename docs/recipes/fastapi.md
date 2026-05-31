@@ -8,10 +8,7 @@ from decimal import Decimal
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 
-from vendus import (
-    VendusClient, ClientData, DocumentItem,
-    ValidationError, RateLimitError, APIError, TransportError,
-)
+from vendus import APIError, ClientData, DocumentItem, RateLimitError, TaxCategory, TransportError, ValidationError, VendusClient
 
 app = FastAPI()
 vendus = VendusClient.from_env()
@@ -21,7 +18,7 @@ class InvoiceItemIn(BaseModel):
     description: str
     quantity: Decimal
     unit_price: Decimal
-    tax_rate: Decimal
+    tax_category: TaxCategory
 
 
 class InvoiceIn(BaseModel):
@@ -43,7 +40,7 @@ async def create_invoice(payload: InvoiceIn):
             description=i.description,
             quantity=i.quantity,
             unit_price=i.unit_price,
-            tax_rate=i.tax_rate,
+            tax_category=i.tax_category,
         )
         for i in payload.items
     ]

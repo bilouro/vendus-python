@@ -39,7 +39,7 @@ client = VendusClient(api_key="...")
 
 ```python
 from decimal import Decimal
-from vendus import VendusClient, ClientData, DocumentItem
+from vendus import ClientData, DocumentItem, TaxCategory, VendusClient
 
 client = VendusClient.from_env()
 
@@ -54,7 +54,7 @@ invoice = client.documents.create_invoice(
             description="Consulting",
             quantity=Decimal("10"),
             unit_price=Decimal("75.00"), # gross, includes VAT
-            tax_rate=Decimal("23"),
+            tax_category=TaxCategory.NORMAL,
         ),
     ],
     external_reference="ORD-2026-001",   # enables safe POST retries

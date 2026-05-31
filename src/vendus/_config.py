@@ -6,7 +6,10 @@ from __future__ import annotations
 PRODUCTION_BASE_URL = "https://www.vendus.pt/ws"
 SPAIN_BASE_URL = "https://www.vendus.es/ws"
 
-# Sandbox URL — TBD. Investigate during v0.1 dev.
+# No sandbox host: Vendus has no separate test environment. Testing is done via
+# a document-level test mode (the `mode` field / a register in "tests" mode);
+# such documents are non-fiscal and not reported to the AT. See DocumentMode and
+# docs/getting-started/configuration.md. Kept here as None for config symmetry.
 SANDBOX_BASE_URL: str | None = None
 
 # Per-resource API versions (Vendus does not use a single version)

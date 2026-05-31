@@ -45,7 +45,7 @@ The SDK validates locally **before** hitting the API:
 
 - **Portuguese NIF:** mod 11 algorithm (rejects bad check digits)
 - **NIF 999999990:** explicitly rejected
-- **Items:** at least one, `quantity > 0`, `0 ≤ tax_rate ≤ 100`
+- **Items:** at least one, `quantity > 0`, a `tax_category` (NORMAL/INTERMEDIATE/REDUCED/EXEMPT/OTHER)
 - **Credit Note:** requires `reference_document_id` and `reason`
 - **Cancellation:** requires `reason`
 

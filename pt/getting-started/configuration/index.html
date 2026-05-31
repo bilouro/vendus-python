@@ -659,13 +659,30 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#sandbox" class="md-nav__link">
+  <a href="#testes" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Sandbox
+        Testes
       
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Testes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#setup-recomendado" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Setup recomendado
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1179,13 +1196,30 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#sandbox" class="md-nav__link">
+  <a href="#testes" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Sandbox
+        Testes
       
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Testes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#setup-recomendado" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Setup recomendado
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1305,15 +1339,31 @@
 <p class="admonition-title">Nunca faças bypass ao logger</p>
 <p>Não imprimas payloads diretamente com <code>print(json)</code> ou outro logger. Usa sempre <code>logging.getLogger("vendus")</code> para que a redação se aplique.</p>
 </div>
-<h2 id="sandbox">Sandbox<a class="headerlink" href="#sandbox" title="Permanent link">&para;</a></h2>
-<p>A Vendus <strong>não tem ambiente de sandbox público</strong> documentado. Toda chamada autenticada atinge produção e pode criar documentos fiscais reais com implicações fiscais com a AT.</p>
-<p>Estratégias recomendadas:</p>
+<h2 id="testes">Testes<a class="headerlink" href="#testes" title="Permanent link">&para;</a></h2>
+<p>A Vendus <strong>não tem um host de sandbox separado</strong> — não há URL de testes; todos os pedidos vão para <code>www.vendus.pt</code>. O que a Vendus tem é um <strong>modo de testes ao nível do documento</strong> ("Modo de Formação/Testes"): documentos emitidos em modo testes <strong>não têm validade fiscal</strong> e <strong>nunca são comunicados à AT</strong>.</p>
+<p>O modo de testes controla-se de duas formas:</p>
 <ol>
-<li><strong>Conta dedicada para testes</strong> — Vendus aceita criar contas de demonstração comerciais</li>
-<li><strong>Série dedicada</strong> — configura uma série de documentos exclusiva para testes ("FT-TESTE") na conta de produção</li>
-<li><strong>Cancelar imediatamente</strong> — todos os documentos de teste devem ser cancelados via <code>client.documents.cancel(id, reason="teste")</code></li>
-<li><strong>Mocks em testes unitários</strong> — usa <code>respx</code> para fingir respostas, evitando completamente chamadas à API real</li>
+<li><strong>Por caixa (register).</strong> Cada caixa tem um modo de funcionamento (<code>normal</code> ou <code>tests</code>), configurado no backoffice da Vendus (<em>Configuração → Definições → Lojas e Caixas</em>). <strong>Contas novas vêm em <code>tests</code></strong> — uma conta acabada de criar emite documentos sem validade fiscal até a passares para <code>normal</code>.</li>
+<li><strong>Por pedido.</strong> Passa <code>mode</code> a qualquer método de criação:</li>
 </ol>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">vendus</span><span class="w"> </span><span class="kn">import</span> <span class="n">DocumentMode</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="n">invoice</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">documents</span><span class="o">.</span><span class="n">create_invoice</span><span class="p">(</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>    <span class="n">register_id</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>    <span class="n">items</span><span class="o">=</span><span class="p">[</span><span class="o">...</span><span class="p">],</span>
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>    <span class="n">mode</span><span class="o">=</span><span class="n">DocumentMode</span><span class="o">.</span><span class="n">TESTS</span><span class="p">,</span>   <span class="c1"># não-fiscal — não comunicado à AT</span>
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="p">)</span>
+</code></pre></div>
+<p>Se omitires <code>mode</code>, a Vendus usa o modo configurado na caixa. Um documento de teste recebe na mesma um <code>number</code> e é impresso com a nota "sem validade fiscal". Confirmas que um documento <strong>não</strong> foi comunicado à AT porque o <code>tax_authority_id</code> vem vazio (esse campo só é preenchido quando a Vendus comunica o documento à AT).</p>
+<div class="admonition note">
+<p class="admonition-title">O que está verificado e o que não está</p>
+<p>O comportamento acima vem da documentação oficial: o campo <code>mode</code> (<a href="https://www.vendus.pt/ws/v1.1/documents.doc">documents.doc</a>), o modo por caixa (<a href="https://www.vendus.pt/ws/v1.1/registers.doc">registers.doc</a>) e a página de ajuda <a href="https://www.vendus.cv/ajuda/modo-formacao-testes/">Modo de Formação/Testes</a>. O que ainda <strong>não</strong> confirmámos contra a API ao vivo é se um <code>mode=tests</code> por pedido é respeitado numa caixa configurada como <code>normal</code>. O caminho fiável e verificado é usar uma caixa que esteja ela própria em modo <code>tests</code>.</p>
+</div>
+<h3 id="setup-recomendado">Setup recomendado<a class="headerlink" href="#setup-recomendado" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Testes unitários</strong> — mock com <code>respx</code>; nunca tocar na API real.</li>
+<li><strong>Testes de integração</strong> — correr contra uma caixa em modo <code>tests</code>, assertar que <code>tax_authority_id</code> está vazio e cancelar o que for criado (ver <code>tests/integration/</code>).</li>
+</ul>
 
 
 

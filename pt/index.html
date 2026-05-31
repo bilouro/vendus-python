@@ -1191,7 +1191,7 @@
 </div>
 <h2 id="quickstart">Quickstart<a class="headerlink" href="#quickstart" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">decimal</span><span class="w"> </span><span class="kn">import</span> <span class="n">Decimal</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">vendus</span><span class="w"> </span><span class="kn">import</span> <span class="n">VendusClient</span><span class="p">,</span> <span class="n">ClientData</span><span class="p">,</span> <span class="n">DocumentItem</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">vendus</span><span class="w"> </span><span class="kn">import</span> <span class="n">ClientData</span><span class="p">,</span> <span class="n">DocumentItem</span><span class="p">,</span> <span class="n">TaxCategory</span><span class="p">,</span> <span class="n">VendusClient</span>
 <a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
 <a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="n">client</span> <span class="o">=</span> <span class="n">VendusClient</span><span class="p">(</span><span class="n">api_key</span><span class="o">=</span><span class="s2">&quot;a-tua-key&quot;</span><span class="p">)</span>
 <a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>
@@ -1203,7 +1203,7 @@
 <a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Horas de consultoria&quot;</span><span class="p">,</span>
 <a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>            <span class="n">quantity</span><span class="o">=</span><span class="n">Decimal</span><span class="p">(</span><span class="s2">&quot;10&quot;</span><span class="p">),</span>
 <a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>            <span class="n">unit_price</span><span class="o">=</span><span class="n">Decimal</span><span class="p">(</span><span class="s2">&quot;75.00&quot;</span><span class="p">),</span>
-<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>            <span class="n">tax_rate</span><span class="o">=</span><span class="n">Decimal</span><span class="p">(</span><span class="s2">&quot;23&quot;</span><span class="p">),</span>
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>            <span class="n">tax_category</span><span class="o">=</span><span class="n">TaxCategory</span><span class="o">.</span><span class="n">NORMAL</span><span class="p">,</span>
 <a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>        <span class="p">),</span>
 <a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>    <span class="p">],</span>
 <a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="p">)</span>

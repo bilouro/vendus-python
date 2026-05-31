@@ -1837,7 +1837,7 @@ invoice = client.documents.create_invoice(...)</p>
 
 
 <h4 id="vendus.services.documents.DocumentsService.create_invoice" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">create_invoice</span><span class="p">(</span><span class="n">register_id</span><span class="p">,</span> <span class="n">items</span><span class="p">,</span> <span class="n">client</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">external_reference</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+            <code class="highlight language-python"><span class="n">create_invoice</span><span class="p">(</span><span class="n">register_id</span><span class="p">,</span> <span class="n">items</span><span class="p">,</span> <span class="n">client</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">external_reference</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
 
 <a href="#vendus.services.documents.DocumentsService.create_invoice" class="headerlink" title="Permanent link">&para;</a></h4>
 
@@ -1923,6 +1923,24 @@ safe POST retries (R3).</p>
                   <code>None</code>
             </td>
           </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>mode</code>
+            </td>
+            <td>
+                  <code><span title="vendus.models.document.DocumentMode">DocumentMode</span> | None</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Working mode. Pass <code>DocumentMode.TESTS</code> to issue a non-fiscal
+test document that is not reported to the AT. Omit to use the
+register's configured mode.</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
+            </td>
+          </tr>
       </tbody>
     </table>
 
@@ -1935,7 +1953,7 @@ safe POST retries (R3).</p>
 
 
 <h4 id="vendus.services.documents.DocumentsService.create_invoice_receipt" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">create_invoice_receipt</span><span class="p">(</span><span class="n">register_id</span><span class="p">,</span> <span class="n">items</span><span class="p">,</span> <span class="n">client</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">external_reference</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+            <code class="highlight language-python"><span class="n">create_invoice_receipt</span><span class="p">(</span><span class="n">register_id</span><span class="p">,</span> <span class="n">items</span><span class="p">,</span> <span class="n">client</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">external_reference</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
 
 <a href="#vendus.services.documents.DocumentsService.create_invoice_receipt" class="headerlink" title="Permanent link">&para;</a></h4>
 
@@ -1946,7 +1964,8 @@ safe POST retries (R3).</p>
 <p>An FR is an invoice and a receipt in a single document: it bills and
 acknowledges payment at once. Use it when the client pays immediately
 (typical for services and freelancers).</p>
-<p>Client can be omitted (final consumer) or passed with/without fiscal_id.</p>
+<p>Client can be omitted (final consumer) or passed with/without fiscal_id.
+Pass <code>mode=DocumentMode.TESTS</code> for a non-fiscal test document.</p>
 
 
     </div>
@@ -1957,7 +1976,7 @@ acknowledges payment at once. Use it when the client pays immediately
 
 
 <h4 id="vendus.services.documents.DocumentsService.create_credit_note" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">create_credit_note</span><span class="p">(</span><span class="n">register_id</span><span class="p">,</span> <span class="n">reference_document_id</span><span class="p">,</span> <span class="n">reason</span><span class="p">,</span> <span class="n">items</span><span class="p">,</span> <span class="n">client</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">external_reference</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+            <code class="highlight language-python"><span class="n">create_credit_note</span><span class="p">(</span><span class="n">register_id</span><span class="p">,</span> <span class="n">reference_document_id</span><span class="p">,</span> <span class="n">reason</span><span class="p">,</span> <span class="n">items</span><span class="p">,</span> <span class="n">client</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">external_reference</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
 
 <a href="#vendus.services.documents.DocumentsService.create_credit_note" class="headerlink" title="Permanent link">&para;</a></h4>
 
@@ -2074,6 +2093,23 @@ acknowledges payment at once. Use it when the client pays immediately
                   <code>None</code>
             </td>
           </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>mode</code>
+            </td>
+            <td>
+                  <code><span title="vendus.models.document.DocumentMode">DocumentMode</span> | None</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Working mode. <code>DocumentMode.TESTS</code> for a non-fiscal test
+document; omit to use the register's configured mode.</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
+            </td>
+          </tr>
       </tbody>
     </table>
 
@@ -2086,14 +2122,17 @@ acknowledges payment at once. Use it when the client pays immediately
 
 
 <h4 id="vendus.services.documents.DocumentsService.cancel" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">cancel</span><span class="p">(</span><span class="n">document_id</span><span class="p">,</span> <span class="n">reason</span><span class="p">)</span></code>
+            <code class="highlight language-python"><span class="n">cancel</span><span class="p">(</span><span class="n">document_id</span><span class="p">)</span></code>
 
 <a href="#vendus.services.documents.DocumentsService.cancel" class="headerlink" title="Permanent link">&para;</a></h4>
 
 
     <div class="doc doc-contents ">
 
-        <p>Cancel a document. Reason is required by AT.</p>
+        <p>Cancel (void) a document by setting its status to cancelled (<code>A</code>).</p>
+<p>Vendus has no API field for a cancellation reason — the document PATCH
+endpoint accepts only <code>status</code>/<code>mode</code> — so the SDK sends none. Any
+AT-required justification is handled in the Vendus backoffice.</p>
 
 
     </div>
@@ -2375,9 +2414,9 @@ client object in the document response.</p>
 
 
         <p>AT-mandated VAT exemption reason codes (M01-M99).</p>
-<p>Use when a line item has tax_rate == 0 and an exemption reason is required.
-Full list is published by Autoridade Tributária. The codes here are the most
-common; add to this enum as needed.</p>
+<p>Use when a line item has <code>tax_category=TaxCategory.EXEMPT</code> and an exemption
+reason is required. Full list is published by Autoridade Tributária. The codes
+here are the most common; add to this enum as needed.</p>
 
 
 

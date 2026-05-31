@@ -1257,7 +1257,7 @@
     SDK--&gt;&gt;App: Document(NC)</code></pre>
 <h2 id="exemplo-completo">Exemplo completo<a class="headerlink" href="#exemplo-completo" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">decimal</span><span class="w"> </span><span class="kn">import</span> <span class="n">Decimal</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">vendus</span><span class="w"> </span><span class="kn">import</span> <span class="n">VendusClient</span><span class="p">,</span> <span class="n">ClientData</span><span class="p">,</span> <span class="n">DocumentItem</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">vendus</span><span class="w"> </span><span class="kn">import</span> <span class="n">ClientData</span><span class="p">,</span> <span class="n">DocumentItem</span><span class="p">,</span> <span class="n">TaxCategory</span><span class="p">,</span> <span class="n">VendusClient</span>
 <a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
 <a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="n">client</span> <span class="o">=</span> <span class="n">VendusClient</span><span class="o">.</span><span class="n">from_env</span><span class="p">()</span>
 <a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>
@@ -1274,7 +1274,7 @@
 <a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Consultoria (creditada)&quot;</span><span class="p">,</span>
 <a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>            <span class="n">quantity</span><span class="o">=</span><span class="n">Decimal</span><span class="p">(</span><span class="s2">&quot;2&quot;</span><span class="p">),</span>
 <a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>            <span class="n">unit_price</span><span class="o">=</span><span class="n">Decimal</span><span class="p">(</span><span class="s2">&quot;75.00&quot;</span><span class="p">),</span>
-<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>            <span class="n">tax_rate</span><span class="o">=</span><span class="n">Decimal</span><span class="p">(</span><span class="s2">&quot;23&quot;</span><span class="p">),</span>
+<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>            <span class="n">tax_category</span><span class="o">=</span><span class="n">TaxCategory</span><span class="o">.</span><span class="n">NORMAL</span><span class="p">,</span>
 <a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>        <span class="p">),</span>
 <a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>    <span class="p">],</span>
 <a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>    <span class="n">external_reference</span><span class="o">=</span><span class="s2">&quot;REFUND-2026-001&quot;</span><span class="p">,</span>
@@ -1343,7 +1343,7 @@
 <h2 id="notas">Notas<a class="headerlink" href="#notas" title="Permanent link">&para;</a></h2>
 <ol>
 <li><strong>NC total vs parcial:</strong> se devolves o total, replica todos os itens. Se devolves uma parte, inclui só os itens/quantidades a creditar.</li>
-<li><strong>Não é cancelamento:</strong> uma NC <strong>credita</strong> o valor mas mantém o documento original. Para cancelar completamente, usa <code>client.documents.cancel(id, reason)</code> em alternativa.</li>
+<li><strong>Não é cancelamento:</strong> uma NC <strong>credita</strong> o valor mas mantém o documento original. Para cancelar completamente, usa <code>client.documents.cancel(id)</code> em alternativa.</li>
 <li><strong>Cliente coerente:</strong> se o original foi a Consumidor Final, a NC também deve omitir <code>client</code>.</li>
 </ol>
 

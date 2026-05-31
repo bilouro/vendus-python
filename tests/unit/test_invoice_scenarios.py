@@ -187,3 +187,29 @@ class TestValidationStillApplies:
 
         with pytest.raises(PydanticValidationError):
             ClientData(fiscal_id="123456789")  # type: ignore[call-arg]
+
+
+class TestSimplifiedAndReceipt:
+    def test_create_simplified_invoice(
+        self, vendus: VendusClient, items: list[DocumentItem], payments: list[Payment]
+    ) -> None:
+        with respx.mock(base_url=_BASE) as router:
+            route = router.post("/v1.1/documents").mock(return_value=_ok("FS"))
+            doc = vendus.documents.create_simplified_invoice(
+                register_id=1, items=items, payments=payments
+            )
+        assert doc.type == DocumentType.SIMPLIFIED_INVOICE
+        body = route.calls.last.request.content.decode()
+        assert '"type":"FS"' in body or '"type": "FS"' in body
+        assert "payments" in body
+
+    def test_create_receipt(self, vendus: VendusClient, payments: list[Payment]) -> None:
+        with respx.mock(base_url=_BASE) as router:
+            route = router.post("/v1.1/documents").mock(return_value=_ok("RG"))
+            doc = vendus.documents.create_receipt(
+                register_id=1, invoice_numbers=["FT 2026/1"], payments=payments
+            )
+        assert doc.type == DocumentType.RECEIPT
+        body = route.calls.last.request.content.decode()
+        assert "document_number" in body
+        assert "FT 2026/1" in body

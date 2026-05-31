@@ -284,12 +284,13 @@ For each new feature:
 Each document type has its own method, not a single `create(type=...)`:
 
 ```python
-client.documents.create_invoice(...)          # FT
-client.documents.create_invoice_receipt(...)  # FR
-client.documents.create_credit_note(...)      # NC
+client.documents.create_invoice(...)             # FT
+client.documents.create_simplified_invoice(...)  # FS
+client.documents.create_invoice_receipt(...)     # FR
+client.documents.create_receipt(...)             # RG (references invoices, no items)
+client.documents.create_credit_note(...)         # NC
 # (future)
-client.documents.create_receipt(...)          # RC
-client.documents.create_quote(...)            # OR
+client.documents.create_quote(...)               # OT
 ```
 
 Reason: each type has different mandatory/forbidden fields. A credit note **requires** `reference_document_id`; an invoice doesn't. Type-checking and autocomplete are better with dedicated methods.
@@ -329,6 +330,9 @@ These were confirmed against the **real** Vendus API; changing them silently re-
 - **`mode` defaults to the register's mode.** This account's register is in `tests`, so a create that omits `mode` silently produces a *test* document (a real-mode NC came out `NC T01P…` because `mode` was omitted). Fix: set it once with `VendusClient(default_mode=DocumentMode.NORMAL)` (a per-call `mode` still overrides), or pass `mode=DocumentMode.NORMAL` on every create. A NC also credits a real original correctly when the NC itself is test (it lands in the test space, leaving the real original's `qty_nc` untouched).
 - **Vendus returns HTTP 403 for `P001`** (a field/request validation error). The SDK maps `P001` → `ValidationError` (not `AuthorizationError`) and exposes `.error_code` on every exception. The error body shape is `{"errors": [{"code", "message"}]}`.
 - **FR payments** accept multiple methods (`NU`/`CD`/`MBWAY`/`CC`/`TB`…), split across several `payments`, and a `date_due` — all live-verified. Method ids are per-account.
+- **FS (Fatura Simplificada)** is paid on issue like an FR — it **requires `payments`** ("o pagamento deve ser realizado no ato"). A NC credits an FS (verified live).
+- **RG (Recibo)** references invoices via **`invoices: [{"document_number": ...}]`** (not `id`/`number` — `P001`) and **requires `payments`** ("Missing Payments"); it carries no line items.
+- **A receipt (RG) CAN be cancelled** (`PATCH status=A` succeeded live) — unlike FT/FR/NC. So `cancel()`'s happy path is live-verified via an RG, and the guard correctly lets RG through.
 
 ---
 
@@ -440,8 +444,8 @@ Note: the client object is NOT returned. If the SDK needs the client id, it must
 
 | Version | Scope | Status |
 |---|---|---|
-| **v0.1.0** | Invoices (FT) + Invoice-Receipts (FR) + Credit Notes (NC) | In progress |
-| v0.2.0 | Other document types (RC, OR, GT, ND) | — |
+| **v0.1.0** | FT + FS + FR + RG + NC (issue, partial credit, get/list/cancel, payments, registers) | In progress |
+| v0.2.0 | Remaining document types (OT, ND, GT, FG, guias…) | — |
 | v0.3.0 | Clients service + `client_id` support | — |
 | v0.4.0 | Products + Stocks | — |
 | v0.5.0 | Webhooks (Flask/FastAPI/Django adapters) | — |

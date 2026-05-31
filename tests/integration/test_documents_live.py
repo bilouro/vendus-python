@@ -156,6 +156,51 @@ def test_list_registers_live(client: VendusClient) -> None:
     assert all(r.mode in ("normal", "tests", "") for r in registers)
 
 
+def _first_method_id(client: VendusClient) -> int:
+    method = next((m for m in client.documents.list_payment_methods() if m.status == "on"), None)
+    assert method is not None
+    return method.id
+
+
+@requires_creds
+def test_simplified_invoice_in_test_mode(
+    client: VendusClient, register_id: int, items: list[DocumentItem]
+) -> None:
+    """Issue an FS (simplified invoice) in test mode — requires a payment."""
+    fs = client.documents.create_simplified_invoice(
+        register_id=register_id,
+        items=items,
+        payments=[Payment(method_id=_first_method_id(client), amount=Decimal("1.23"))],
+        mode=DocumentMode.TESTS,
+        external_reference="vendus-python-itest-fs",
+    )
+    assert fs.type == DocumentType.SIMPLIFIED_INVOICE
+    assert fs.number
+    assert not fs.tax_authority_id
+
+
+@requires_creds
+def test_receipt_in_test_mode(
+    client: VendusClient, register_id: int, items: list[DocumentItem]
+) -> None:
+    """Issue an RG (receipt) in test mode, referencing a test invoice."""
+    invoice = client.documents.create_invoice(
+        register_id=register_id,
+        items=items,
+        mode=DocumentMode.TESTS,
+        external_reference="vendus-python-itest-rg-ft",
+    )
+    receipt = client.documents.create_receipt(
+        register_id=register_id,
+        invoice_numbers=[invoice.number],
+        payments=[Payment(method_id=_first_method_id(client), amount=Decimal("1.23"))],
+        mode=DocumentMode.TESTS,
+        external_reference="vendus-python-itest-rg",
+    )
+    assert receipt.type == DocumentType.RECEIPT
+    assert receipt.number
+
+
 @requires_creds
 def test_invoice_receipt_in_test_mode(
     client: VendusClient,

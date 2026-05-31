@@ -7,6 +7,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 ## [Unreleased]
 
 ### Added
+- `create_simplified_invoice` (FS) and `create_receipt` (RG), sync + async. An FS is a
+  simplified invoice paid on issue (requires `payments`); an RG (Recibo) acknowledges
+  payment of one or more invoices, referenced by document number. Both live-validated;
+  a real RG was cancellable (receipts can be cancelled, unlike FT/FR/NC).
 - `mode` parameter (`DocumentMode` enum: `NORMAL` / `TESTS`) on `create_invoice`,
   `create_invoice_receipt`, `create_credit_note` (sync + async) — issue non-fiscal
   test-mode documents that Vendus does not communicate to the AT
@@ -38,7 +42,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - Initial project skeleton
 - `VendusClient` with HTTP Basic Auth
 - `DocumentsService.create_invoice` (sync + async)
+- `DocumentsService.create_simplified_invoice` (sync + async)
 - `DocumentsService.create_invoice_receipt` (sync + async)
+- `DocumentsService.create_receipt` (sync + async)
 - `DocumentsService.create_credit_note` (sync + async)
 - `get` / `list` / `cancel` (sync + async)
 - `ClientData` supports three shapes: with NIF, name-only, or omitted (final consumer)
@@ -46,7 +52,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - Portuguese NIF validation
 - PII redaction filter for logging
 - HttpTransport with conditional POST retries (R3)
-- 93 unit tests with `respx` mocks (95% coverage), plus live integration tests
+- 100 unit tests with `respx` mocks (94% coverage), plus live integration tests
 - Bilingual documentation (PT/EN) with mkdocs-material + i18n
 - 10 runnable examples, including an all-scenarios reference
 - CI workflow (ruff, mypy --strict, pytest on Python 3.9–3.13)

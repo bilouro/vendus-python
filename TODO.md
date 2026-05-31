@@ -50,6 +50,11 @@ is actually done/verified, not just coded.
 
 ## Robustness / correctness
 
+- [ ] **`Document.status` is never populated from the response.** `_parse_document` doesn't
+  pass `status=`, so `Document.status` is always `ISSUED`. The API returns `status` as a
+  string on some endpoints and a dict (`{"id": "A", ...}`) on a GET. Wire `normalize_status`
+  (R8) to read it (handling both shapes) so a cancelled document reports `CANCELLED`.
+
 - [x] **Error mapping by code, not just HTTP status.** Done: `P001` (returned with 403)
   now raises `ValidationError` instead of `AuthorizationError`, every exception exposes
   `.error_code`, and the error message is parsed from the `{"errors": [...]}` shape.

@@ -40,7 +40,9 @@ print(invoice.qrcode)   # AT QR code payload
 | Document | Code | Method | Status |
 |---|---|---|---|
 | **Invoice** | FT | `client.documents.create_invoice` | ✅ |
+| **Simplified Invoice** | FS | `client.documents.create_simplified_invoice` | ✅ |
 | **Invoice-Receipt** | FR | `client.documents.create_invoice_receipt` | ✅ |
+| **Receipt** | RG | `client.documents.create_receipt` | ✅ |
 | **Credit Note** | NC | `client.documents.create_credit_note` | ✅ |
 
 ## Why this SDK?

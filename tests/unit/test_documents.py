@@ -25,6 +25,8 @@ from vendus.services.documents import (
     _build_credit_note_body,
     _build_invoice_body,
     _build_invoice_receipt_body,
+    _build_receipt_body,
+    _build_simplified_invoice_body,
     _parse_document,
 )
 
@@ -197,6 +199,28 @@ class TestBuildCreditNoteBody:
     def test_rejects_original_without_lines(self) -> None:
         with pytest.raises(ValidationError, match="no lines"):
             _build_credit_note_body({"number": "X", "items": []}, "r", None, None, None)
+
+
+class TestBuildSimplifiedAndReceipt:
+    def test_simplified_invoice_body(self, items: list[DocumentItem]) -> None:
+        pays = [Payment(method_id=1, amount=Decimal("1"))]
+        body = _build_simplified_invoice_body(1, items, pays, None, None)
+        assert body["type"] == "FS"
+        assert "payments" in body
+        assert body["items"][0]["tax_id"] == "NOR"
+
+    def test_receipt_body(self) -> None:
+        pays = [Payment(method_id=1, amount=Decimal("1"))]
+        body = _build_receipt_body(1, ["FT 2026/1"], pays, None)
+        assert body["type"] == "RG"
+        assert body["invoices"] == [{"document_number": "FT 2026/1"}]
+        assert "payments" in body
+        assert "items" not in body  # a receipt carries no line items
+
+    def test_receipt_requires_an_invoice(self) -> None:
+        pays = [Payment(method_id=1, amount=Decimal("1"))]
+        with pytest.raises(ValidationError, match="at least one invoice"):
+            _build_receipt_body(1, [], pays, None)
 
 
 class TestMode:

@@ -35,5 +35,7 @@ payment-method id; the FR examples look one up with `list_payment_methods()`.
 | `07_get_list_cancel.py` | Fetch, list, and reverse (the cancel restriction) |
 | `08_error_handling.py` | Catching the exception hierarchy |
 | `09_fastapi_integration.py` | A FastAPI endpoint issuing invoices |
+| `10_simplified_invoice.py` | Issue a Fatura Simplificada (FS) |
+| `11_receipt.py` | Issue a Recibo (RG) for a previous invoice |
 
 See the [docs site](https://bilouro.github.io/vendus-python/) for the full guide.

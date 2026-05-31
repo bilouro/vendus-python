@@ -62,7 +62,9 @@ plugins:
             Documents: Documentos
             Which type to choose?: Qual tipo escolher?
             Invoice: Fatura
+            Simplified Invoice: Fatura Simplificada
             Invoice-Receipt: Fatura-Recibo
+            Receipt: Recibo
             Credit Note: Nota de Crédito
             Payment methods: Métodos de pagamento
             Recipes: Receitas
@@ -88,7 +90,9 @@ nav:
   - Documents:
     - Which type to choose?: documents/index.md
     - Invoice: documents/invoice.md
+    - Simplified Invoice: documents/simplified-invoice.md
     - Invoice-Receipt: documents/invoice-receipt.md
+    - Receipt: documents/receipt.md
     - Credit Note: documents/credit-note.md
     - Payment methods: documents/payment-methods.md
   - Recipes:

@@ -166,6 +166,26 @@ def _ensure_cancellable(doc_type: DocumentType) -> None:
         )
 
 
+def _build_paid_invoice_body(
+    doc_type: DocumentType,
+    register_id: int,
+    items: list[DocumentItem],
+    payments: list[Payment],
+    client: ClientData | None,
+    external_reference: str | None,
+    mode: DocumentMode | None = None,
+) -> dict[str, Any]:
+    """Build a paid-on-issue invoice body (FR / FS) — both require `payments`."""
+    body: dict[str, Any] = {
+        "type": doc_type.value,
+        "register_id": register_id,
+        "items": _serialize_items(items),
+        "payments": _serialize_payments(payments),
+    }
+    _apply_optional(body, client, external_reference, mode)
+    return body
+
+
 def _build_invoice_receipt_body(
     register_id: int,
     items: list[DocumentItem],
@@ -174,13 +194,51 @@ def _build_invoice_receipt_body(
     external_reference: str | None,
     mode: DocumentMode | None = None,
 ) -> dict[str, Any]:
+    return _build_paid_invoice_body(
+        DocumentType.INVOICE_RECEIPT, register_id, items, payments, client, external_reference, mode
+    )
+
+
+def _build_simplified_invoice_body(
+    register_id: int,
+    items: list[DocumentItem],
+    payments: list[Payment],
+    client: ClientData | None,
+    external_reference: str | None,
+    mode: DocumentMode | None = None,
+) -> dict[str, Any]:
+    return _build_paid_invoice_body(
+        DocumentType.SIMPLIFIED_INVOICE,
+        register_id,
+        items,
+        payments,
+        client,
+        external_reference,
+        mode,
+    )
+
+
+def _build_receipt_body(
+    register_id: int,
+    invoice_numbers: list[str],
+    payments: list[Payment],
+    external_reference: str | None,
+    mode: DocumentMode | None = None,
+) -> dict[str, Any]:
+    """Build a Recibo (RG) body. It references invoices by document number and
+    records the payment(s) — it carries no line items of its own."""
+    if not invoice_numbers:
+        raise ValidationError("A receipt (RG) must reference at least one invoice")
     body: dict[str, Any] = {
-        "type": DocumentType.INVOICE_RECEIPT.value,
+        "type": DocumentType.RECEIPT.value,
         "register_id": register_id,
-        "items": _serialize_items(items),
+        "invoices": [{"document_number": n} for n in invoice_numbers],
         "payments": _serialize_payments(payments),
     }
-    _apply_optional(body, client, external_reference, mode)
+    if external_reference is not None:
+        body["external_reference"] = external_reference
+    if mode is not None:
+        body["mode"] = mode.value
     return body
 
 
@@ -404,6 +462,87 @@ class DocumentsService(BaseService):
     ) -> Document:
         body = _build_invoice_receipt_body(
             register_id, items, payments, client, external_reference, self._effective_mode(mode)
+        )
+        response = await self._request_async("POST", _PATH, json=body)
+        return _parse_document(response.json())
+
+    # ----- create_simplified_invoice ----------------------------------------
+
+    def create_simplified_invoice(
+        self,
+        register_id: int,
+        items: list[DocumentItem],
+        payments: list[Payment],
+        client: ClientData | None = None,
+        external_reference: str | None = None,
+        mode: DocumentMode | None = None,
+    ) -> Document:
+        """Issue a Fatura Simplificada (FS).
+
+        A simplified invoice for retail / final-consumer sales (subject to AT
+        amount limits). Like a Fatura-Recibo, it is paid on issue, so `payments`
+        is **required**. The client is usually omitted (final consumer).
+        """
+        body = _build_simplified_invoice_body(
+            register_id, items, payments, client, external_reference, self._effective_mode(mode)
+        )
+        response = self._request("POST", _PATH, json=body)
+        return _parse_document(response.json())
+
+    async def create_simplified_invoice_async(
+        self,
+        register_id: int,
+        items: list[DocumentItem],
+        payments: list[Payment],
+        client: ClientData | None = None,
+        external_reference: str | None = None,
+        mode: DocumentMode | None = None,
+    ) -> Document:
+        body = _build_simplified_invoice_body(
+            register_id, items, payments, client, external_reference, self._effective_mode(mode)
+        )
+        response = await self._request_async("POST", _PATH, json=body)
+        return _parse_document(response.json())
+
+    # ----- create_receipt ---------------------------------------------------
+
+    def create_receipt(
+        self,
+        register_id: int,
+        invoice_numbers: list[str],
+        payments: list[Payment],
+        external_reference: str | None = None,
+        mode: DocumentMode | None = None,
+    ) -> Document:
+        """Issue a Recibo (RG) acknowledging payment of one or more invoices.
+
+        A receipt records payment for previously-issued invoices (e.g. an FT) and
+        carries no line items of its own. Reference the invoices by their document
+        number (e.g. ``"FT 2026/123"``) and provide the `payments`.
+
+        Args:
+            register_id: ID of the POS register configured in Vendus.
+            invoice_numbers: document numbers of the invoices being paid.
+            payments: how the payment was made (see :meth:`list_payment_methods`).
+            external_reference: Your internal reference. Enables safe POST retries.
+            mode: ``DocumentMode.TESTS`` for a non-fiscal test document.
+        """
+        body = _build_receipt_body(
+            register_id, invoice_numbers, payments, external_reference, self._effective_mode(mode)
+        )
+        response = self._request("POST", _PATH, json=body)
+        return _parse_document(response.json())
+
+    async def create_receipt_async(
+        self,
+        register_id: int,
+        invoice_numbers: list[str],
+        payments: list[Payment],
+        external_reference: str | None = None,
+        mode: DocumentMode | None = None,
+    ) -> Document:
+        body = _build_receipt_body(
+            register_id, invoice_numbers, payments, external_reference, self._effective_mode(mode)
         )
         response = await self._request_async("POST", _PATH, json=body)
         return _parse_document(response.json())

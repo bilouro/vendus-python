@@ -154,12 +154,13 @@ client = VendusClient.from_env()
 | Document | Code | Method | Status |
 |---|---|---|---|
 | Fatura | FT | `client.documents.create_invoice` | ✅ |
+| Fatura Simplificada | FS | `client.documents.create_simplified_invoice` | ✅ |
 | Fatura-Recibo | FR | `client.documents.create_invoice_receipt` | ✅ |
+| Recibo | RG | `client.documents.create_receipt` | ✅ |
 | Nota de Crédito | NC | `client.documents.create_credit_note` | ✅ |
-| Recibo | RC | — | v0.2 |
-| Orçamento | OR | — | v0.2 |
-| Guia de Transporte | GT | — | v0.2 |
-| Nota de Débito | ND | — | v0.2 |
+| Orçamento | OT | — | roadmap |
+| Guia de Transporte | GT | — | roadmap |
+| Nota de Débito | ND | — | roadmap |
 
 ### Validation status
 
@@ -167,13 +168,15 @@ The wire format of every operation is asserted by unit tests (respx mocks), and 
 
 | Operation | Unit | Live |
 |---|:-:|---|
-| `create_invoice` (FT) | ✅ | ✅ test mode — non-fiscal, `tax_authority_id` empty |
-| `create_invoice_receipt` (FR) | ✅ | ✅ test mode — requires `payments` |
-| `create_credit_note` (NC) | ✅ | ✅ real mode once (credited a real FR); test-mode originals aren't retrievable |
-| `list_payment_methods` / `list` / `get` | ✅ | ✅ read-only |
-| `cancel` | ✅ | ⚠️ FT/FR/NC can't be cancelled — the SDK refuses them (reverse with a credit note) |
+| `create_invoice` (FT) | ✅ | ✅ test + real |
+| `create_simplified_invoice` (FS) | ✅ | ✅ test + real (credited by NC) |
+| `create_invoice_receipt` (FR) | ✅ | ✅ test + real (+ payment variations) |
+| `create_receipt` (RG) | ✅ | ✅ test + real (references an invoice) |
+| `create_credit_note` (NC) | ✅ | ✅ real (full + partial; credits FT/FR/FS) |
+| `cancel` | ✅ | ✅ refuses FT/FR/NC; cancels a receipt (RG) |
+| `list_payment_methods` / `list_registers` / `list` / `get` | ✅ | ✅ read-only |
 
-> Test-mode documents ("Modo de Formação") are non-fiscal and never reported to the AT, but Vendus stores them in a separate space — they can't be retrieved or cancelled via `/documents/{id}`. So credit notes (which must read the original) are validated in real mode, and `cancel` is not live-validated (FT/FR/NC are not cancellable; other types would require voiding a real document).
+> Test-mode documents ("Modo de Formação") are non-fiscal and never reported to the AT, but Vendus stores them in a separate space — they can't be retrieved or credited via `/documents/{id}`, so credit notes are validated in real mode. Fiscal invoices (FT/FR/NC) can't be cancelled (reverse them with a credit note); a **receipt (RG) can** — both paths are live-verified.
 
 ## Why This SDK
 

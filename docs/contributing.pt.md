@@ -135,3 +135,43 @@ Usa `services/documents.py::create_invoice` como referência.
    versão portuguesa `X.pt.md`).
 7. Atualiza o `CHANGELOG.md`, e o `CLAUDE.md` (roadmap, e a tabela de vocabulário R1 se
    surgir um campo novo).
+
+## Pull Requests
+
+- **Um feature ou fix por PR** — não mistures alterações não relacionadas.
+- **Inclui testes** para código novo — cobertura mínima de 85%, a assertar o body exato.
+- **Atualiza o `CHANGELOG.md`** na secção `[Unreleased]`.
+- **Todos os checks de CI têm de passar** — lint, types, testes (Python 3.9–3.13).
+- **Valida ao vivo** tudo o que toca na API antes de afirmar que funciona (ver acima).
+- Descreve o que mudou e porquê no corpo do PR.
+
+### Workflow típico
+
+```bash
+# 1. Cria um branch
+git checkout -b feature/debit-note
+
+# 2. Desenvolve e testa
+pytest tests/unit/test_documents.py
+
+# 3. Verifica tudo
+ruff check . && ruff format --check . && mypy src/ && pytest
+
+# 4. Commit e push
+git add .
+git commit -m "Add debit note (ND) support"
+git push -u origin feature/debit-note
+
+# 5. Abre um PR no GitHub
+```
+
+## Convenções de código
+
+- **Python ≥3.9** — usa `from __future__ import annotations`; nunca `match/case`, e usa
+  `Optional[...]` (não `X | None`) em runtime nos modelos Pydantic.
+- **`Decimal` para dinheiro** — nunca `float`; converte com `float()` só na fronteira do wire.
+- **Type annotations** em todas as funções públicas (`mypy --strict` passa).
+- **Docstrings Google style** nas funções públicas.
+- **`_ficheiro.py`** = módulo interno, **`ficheiro.py`** = API pública (exportada em `__init__.py`).
+- **Nunca logar PII** — `fiscal_id`, email, telefone e morada são redigidos automaticamente.
+- **Um método por tipo de documento**, cada um com uma variante sync e `_async`.

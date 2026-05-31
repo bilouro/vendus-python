@@ -134,3 +134,43 @@ Use `services/documents.py::create_invoice` as the reference.
    Portuguese `X.pt.md`).
 7. Update `CHANGELOG.md`, and `CLAUDE.md` (roadmap, and the R1 vocabulary table if a new
    field appears).
+
+## Pull Requests
+
+- **One feature or fix per PR** — don't mix unrelated changes.
+- **Include tests** for new code — minimum 85% coverage, asserting the exact wire body.
+- **Update `CHANGELOG.md`** in the `[Unreleased]` section.
+- **All CI checks must pass** — lint, types, tests (Python 3.9–3.13).
+- **Live-validate** anything that hits the API before claiming it works (see above).
+- Describe what changed and why in the PR body.
+
+### Typical workflow
+
+```bash
+# 1. Create a branch
+git checkout -b feature/debit-note
+
+# 2. Develop and test
+pytest tests/unit/test_documents.py
+
+# 3. Check everything
+ruff check . && ruff format --check . && mypy src/ && pytest
+
+# 4. Commit and push
+git add .
+git commit -m "Add debit note (ND) support"
+git push -u origin feature/debit-note
+
+# 5. Open a PR on GitHub
+```
+
+## Code conventions
+
+- **Python ≥3.9** — use `from __future__ import annotations`; never `match/case`, and use
+  `Optional[...]` (not `X | None`) at runtime in Pydantic models.
+- **`Decimal` for money** — never `float`; convert with `float()` only at the wire boundary.
+- **Type annotations** on every public function (`mypy --strict` passes).
+- **Google-style docstrings** on public functions.
+- **`_filename.py`** = internal module, **`filename.py`** = public API (exported in `__init__.py`).
+- **Never log PII** — `fiscal_id`, email, phone, and address are redacted automatically.
+- **One method per document type**, each with a sync and an `_async` variant.

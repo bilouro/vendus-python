@@ -1163,6 +1163,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#vendus.services.documents.DocumentsService.list_registers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        list_registers
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1540,6 +1551,17 @@
     <span class="md-ellipsis">
       
         list_payment_methods
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#vendus.services.documents.DocumentsService.list_registers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        list_registers
       
     </span>
   </a>
@@ -2292,6 +2314,28 @@ endpoint accepts only status/mode), so none is sent.</p>
         <p>List the account's configured payment methods (id, title, type).</p>
 <p>Use the returned <code>id</code> as <code>Payment.method_id</code> when issuing a
 Fatura-Recibo with :meth:<code>create_invoice_receipt</code>.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="vendus.services.documents.DocumentsService.list_registers" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">list_registers</span><span class="p">()</span></code>
+
+<a href="#vendus.services.documents.DocumentsService.list_registers" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>List the account's registers (caixas) — id, title, working mode.</p>
+<p>Registers are read-only via the API (created/configured in the Vendus
+backoffice). Use the returned <code>id</code> as <code>register_id</code> when issuing
+documents, and check <code>mode</code> to know whether a register is in test or
+normal mode.</p>
 
 
     </div>

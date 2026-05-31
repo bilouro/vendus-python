@@ -1400,8 +1400,8 @@ real API.</p>
 </code></pre></div>
 <p><strong>Getting the ids you need:</strong></p>
 <ul>
-<li><code>register_id</code> — find it in the Vendus backoffice, or call <code>GET /v1.1/registers/</code>
-  (each register has an <code>id</code> and a <code>mode</code>).</li>
+<li><code>register_id</code> — <code>client.documents.list_registers()</code> (or the Vendus backoffice). Each
+  register has an <code>id</code> and a <code>mode</code>.</li>
 <li>Payment-method ids (for a Fatura-Recibo) — <code>client.documents.list_payment_methods()</code>.</li>
 </ul>
 <div class="admonition warning">

@@ -637,6 +637,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#caixas-registers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Caixas (registers)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#a-partir-do-ambiente" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1213,6 +1224,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#caixas-registers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Caixas (registers)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#a-partir-do-ambiente" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1354,9 +1376,16 @@
 <a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="c1"># cada create_* passa a emitir um documento real, a menos que passes mode= explícito</span>
 </code></pre></div>
 <p>Um <code>mode=</code> por chamada sobrepõe-se sempre ao default do cliente.</p>
+<h2 id="caixas-registers">Caixas (registers)<a class="headerlink" href="#caixas-registers" title="Permanent link">&para;</a></h2>
+<p>Uma caixa (register) é a configuração de POS de onde os documentos são emitidos — passas o
+seu <code>id</code> como <code>register_id</code>. As caixas são <strong>só de leitura</strong> via API (criadas e configuradas
+no backoffice da Vendus). Lista-as para descobrir o id e o modo de funcionamento:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">client</span><span class="o">.</span><span class="n">documents</span><span class="o">.</span><span class="n">list_registers</span><span class="p">():</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">r</span><span class="o">.</span><span class="n">title</span><span class="p">,</span> <span class="n">r</span><span class="o">.</span><span class="n">mode</span><span class="p">)</span>   <span class="c1"># mode: &quot;normal&quot; ou &quot;tests&quot;</span>
+</code></pre></div>
 <h2 id="a-partir-do-ambiente">A partir do ambiente<a class="headerlink" href="#a-partir-do-ambiente" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">client</span> <span class="o">=</span> <span class="n">VendusClient</span><span class="o">.</span><span class="n">from_env</span><span class="p">()</span>             <span class="c1"># lê VENDUS_API_KEY</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="n">client</span> <span class="o">=</span> <span class="n">VendusClient</span><span class="o">.</span><span class="n">from_env</span><span class="p">(</span><span class="n">env_var</span><span class="o">=</span><span class="s2">&quot;X&quot;</span><span class="p">)</span>  <span class="c1"># variável custom</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">client</span> <span class="o">=</span> <span class="n">VendusClient</span><span class="o">.</span><span class="n">from_env</span><span class="p">()</span>             <span class="c1"># lê VENDUS_API_KEY</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="n">client</span> <span class="o">=</span> <span class="n">VendusClient</span><span class="o">.</span><span class="n">from_env</span><span class="p">(</span><span class="n">env_var</span><span class="o">=</span><span class="s2">&quot;X&quot;</span><span class="p">)</span>  <span class="c1"># variável custom</span>
 </code></pre></div>
 <h2 id="politica-de-retries">Política de retries<a class="headerlink" href="#politica-de-retries" title="Permanent link">&para;</a></h2>
 <table>
@@ -1387,17 +1416,17 @@
 </table>
 <p>A regra existe porque a Vendus <strong>não oferece idempotency keys</strong>. Sem <code>external_reference</code>, um POST repetido poderia criar dois documentos fiscais (e dois números de série gastos). O parâmetro <code>external_reference</code> é o âncora de deduplicação que a Vendus aceita.</p>
 <p><strong>Recomendação:</strong> passa sempre <code>external_reference</code> ao emitir documentos.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">invoice</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">documents</span><span class="o">.</span><span class="n">create_invoice</span><span class="p">(</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>    <span class="n">register_id</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>    <span class="n">items</span><span class="o">=</span><span class="p">[</span><span class="o">...</span><span class="p">],</span>
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>    <span class="n">external_reference</span><span class="o">=</span><span class="s2">&quot;ORD-2026-001&quot;</span><span class="p">,</span>  <span class="c1"># idempotência</span>
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">invoice</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">documents</span><span class="o">.</span><span class="n">create_invoice</span><span class="p">(</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>    <span class="n">register_id</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>    <span class="n">items</span><span class="o">=</span><span class="p">[</span><span class="o">...</span><span class="p">],</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>    <span class="n">external_reference</span><span class="o">=</span><span class="s2">&quot;ORD-2026-001&quot;</span><span class="p">,</span>  <span class="c1"># idempotência</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="p">)</span>
 </code></pre></div>
 <h2 id="logging">Logging<a class="headerlink" href="#logging" title="Permanent link">&para;</a></h2>
 <p>O SDK usa o logger <code>vendus</code>. Tem um filtro automático que redige PII: <code>fiscal_id</code>, <code>email</code>, <code>phone</code>, <code>mobile</code>, <code>address</code>, <code>postalcode</code>, <code>billing_email</code>.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;vendus&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;vendus&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
 </code></pre></div>
 <div class="admonition warning">
 <p class="admonition-title">Nunca faças bypass ao logger</p>
@@ -1410,13 +1439,13 @@
 <li><strong>Por caixa (register).</strong> Cada caixa tem um modo de funcionamento (<code>normal</code> ou <code>tests</code>), configurado no backoffice da Vendus (<em>Configuração → Definições → Lojas e Caixas</em>). <strong>Contas novas vêm em <code>tests</code></strong> — uma conta acabada de criar emite documentos sem validade fiscal até a passares para <code>normal</code>.</li>
 <li><strong>Por pedido.</strong> Passa <code>mode</code> a qualquer método de criação:</li>
 </ol>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">vendus</span><span class="w"> </span><span class="kn">import</span> <span class="n">DocumentMode</span>
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="n">invoice</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">documents</span><span class="o">.</span><span class="n">create_invoice</span><span class="p">(</span>
-<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>    <span class="n">register_id</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>    <span class="n">items</span><span class="o">=</span><span class="p">[</span><span class="o">...</span><span class="p">],</span>
-<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>    <span class="n">mode</span><span class="o">=</span><span class="n">DocumentMode</span><span class="o">.</span><span class="n">TESTS</span><span class="p">,</span>   <span class="c1"># não-fiscal — não comunicado à AT</span>
-<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">vendus</span><span class="w"> </span><span class="kn">import</span> <span class="n">DocumentMode</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="n">invoice</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">documents</span><span class="o">.</span><span class="n">create_invoice</span><span class="p">(</span>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>    <span class="n">register_id</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>    <span class="n">items</span><span class="o">=</span><span class="p">[</span><span class="o">...</span><span class="p">],</span>
+<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>    <span class="n">mode</span><span class="o">=</span><span class="n">DocumentMode</span><span class="o">.</span><span class="n">TESTS</span><span class="p">,</span>   <span class="c1"># não-fiscal — não comunicado à AT</span>
+<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="p">)</span>
 </code></pre></div>
 <p>Se omitires <code>mode</code>, a Vendus usa o modo configurado na caixa. Um documento de teste recebe na mesma um <code>number</code> e é impresso com a nota "sem validade fiscal". Confirmas que um documento <strong>não</strong> foi comunicado à AT porque o <code>tax_authority_id</code> vem vazio (esse campo só é preenchido quando a Vendus comunica o documento à AT).</p>
 <div class="admonition note">

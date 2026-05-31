@@ -1401,8 +1401,8 @@ raiz do repositório; lê-o antes de qualquer mudança substancial.</p>
 </code></pre></div>
 <p><strong>Como obter os ids necessários:</strong></p>
 <ul>
-<li><code>register_id</code> — no backoffice da Vendus, ou via <code>GET /v1.1/registers/</code> (cada caixa tem
-  um <code>id</code> e um <code>mode</code>).</li>
+<li><code>register_id</code> — <code>client.documents.list_registers()</code> (ou o backoffice da Vendus). Cada
+  caixa tem um <code>id</code> e um <code>mode</code>.</li>
 <li>ids dos métodos de pagamento (para uma Fatura-Recibo) —
   <code>client.documents.list_payment_methods()</code>.</li>
 </ul>

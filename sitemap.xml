@@ -50,6 +50,13 @@
         <xhtml:link rel="alternate" hreflang="pt" href="https://bilouro.github.io/vendus-python/pt/documents/invoice/"/>
     </url>
     <url>
+        <loc>https://bilouro.github.io/vendus-python/documents/payment-methods/</loc>
+        <lastmod>2026-05-31</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://bilouro.github.io/vendus-python/documents/payment-methods/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://bilouro.github.io/vendus-python/pt/documents/payment-methods/"/>
+    </url>
+    <url>
         <loc>https://bilouro.github.io/vendus-python/errors/</loc>
         <lastmod>2026-05-31</lastmod>
         <changefreq>daily</changefreq>
@@ -146,6 +153,13 @@
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="pt" href="https://bilouro.github.io/vendus-python/pt/documents/invoice/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://bilouro.github.io/vendus-python/documents/invoice/"/>
+    </url>
+    <url>
+        <loc>https://bilouro.github.io/vendus-python/pt/documents/payment-methods/</loc>
+        <lastmod>2026-05-31</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://bilouro.github.io/vendus-python/pt/documents/payment-methods/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://bilouro.github.io/vendus-python/documents/payment-methods/"/>
     </url>
     <url>
         <loc>https://bilouro.github.io/vendus-python/pt/errors/</loc>

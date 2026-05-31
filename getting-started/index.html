@@ -629,6 +629,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#reversing-a-document" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reversing a document
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#next-steps" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -834,6 +845,34 @@
     
   
     Credit Note
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../documents/payment-methods/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Payment methods
   
 
     
@@ -1177,6 +1216,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#reversing-a-document" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reversing a document
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#next-steps" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1260,6 +1310,20 @@
 <a id="__codelineno-3-24" name="__codelineno-3-24" href="#__codelineno-3-24"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total: </span><span class="si">{</span><span class="n">invoice</span><span class="o">.</span><span class="n">gross_amount</span><span class="si">}</span><span class="s2"> EUR&quot;</span><span class="p">)</span>
 <a id="__codelineno-3-25" name="__codelineno-3-25" href="#__codelineno-3-25"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;ATCUD: </span><span class="si">{</span><span class="n">invoice</span><span class="o">.</span><span class="n">atcud</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 <a id="__codelineno-3-26" name="__codelineno-3-26" href="#__codelineno-3-26"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;QR: </span><span class="si">{</span><span class="n">invoice</span><span class="o">.</span><span class="n">qrcode</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div>
+<div class="admonition warning">
+<p class="admonition-title">Test mode by default</p>
+<p>New Vendus accounts have their register in <strong>test mode</strong>, so documents are non-fiscal
+until you switch to real mode. Pass <code>VendusClient(api_key=..., default_mode=DocumentMode.NORMAL)</code>
+(or <code>mode=</code> per call) for real documents. See <a href="configuration/#default-document-mode">Configuration</a>.</p>
+</div>
+<h2 id="reversing-a-document">Reversing a document<a class="headerlink" href="#reversing-a-document" title="Permanent link">&para;</a></h2>
+<p>Fiscal documents (FT/FR/NC) <strong>cannot be cancelled</strong> — <code>cancel()</code> rejects them. To reverse
+an invoice, issue a credit note that credits it:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">client</span><span class="o">.</span><span class="n">documents</span><span class="o">.</span><span class="n">create_credit_note</span><span class="p">(</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>    <span class="n">reference_document_id</span><span class="o">=</span><span class="n">invoice</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>    <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;Issued in error&quot;</span><span class="p">,</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="p">)</span>
 </code></pre></div>
 <h2 id="next-steps">Next steps<a class="headerlink" href="#next-steps" title="Permanent link">&para;</a></h2>
 <ul>

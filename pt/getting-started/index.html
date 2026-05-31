@@ -631,6 +631,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#reverter-um-documento" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reverter um documento
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#proximos-passos" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -836,6 +847,34 @@
     
   
     Nota de Crédito
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../documents/payment-methods/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Métodos de pagamento
   
 
     
@@ -1179,6 +1218,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#reverter-um-documento" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reverter um documento
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#proximos-passos" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1262,6 +1312,20 @@
 <a id="__codelineno-3-24" name="__codelineno-3-24" href="#__codelineno-3-24"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total: </span><span class="si">{</span><span class="n">invoice</span><span class="o">.</span><span class="n">gross_amount</span><span class="si">}</span><span class="s2"> EUR&quot;</span><span class="p">)</span>
 <a id="__codelineno-3-25" name="__codelineno-3-25" href="#__codelineno-3-25"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;ATCUD: </span><span class="si">{</span><span class="n">invoice</span><span class="o">.</span><span class="n">atcud</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 <a id="__codelineno-3-26" name="__codelineno-3-26" href="#__codelineno-3-26"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;QR: </span><span class="si">{</span><span class="n">invoice</span><span class="o">.</span><span class="n">qrcode</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div>
+<div class="admonition warning">
+<p class="admonition-title">Modo teste por defeito</p>
+<p>Contas Vendus novas têm a caixa em <strong>modo teste</strong>, por isso os documentos são
+não-fiscais até passares para modo real. Usa <code>VendusClient(api_key=..., default_mode=DocumentMode.NORMAL)</code>
+(ou <code>mode=</code> por chamada) para documentos reais. Ver <a href="configuration/#modo-por-omissao-dos-documentos">Configuração</a>.</p>
+</div>
+<h2 id="reverter-um-documento">Reverter um documento<a class="headerlink" href="#reverter-um-documento" title="Permanent link">&para;</a></h2>
+<p>Documentos fiscais (FT/FR/NC) <strong>não podem ser cancelados</strong> — o <code>cancel()</code> recusa-os. Para
+reverter uma fatura, emite uma nota de crédito que a credita:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">client</span><span class="o">.</span><span class="n">documents</span><span class="o">.</span><span class="n">create_credit_note</span><span class="p">(</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>    <span class="n">reference_document_id</span><span class="o">=</span><span class="n">invoice</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>    <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;Emitida por erro&quot;</span><span class="p">,</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="p">)</span>
 </code></pre></div>
 <h2 id="proximos-passos">Próximos passos<a class="headerlink" href="#proximos-passos" title="Permanent link">&para;</a></h2>
 <ul>

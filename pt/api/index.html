@@ -742,6 +742,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../documents/payment-methods/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Métodos de pagamento
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2606,12 +2634,54 @@ here are the most common; add to this enum as needed.</p>
         <p>Base exception for all SDK errors.</p>
 
 
+<p><span class="doc-section-title">Attributes:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td><code><span title="vendus.VendusError.error_code">error_code</span></code></td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>the Vendus error code (e.g. <code>P001</code>, <code>A001</code>) when the error
+came from the API, else <code>None</code>.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
 
 
 
 
 
 
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
 
     </div>
 
@@ -2634,7 +2704,8 @@ here are the most common; add to this enum as needed.</p>
 
 
 
-        <p>Local validation failed before any API call.</p>
+        <p>The request is invalid — caught locally before the call, or rejected by the
+API as malformed (Vendus <code>P001</code>, e.g. a field that is not permitted).</p>
 
 
 
@@ -2643,6 +2714,23 @@ here are the most common; add to this enum as needed.</p>
 
 
 
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
 
     </div>
 
@@ -2675,6 +2763,23 @@ here are the most common; add to this enum as needed.</p>
 
 
 
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
     </div>
 
 </div>
@@ -2705,6 +2810,23 @@ here are the most common; add to this enum as needed.</p>
 
 
 
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
 
     </div>
 
@@ -2737,6 +2859,23 @@ here are the most common; add to this enum as needed.</p>
 
 
 
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
     </div>
 
 </div>
@@ -2767,6 +2906,23 @@ here are the most common; add to this enum as needed.</p>
 
 
 
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
 
     </div>
 
@@ -2819,6 +2975,16 @@ here are the most common; add to this enum as needed.</p>
             <td>
               <div class="doc-md-description">
                 <p>Parsed JSON body if available, else raw text.</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code><span title="vendus.APIError.error_code">error_code</span></code></td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>the Vendus error code from the body, if any.</p>
               </div>
             </td>
           </tr>
@@ -2880,6 +3046,23 @@ here are the most common; add to this enum as needed.</p>
 
 
 
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
 
     </div>
 

@@ -10,6 +10,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - `mode` parameter (`DocumentMode` enum: `NORMAL` / `TESTS`) on `create_invoice`,
   `create_invoice_receipt`, `create_credit_note` (sync + async) — issue non-fiscal
   test-mode documents that Vendus does not communicate to the AT
+- `default_mode` on `VendusClient` / `from_env` — applied to every create that omits
+  `mode`, so the intended mode is set once (a per-call `mode` still overrides it).
+  `mode` otherwise inherits the register's mode, which is `tests` on new accounts
 - `Document.tax_authority_id` — the AT-generated id, empty until Vendus reports the
   document to the AT (lets you confirm a test document was not reported)
 - `TaxCategory` enum (`NORMAL`/`INTERMEDIATE`/`REDUCED`/`EXEMPT`/`OTHER`) for line-item VAT
@@ -32,7 +35,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - Portuguese NIF validation
 - PII redaction filter for logging
 - HttpTransport with conditional POST retries (R3)
-- 79 unit tests with `respx` mocks (94% coverage), plus live integration tests
+- 82 unit tests with `respx` mocks (94% coverage), plus live integration tests
 - Bilingual documentation (PT/EN) with mkdocs-material + i18n
 - 10 runnable examples, including an all-scenarios reference
 - CI workflow (ruff, mypy --strict, pytest on Python 3.9–3.13)

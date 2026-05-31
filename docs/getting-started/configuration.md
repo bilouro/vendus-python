@@ -19,6 +19,20 @@ client = VendusClient(
 | `base_url` | `str` | `https://www.vendus.pt/ws` | API base. For Spain: `https://www.vendus.es/ws` |
 | `timeout` | `float` | `30.0` | HTTP timeout in seconds |
 | `max_retries` | `int` | `3` | Max retry attempts on eligible requests |
+| `default_mode` | `DocumentMode \| None` | `None` | Mode applied to every create that omits `mode` (see below) |
+
+## Default document mode
+
+`mode` defaults to the **register's** configured mode. New Vendus accounts default their register to **test** mode, so a create that omits `mode` silently issues a *test* (non-fiscal) document. Set `default_mode` once so every document is issued in the mode you intend:
+
+```python
+from vendus import DocumentMode, VendusClient
+
+client = VendusClient(api_key="...", default_mode=DocumentMode.NORMAL)
+# every create_* now issues a real document unless you pass mode= explicitly
+```
+
+A per-call `mode=` always overrides the client default.
 
 ## From environment
 

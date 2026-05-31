@@ -19,6 +19,20 @@ client = VendusClient(
 | `base_url` | `str` | `https://www.vendus.pt/ws` | Base da API. Para Espanha: `https://www.vendus.es/ws` |
 | `timeout` | `float` | `30.0` | Timeout HTTP em segundos |
 | `max_retries` | `int` | `3` | Número máximo de retentativas em pedidos elegíveis |
+| `default_mode` | `DocumentMode \| None` | `None` | Modo aplicado a cada criação que omite `mode` (ver abaixo) |
+
+## Modo por omissão dos documentos
+
+O `mode` herda, por omissão, o modo configurado na **caixa**. Contas Vendus novas têm a caixa em modo **teste**, por isso uma criação sem `mode` emite silenciosamente um documento de *teste* (não-fiscal). Define `default_mode` uma vez para que todos os documentos saiam no modo que pretendes:
+
+```python
+from vendus import DocumentMode, VendusClient
+
+client = VendusClient(api_key="...", default_mode=DocumentMode.NORMAL)
+# cada create_* passa a emitir um documento real, a menos que passes mode= explícito
+```
+
+Um `mode=` por chamada sobrepõe-se sempre ao default do cliente.
 
 ## A partir do ambiente
 

@@ -11,6 +11,7 @@ import respx
 
 from vendus import (
     DocumentItem,
+    DocumentMode,
     DocumentType,
     TaxCategory,
     ValidationError,
@@ -202,3 +203,41 @@ class TestPaymentMethods:
             )
             methods = await vendus.documents.list_payment_methods_async()
         assert methods[0].id == 2
+
+
+class TestDefaultMode:
+    """A client-level default_mode is applied when a call omits `mode`."""
+
+    def test_default_mode_applied(self, items: list[DocumentItem]) -> None:
+        client = VendusClient(
+            api_key="k", base_url=_BASE, max_retries=0, default_mode=DocumentMode.NORMAL
+        )
+        with respx.mock(base_url=_BASE) as router:
+            route = router.post("/v1.1/documents").mock(
+                return_value=httpx.Response(200, json=_doc(1, "FT"))
+            )
+            client.documents.create_invoice(register_id=1, items=items)
+        body = json.loads(route.calls.last.request.content)
+        assert body["mode"] == "normal"
+
+    def test_per_call_mode_overrides_default(self, items: list[DocumentItem]) -> None:
+        client = VendusClient(
+            api_key="k", base_url=_BASE, max_retries=0, default_mode=DocumentMode.NORMAL
+        )
+        with respx.mock(base_url=_BASE) as router:
+            route = router.post("/v1.1/documents").mock(
+                return_value=httpx.Response(200, json=_doc(1, "FT"))
+            )
+            client.documents.create_invoice(register_id=1, items=items, mode=DocumentMode.TESTS)
+        body = json.loads(route.calls.last.request.content)
+        assert body["mode"] == "tests"
+
+    def test_no_default_omits_mode(self, items: list[DocumentItem]) -> None:
+        client = VendusClient(api_key="k", base_url=_BASE, max_retries=0)
+        with respx.mock(base_url=_BASE) as router:
+            route = router.post("/v1.1/documents").mock(
+                return_value=httpx.Response(200, json=_doc(1, "FT"))
+            )
+            client.documents.create_invoice(register_id=1, items=items)
+        body = json.loads(route.calls.last.request.content)
+        assert "mode" not in body

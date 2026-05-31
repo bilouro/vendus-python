@@ -295,7 +295,9 @@ class DocumentsService(BaseService):
                 test document that is not reported to the AT. Omit to use the
                 register's configured mode.
         """
-        body = _build_invoice_body(register_id, items, client, external_reference, mode)
+        body = _build_invoice_body(
+            register_id, items, client, external_reference, self._effective_mode(mode)
+        )
         response = self._request("POST", _PATH, json=body)
         return _parse_document(response.json())
 
@@ -307,7 +309,9 @@ class DocumentsService(BaseService):
         external_reference: str | None = None,
         mode: DocumentMode | None = None,
     ) -> Document:
-        body = _build_invoice_body(register_id, items, client, external_reference, mode)
+        body = _build_invoice_body(
+            register_id, items, client, external_reference, self._effective_mode(mode)
+        )
         response = await self._request_async("POST", _PATH, json=body)
         return _parse_document(response.json())
 
@@ -339,7 +343,7 @@ class DocumentsService(BaseService):
             mode: ``DocumentMode.TESTS`` for a non-fiscal test document.
         """
         body = _build_invoice_receipt_body(
-            register_id, items, payments, client, external_reference, mode
+            register_id, items, payments, client, external_reference, self._effective_mode(mode)
         )
         response = self._request("POST", _PATH, json=body)
         return _parse_document(response.json())
@@ -354,7 +358,7 @@ class DocumentsService(BaseService):
         mode: DocumentMode | None = None,
     ) -> Document:
         body = _build_invoice_receipt_body(
-            register_id, items, payments, client, external_reference, mode
+            register_id, items, payments, client, external_reference, self._effective_mode(mode)
         )
         response = await self._request_async("POST", _PATH, json=body)
         return _parse_document(response.json())
@@ -386,7 +390,9 @@ class DocumentsService(BaseService):
             mode: Working mode for the credit note itself.
         """
         original = self.get(reference_document_id).raw_response
-        body = _build_credit_note_body(original, reason, external_reference, mode)
+        body = _build_credit_note_body(
+            original, reason, external_reference, self._effective_mode(mode)
+        )
         response = self._request("POST", _PATH, json=body)
         return _parse_document(response.json())
 
@@ -398,7 +404,9 @@ class DocumentsService(BaseService):
         mode: DocumentMode | None = None,
     ) -> Document:
         original = (await self.get_async(reference_document_id)).raw_response
-        body = _build_credit_note_body(original, reason, external_reference, mode)
+        body = _build_credit_note_body(
+            original, reason, external_reference, self._effective_mode(mode)
+        )
         response = await self._request_async("POST", _PATH, json=body)
         return _parse_document(response.json())
 

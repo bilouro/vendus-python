@@ -326,7 +326,7 @@ These were confirmed against the **real** Vendus API; changing them silently re-
 - **Test-mode documents** live in a separate space: not retrievable/cancellable via `/documents/{id}` (404 "não existe").
 - **Unknown type codes** (e.g. `RG`, seen live, absent from documents/types) must not crash parsing → `DocumentType.UNKNOWN`, raw code kept in `raw_response`.
 - `tax_authority_id` is **empty in the POST response even for real fiscal documents** (ATCUD/hash mark a doc fiscal), so it is not a reliable test-vs-real discriminator at create time — the series prefix is (`FT T01P…` test vs `FT 01P…` real).
-- **`mode` defaults to the register's mode.** This account's register is in `tests`, so a create that omits `mode` silently produces a *test* document (a real-mode NC came out `NC T01P…` because `mode` was omitted). Pass `mode=DocumentMode.NORMAL` on **every** create to get real documents on a test-mode register. A NC also credits a real original correctly when the NC itself is test (it lands in the test space, leaving the real original's `qty_nc` untouched).
+- **`mode` defaults to the register's mode.** This account's register is in `tests`, so a create that omits `mode` silently produces a *test* document (a real-mode NC came out `NC T01P…` because `mode` was omitted). Fix: set it once with `VendusClient(default_mode=DocumentMode.NORMAL)` (a per-call `mode` still overrides), or pass `mode=DocumentMode.NORMAL` on every create. A NC also credits a real original correctly when the NC itself is test (it lands in the test space, leaving the real original's `qty_nc` untouched).
 
 ---
 

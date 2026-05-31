@@ -7,6 +7,7 @@ from typing import Any
 import httpx
 
 from vendus._http import HttpTransport
+from vendus.models.document import DocumentMode
 
 
 class BaseService:
@@ -16,8 +17,14 @@ class BaseService:
     are injected by HttpTransport.
     """
 
-    def __init__(self, transport: HttpTransport) -> None:
+    def __init__(self, transport: HttpTransport, default_mode: DocumentMode | None = None) -> None:
         self._transport = transport
+        self._default_mode = default_mode
+
+    def _effective_mode(self, mode: DocumentMode | None) -> DocumentMode | None:
+        """Resolve the working mode: a per-call ``mode`` wins; otherwise fall back
+        to the client's ``default_mode`` (and finally to None → the register's mode)."""
+        return mode if mode is not None else self._default_mode
 
     def _request(
         self,

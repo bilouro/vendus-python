@@ -31,12 +31,11 @@ is actually done/verified, not just coded.
 
 ## SDK gaps / decisions to revisit
 
-- [ ] **Client-level default `mode` (footgun).** `mode` defaults to the **register's**
-  mode. The test account's register is in `tests`, so every create silently produces a
-  *test* document unless `mode=DocumentMode.NORMAL` is passed — this bit a real-mode
-  run (the NC came out as `NC T01P2026/1` because `mode` was omitted). Consider a
-  client-level default, e.g. `VendusClient(api_key=..., default_mode=DocumentMode.NORMAL)`,
-  applied when a call omits `mode`, so the intended mode is set once. Non-breaking.
+- [x] **Client-level default `mode` (footgun).** Done: `VendusClient(api_key=...,
+  default_mode=DocumentMode.NORMAL)` (and `from_env(default_mode=...)`) is applied to
+  every create that omits `mode`; a per-call `mode` still overrides. Verified live
+  (`default_mode=TESTS` → `FT T01P2026/12` without passing `mode`). This removes the
+  footgun where the register's `tests` default silently produced test documents.
 - [ ] **Partial credit notes.** Vendus supports crediting part of a document
   (`qty_nc` per line). The SDK only does **full** credit in v0.1. Add a partial API
   (select lines/quantities) when needed.

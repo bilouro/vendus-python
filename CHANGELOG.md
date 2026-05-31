@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+### Added
+- Release workflow (`release.yml`) — publishes to PyPI via Trusted Publishing (OIDC) when
+  a GitHub Release is published; no tokens or secrets.
+
 ## [0.1.0] - 2026-05-31
 
 ### Added

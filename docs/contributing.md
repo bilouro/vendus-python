@@ -1,8 +1,8 @@
 # Contributing & Development
 
 Thanks for your interest in `vendus`. This project aims at production quality — the
-guiding rules live in [`CLAUDE.md`](https://github.com/bilouro/vendus-python/blob/main/CLAUDE.md)
-at the repo root; read it before any substantial change.
+guiding rules and conventions are summarized below; read them before any substantial
+change.
 
 ## Setup
 
@@ -82,8 +82,7 @@ pytest -m integration --no-cov    # --no-cov: a subset run would otherwise trip 
 The Vendus reference docs are not always complete — **validate the wire shape against
 the real API before claiming an operation works.** Several real bugs were caught only
 this way (the SDK's `create_invoice` never actually worked until live validation fixed
-the line-item fields). These are recorded as live-verified facts in `CLAUDE.md` (rule
-R16). The ones a contributor must respect:
+the line-item fields). The live-verified facts a contributor must respect:
 
 - **Line items** send `tax_id` (a `TaxCategory` code: NOR/INT/RED/ISE/OUT), not
   `tax_rate`; `discount_percentage`, not `discount`; `id` for a product line, not
@@ -114,8 +113,6 @@ VendusClient            # the one class users instantiate; lazy-loads services
 - Money is `Decimal` everywhere; convert with `float()` only at the wire boundary.
 - Every method has a sync and an `_async` variant.
 
-Full detail (rules R1–R16, the unified vocabulary, the playbook) is in `CLAUDE.md`.
-
 ## Adding a new document type
 
 Use `services/documents.py::create_invoice` as the reference.
@@ -132,8 +129,7 @@ Use `services/documents.py::create_invoice` as the reference.
    fixtures in `tests/fixtures/`.
 6. Add a runnable example in `examples/` and a doc page `docs/documents/X.md` (+ the
    Portuguese `X.pt.md`).
-7. Update `CHANGELOG.md`, and `CLAUDE.md` (roadmap, and the R1 vocabulary table if a new
-   field appears).
+7. Update `CHANGELOG.md`.
 
 ## Pull Requests
 

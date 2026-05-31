@@ -1,8 +1,8 @@
 # Contributing
 
 Thanks for your interest in improving `vendus`. This project follows a strict quality
-bar — read `CLAUDE.md` first; it documents the rules (R1–R16) that apply to every change.
-The full developer guide is on the docs site:
+bar. The full developer guide — architecture, conventions, and the live-verified API
+facts — is on the docs site:
 <https://bilouro.github.io/vendus-python/contributing/>.
 
 ## Setup
@@ -41,13 +41,14 @@ mkdocs build --strict   # if you touched docs
 ## Live-validation discipline
 
 Validate the wire shape against the real API **before** claiming an operation works — the
-Vendus reference docs can be incomplete. The hard-won facts are in `CLAUDE.md` R16 (e.g.
-an FR needs `payments`, an NC credits a real original, FT/FR/NC can't be cancelled, and
-`mode` inherits the register's mode — `tests` on new accounts).
+Vendus reference docs can be incomplete. The hard-won facts (e.g. an FR needs `payments`,
+an NC credits a real original, FT/FR/NC can't be cancelled, and `mode` inherits the
+register's mode — `tests` on new accounts) are documented on the
+[contributing page](https://bilouro.github.io/vendus-python/contributing/).
 
 ## What to read first
 
-- `CLAUDE.md` — architecture, rules (R1–R16), document types, vocabulary, live-verified facts
+- The [contributing guide](https://bilouro.github.io/vendus-python/contributing/) — architecture, conventions, document types, live-verified facts
 - `src/vendus/services/documents.py` — reference implementation
 - `tests/unit/test_documents.py` — wire-body test pattern
 
@@ -56,4 +57,4 @@ an FR needs `payments`, an NC credits a real original, FT/FR/NC can't be cancell
 See the [docs guide](https://bilouro.github.io/vendus-python/contributing/): enum →
 `_build_X_body` → `create_X` / `create_X_async` (thread `self._effective_mode(mode)`) →
 **live-validate** → unit tests (wire body) → example → doc page (EN + PT) →
-`CHANGELOG.md` / `CLAUDE.md`.
+`CHANGELOG.md`.

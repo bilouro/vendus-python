@@ -38,7 +38,6 @@ coverage.xml
 # Editors / OS
 .idea/
 .vscode/
-.claude/
 *.swp
 .DS_Store
 

@@ -16,6 +16,7 @@ from vendus.exceptions import (
 )
 from vendus.models import (
     ClientData,
+    CreditLine,
     Document,
     DocumentItem,
     DocumentMode,
@@ -32,6 +33,7 @@ __all__ = [
     "AuthenticationError",
     "AuthorizationError",
     "ClientData",
+    "CreditLine",
     "Document",
     "DocumentItem",
     "DocumentMode",

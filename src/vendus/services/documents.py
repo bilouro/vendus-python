@@ -28,9 +28,15 @@ from vendus._config import (
     PATH_PAYMENTS,
 )
 from vendus._validators import validate_nif_pt
-from vendus.exceptions import ValidationError
+from vendus.exceptions import NotFoundError, ValidationError
 from vendus.models.client import ClientData
-from vendus.models.document import Document, DocumentItem, DocumentMode, DocumentType
+from vendus.models.document import (
+    CreditLine,
+    Document,
+    DocumentItem,
+    DocumentMode,
+    DocumentType,
+)
 from vendus.models.payment import Payment, PaymentMethod
 from vendus.services._base import BaseService
 
@@ -174,39 +180,74 @@ def _build_invoice_receipt_body(
     return body
 
 
-def _credit_note_items_from_original(original: dict[str, Any]) -> list[dict[str, Any]]:
-    """Build NC lines that credit every line of the original document.
+def _credit_not_found_msg(document_id: int) -> str:
+    return (
+        f"Document {document_id} could not be read to credit it. The original must be a "
+        "real, retrievable document — test-mode documents cannot be credited."
+    )
 
-    Vendus requires each credit line to point at an existing line of the original
-    via ``reference_document`` (document_number + 1-based row) and to carry that
-    line's id. These are read from the original document's response (R9). Field
-    paths (items[].id, .qty_nc, .amounts.gross_unit, .tax.id) are taken from a
-    real GET response, not assumed.
+
+def _line_creditable_qty(line: dict[str, Any]) -> float:
+    return float(line.get("qty_nc", line.get("qty", 0)) or 0)
+
+
+def _credit_line_item(
+    line: dict[str, Any], number: str, row: int, qty: Decimal | None = None
+) -> dict[str, Any]:
+    amounts = line.get("amounts") or {}
+    tax = line.get("tax") or {}
+    return {
+        "id": line.get("id"),
+        "title": line.get("title"),
+        "qty": float(qty) if qty is not None else _line_creditable_qty(line),
+        "gross_price": float(amounts.get("gross_unit", 0) or 0),
+        "tax_id": tax.get("id"),
+        "reference_document": {"document_number": number, "document_row": row},
+    }
+
+
+def _credit_note_items_from_original(
+    original: dict[str, Any], lines: list[CreditLine] | None = None
+) -> list[dict[str, Any]]:
+    """Build the NC line items that credit the original document.
+
+    Each credit line points at an existing line of the original via
+    ``reference_document`` (document_number + 1-based row) and carries that line's
+    id. Field paths (items[].id, .qty_nc, .amounts.gross_unit, .tax.id) are taken
+    from a real GET response, not assumed.
+
+    ``lines=None`` credits every line that still has creditable quantity, in full.
+    Otherwise only the selected rows/quantities are credited (partial).
     """
     number = original.get("number", "")
-    lines = original.get("items") or []
-    if not lines:
+    original_lines = original.get("items") or []
+    if not original_lines:
         raise ValidationError("The referenced document has no lines to credit")
-    items: list[dict[str, Any]] = []
-    for row, line in enumerate(lines, start=1):
-        amounts = line.get("amounts") or {}
-        tax = line.get("tax") or {}
-        items.append(
-            {
-                "id": line.get("id"),
-                "title": line.get("title"),
-                "qty": float(line.get("qty_nc", line.get("qty", 0)) or 0),
-                "gross_price": float(amounts.get("gross_unit", 0) or 0),
-                "tax_id": tax.get("id"),
-                "reference_document": {"document_number": number, "document_row": row},
-            }
-        )
+    by_row = dict(enumerate(original_lines, start=1))
+
+    items: list[dict[str, Any]]
+    if lines is None:
+        items = [
+            _credit_line_item(line, number, row)
+            for row, line in by_row.items()
+            if _line_creditable_qty(line) > 0
+        ]
+    else:
+        items = []
+        for cl in lines:
+            if cl.row not in by_row:
+                raise ValidationError(f"Document row {cl.row} does not exist on the original")
+            items.append(_credit_line_item(by_row[cl.row], number, cl.row, cl.qty))
+
+    if not items:
+        raise ValidationError("Nothing to credit — the document is already fully credited")
     return items
 
 
 def _build_credit_note_body(
     original: dict[str, Any],
     reason: str,
+    lines: list[CreditLine] | None,
     external_reference: str | None,
     mode: DocumentMode | None,
 ) -> dict[str, Any]:
@@ -216,7 +257,7 @@ def _build_credit_note_body(
         "type": DocumentType.CREDIT_NOTE.value,
         "register_id": original.get("register_id"),
         "notes": reason,
-        "items": _credit_note_items_from_original(original),
+        "items": _credit_note_items_from_original(original, lines),
     }
     client = original.get("client")
     if isinstance(client, dict):
@@ -369,29 +410,34 @@ class DocumentsService(BaseService):
         self,
         reference_document_id: int,
         reason: str,
+        lines: list[CreditLine] | None = None,
         external_reference: str | None = None,
         mode: DocumentMode | None = None,
     ) -> Document:
-        """Issue a credit note (NC) crediting the **full** referenced document.
+        """Issue a credit note (NC) crediting a previously-issued document.
 
         Vendus credits an invoice line by line: each credit line must reference an
         existing line of the original. The SDK fetches the original (FT/FR) and
-        replicates every line, so you pass only the document id and a reason — the
-        client and amounts come from the original.
+        builds the credit lines from it — the client and amounts come from the
+        original, so you usually pass only the document id and a reason.
 
         The original must be retrievable, i.e. a **real** (non-test) document;
-        test-mode documents are not addressable, so they cannot be credited.
-        Partial credits are not supported in v0.1.
+        test-mode documents are not addressable and cannot be credited.
 
         Args:
             reference_document_id: id of the FT/FR being credited (R13).
             reason: Free-text reason, stored as the document's notes.
+            lines: Restrict the credit to specific rows/quantities (partial credit).
+                Omit to credit every still-creditable line of the document.
             external_reference: Your internal reference. Enables safe POST retries.
             mode: Working mode for the credit note itself.
         """
-        original = self.get(reference_document_id).raw_response
+        try:
+            original = self.get(reference_document_id).raw_response
+        except NotFoundError as exc:
+            raise NotFoundError(_credit_not_found_msg(reference_document_id)) from exc
         body = _build_credit_note_body(
-            original, reason, external_reference, self._effective_mode(mode)
+            original, reason, lines, external_reference, self._effective_mode(mode)
         )
         response = self._request("POST", _PATH, json=body)
         return _parse_document(response.json())
@@ -400,12 +446,16 @@ class DocumentsService(BaseService):
         self,
         reference_document_id: int,
         reason: str,
+        lines: list[CreditLine] | None = None,
         external_reference: str | None = None,
         mode: DocumentMode | None = None,
     ) -> Document:
-        original = (await self.get_async(reference_document_id)).raw_response
+        try:
+            original = (await self.get_async(reference_document_id)).raw_response
+        except NotFoundError as exc:
+            raise NotFoundError(_credit_not_found_msg(reference_document_id)) from exc
         body = _build_credit_note_body(
-            original, reason, external_reference, self._effective_mode(mode)
+            original, reason, lines, external_reference, self._effective_mode(mode)
         )
         response = await self._request_async("POST", _PATH, json=body)
         return _parse_document(response.json())

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from vendus.models.client import ClientData
 from vendus.models.document import (
+    CreditLine,
     Document,
     DocumentItem,
     DocumentMode,
@@ -16,6 +17,7 @@ from vendus.models.tax import TaxCategory, TaxExemption
 
 __all__ = [
     "ClientData",
+    "CreditLine",
     "Document",
     "DocumentItem",
     "DocumentMode",

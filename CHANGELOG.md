@@ -19,6 +19,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - `Payment` model and `list_payment_methods()` (sync + async) — a Fatura-Recibo now
   takes `payments=[Payment(method_id=..., amount=...)]`; method ids are account-specific
 - `PaymentMethod` model returned by `list_payment_methods()`
+- `CreditLine` model + `lines` argument on `create_credit_note` — credit only specific
+  rows/quantities (partial credit); omit for a full credit, which now skips lines that
+  are already fully credited. Verified live on a real multi-line invoice
 - `DocumentType.UNKNOWN` — forward-compat sentinel so the SDK does not crash on type
   codes the API returns but the enum does not model (e.g. `RG`); the raw code stays in
   `raw_response`
@@ -35,7 +38,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - Portuguese NIF validation
 - PII redaction filter for logging
 - HttpTransport with conditional POST retries (R3)
-- 82 unit tests with `respx` mocks (94% coverage), plus live integration tests
+- 90 unit tests with `respx` mocks (94% coverage), plus live integration tests
 - Bilingual documentation (PT/EN) with mkdocs-material + i18n
 - 10 runnable examples, including an all-scenarios reference
 - CI workflow (ruff, mypy --strict, pytest on Python 3.9–3.13)
@@ -73,6 +76,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
   id, instead of the rejected top-level `reference_document_id`.
 - `_parse_document` tolerates unknown document type codes instead of raising
   (the live account returned `RG`, which is absent from the documents/types reference).
+- `create_credit_note` raises a clearer `NotFoundError` when the original can't be read
+  (e.g. a test-mode document), explaining it must be a real, retrievable document.
 
 ### Quality
 - `mypy --strict` passes with zero errors

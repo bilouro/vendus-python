@@ -95,6 +95,23 @@ class DocumentItem(BaseModel):
     reference: Optional[str] = None
 
 
+class CreditLine(BaseModel):
+    """Selects one line of an original document to credit on a partial credit note.
+
+    ``row`` is the 1-based position of the line on the original document. ``qty``
+    is how much of it to credit; ``None`` credits the line's full remaining
+    quantity. Pass a list of these to ``create_credit_note(lines=...)`` for a
+    partial credit; omit it to credit the whole document.
+    """
+
+    model_config = ConfigDict(extra="forbid")
+
+    row: int = Field(..., ge=1, description="1-based row of the original document line.")
+    qty: Optional[Decimal] = Field(
+        default=None, gt=0, description="Quantity to credit; None = the line's full creditable qty."
+    )
+
+
 class Document(BaseModel):
     """A document returned by Vendus after creation or lookup."""
 

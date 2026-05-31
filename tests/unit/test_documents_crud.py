@@ -10,9 +10,11 @@ import pytest
 import respx
 
 from vendus import (
+    CreditLine,
     DocumentItem,
     DocumentMode,
     DocumentType,
+    NotFoundError,
     TaxCategory,
     ValidationError,
     VendusClient,
@@ -181,6 +183,40 @@ class TestCreditNote:
                 reference_document_id=1, reason="Return"
             )
         assert doc.type == DocumentType.CREDIT_NOTE
+
+    def test_partial_credit_sends_only_selected_rows(self, vendus: VendusClient) -> None:
+        original = {
+            "id": 1,
+            "type": "FT",
+            "number": "FT 2026/1",
+            "register_id": 1,
+            "client": {"name": "Acme", "fiscal_id": "123456789"},
+            "items": [
+                {"id": 10, "qty_nc": 1, "amounts": {"gross_unit": "1"}, "tax": {"id": "NOR"}},
+                {"id": 20, "qty_nc": 1, "amounts": {"gross_unit": "1"}, "tax": {"id": "NOR"}},
+            ],
+        }
+        with respx.mock(base_url=_BASE) as router:
+            router.get("/v1.1/documents/1").mock(return_value=httpx.Response(200, json=original))
+            route = router.post("/v1.1/documents").mock(
+                return_value=httpx.Response(200, json=_doc(2, "NC"))
+            )
+            vendus.documents.create_credit_note(
+                reference_document_id=1, reason="x", lines=[CreditLine(row=2)]
+            )
+        body = json.loads(route.calls.last.request.content)
+        assert len(body["items"]) == 1
+        assert body["items"][0]["reference_document"]["document_row"] == 2
+
+    def test_credit_note_not_found_gives_hint(self, vendus: VendusClient) -> None:
+        with respx.mock(base_url=_BASE) as router:
+            router.get("/v1.1/documents/999").mock(
+                return_value=httpx.Response(
+                    404, json={"errors": [{"code": "A001", "message": "No data"}]}
+                )
+            )
+            with pytest.raises(NotFoundError, match="real, retrievable"):
+                vendus.documents.create_credit_note(reference_document_id=999, reason="x")
 
 
 class TestPaymentMethods:

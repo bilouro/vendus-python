@@ -6,7 +6,7 @@ A Credit Note (NC) credits a previously issued invoice (FT or FR). It is the leg
 
 - **Always references** an original document (`reference_document_id`)
 - **Reason is mandatory** (`reason`) — required by AT
-- Credits the **full** original document: the SDK fetches the original and replicates its lines, so the client and amounts come from it (partial credits are not supported in v0.1)
+- Credits the original — **every still-creditable line by default**, or only the rows you choose (partial credit via `lines`). The SDK fetches the original; the client and amounts come from it
 
 ## Flow
 
@@ -53,10 +53,34 @@ print(nc.gross_amount)   # the credited amount
 |---|---|---|---|
 | `reference_document_id` | `int` | Yes | id of the original FT/FR being credited |
 | `reason` | `str` | Yes | Reason for the credit note (required by AT) |
+| `lines` | `list[CreditLine] \| None` | No | Credit only specific rows/quantities (partial); omit for the full document |
 | `external_reference` | `str` | No | Enables safe POST retries |
 | `mode` | `DocumentMode \| None` | No | `TESTS` for a non-fiscal test NC |
 
 The client, items and amounts are read from the original document — you do not pass them.
+
+## Partial credit
+
+To credit only some lines (or part of a line's quantity), pass `lines`. Each
+`CreditLine` selects an original line by its 1-based `row`; `qty` defaults to that
+line's full remaining quantity.
+
+```python
+from decimal import Decimal
+from vendus import CreditLine, VendusClient
+
+client = VendusClient.from_env()
+
+# Credit only line 1, and only 1 unit of it:
+nc = client.documents.create_credit_note(
+    reference_document_id=12345,
+    reason="Customer returned one item",
+    lines=[CreditLine(row=1, qty=Decimal("1"))],
+)
+```
+
+Lines that are already fully credited are skipped by a full credit, so you can credit a
+document line by line across several notes.
 
 ## Async variant
 
@@ -69,6 +93,6 @@ nc = await client.documents.create_credit_note_async(
 
 ## Notes
 
-1. **Full credit only (v0.1):** the SDK credits every line of the original. Partial credits (some lines or quantities) are a future addition.
+1. **Full or partial:** by default the SDK credits every still-creditable line. Pass `lines=[CreditLine(row=..., qty=...)]` to credit only specific lines/quantities; lines already fully credited are skipped.
 2. **NC is how you reverse an invoice:** fiscal invoices (FT/FR) **cannot be cancelled** — `cancel()` rejects them. Issue an NC to credit the original instead.
 3. **Real documents only:** the original must be retrievable, so credit notes work on **real** documents, not test-mode ones (which are not addressable via `/documents/{id}`).

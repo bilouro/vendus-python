@@ -300,8 +300,8 @@ Reason: each type has different mandatory/forbidden fields. A credit note **requ
 
 - The original must be **retrievable** → a real document, not a test-mode one (test docs aren't addressable).
 - No inline `items`/`client` — they come from the original.
-- Partial credits are not supported in v0.1.
-- There is **no** top-level `reference_document_id` on the wire — Vendus rejects it (`P001`); the link lives per item.
+- Partial credit is supported via `lines=[CreditLine(row=..., qty=...)]` (omit for full); a full credit skips lines already credited (`qty_nc == 0`). Verified live: a 2-line FT credited line-by-line, `qty_nc` `[1,1]`→`[0,1]`→`[0,0]`.
+- There is **no** top-level `reference_document_id` on the wire — Vendus rejects it (`P001`); the link lives per item (`reference_document` = number + 1-based row + the original line id).
 
 ### R14: Inline Client Only (v0.1.0)
 

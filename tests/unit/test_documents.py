@@ -12,6 +12,7 @@ import pytest
 
 from vendus import (
     ClientData,
+    CreditLine,
     Document,
     DocumentItem,
     DocumentMode,
@@ -63,6 +64,28 @@ _ORIGINAL_FT: dict[str, object] = {
     ],
 }
 
+# A two-line original, to exercise multi-line and partial credit.
+_ORIGINAL_2LINE: dict[str, object] = {
+    "number": "FT 2026/9",
+    "register_id": 1,
+    "items": [
+        {
+            "id": 10,
+            "title": "A",
+            "qty_nc": 1,
+            "amounts": {"gross_unit": "1.00"},
+            "tax": {"id": "NOR"},
+        },
+        {
+            "id": 20,
+            "title": "B",
+            "qty_nc": 1,
+            "amounts": {"gross_unit": "2.00"},
+            "tax": {"id": "NOR"},
+        },
+    ],
+}
+
 
 class TestBuildInvoiceBody:
     def test_minimal(self, items: list[DocumentItem]) -> None:
@@ -103,7 +126,7 @@ class TestBuildInvoiceBody:
 
 class TestBuildCreditNoteBody:
     def test_credits_full_original(self) -> None:
-        body = _build_credit_note_body(_ORIGINAL_FT, "Return", None, None)
+        body = _build_credit_note_body(_ORIGINAL_FT, "Return", None, None, None)
         assert body["type"] == "NC"
         assert body["register_id"] == 1
         assert body["notes"] == "Return"
@@ -120,17 +143,60 @@ class TestBuildCreditNoteBody:
         # the old top-level field that Vendus rejected must be gone
         assert "reference_document_id" not in body
 
+    def test_credits_all_lines_of_multiline_original(self) -> None:
+        body = _build_credit_note_body(_ORIGINAL_2LINE, "Return", None, None, None)
+        rows = [it["reference_document"]["document_row"] for it in body["items"]]
+        assert rows == [1, 2]  # both lines, referenced by 1-based row
+        assert [it["id"] for it in body["items"]] == [10, 20]
+
+    def test_partial_credit_selects_rows(self) -> None:
+        body = _build_credit_note_body(_ORIGINAL_2LINE, "Return", [CreditLine(row=2)], None, None)
+        assert len(body["items"]) == 1
+        assert body["items"][0]["reference_document"]["document_row"] == 2
+        assert body["items"][0]["id"] == 20
+
+    def test_partial_credit_overrides_qty(self) -> None:
+        body = _build_credit_note_body(
+            _ORIGINAL_2LINE, "Return", [CreditLine(row=1, qty=Decimal("1"))], None, None
+        )
+        assert body["items"][0]["qty"] == 1.0
+
+    def test_partial_rejects_unknown_row(self) -> None:
+        with pytest.raises(ValidationError, match="row 9 does not exist"):
+            _build_credit_note_body(_ORIGINAL_2LINE, "Return", [CreditLine(row=9)], None, None)
+
+    def test_full_credit_skips_already_credited_lines(self) -> None:
+        original = {
+            "number": "FT 2026/2",
+            "register_id": 1,
+            "items": [
+                {"id": 1, "qty_nc": 0, "amounts": {"gross_unit": "1"}, "tax": {"id": "NOR"}},
+                {"id": 2, "qty_nc": 1, "amounts": {"gross_unit": "1"}, "tax": {"id": "NOR"}},
+            ],
+        }
+        body = _build_credit_note_body(original, "Return", None, None, None)
+        assert [it["id"] for it in body["items"]] == [2]  # row 1 (qty_nc=0) skipped
+
+    def test_rejects_when_nothing_creditable(self) -> None:
+        original = {
+            "number": "X",
+            "register_id": 1,
+            "items": [{"id": 1, "qty_nc": 0, "amounts": {"gross_unit": "1"}, "tax": {"id": "NOR"}}],
+        }
+        with pytest.raises(ValidationError, match="already fully credited"):
+            _build_credit_note_body(original, "Return", None, None, None)
+
     def test_requires_reason(self) -> None:
         with pytest.raises(ValidationError, match="reason"):
-            _build_credit_note_body(_ORIGINAL_FT, "", None, None)
+            _build_credit_note_body(_ORIGINAL_FT, "", None, None, None)
 
     def test_requires_reason_not_whitespace(self) -> None:
         with pytest.raises(ValidationError, match="reason"):
-            _build_credit_note_body(_ORIGINAL_FT, "   ", None, None)
+            _build_credit_note_body(_ORIGINAL_FT, "   ", None, None, None)
 
     def test_rejects_original_without_lines(self) -> None:
         with pytest.raises(ValidationError, match="no lines"):
-            _build_credit_note_body({"number": "X", "items": []}, "r", None, None)
+            _build_credit_note_body({"number": "X", "items": []}, "r", None, None, None)
 
 
 class TestMode:
@@ -141,7 +207,7 @@ class TestMode:
         pays = [Payment(method_id=1, amount=Decimal("10"))]
         assert "mode" not in _build_invoice_body(1, items, None, None)
         assert "mode" not in _build_invoice_receipt_body(1, items, pays, None, None)
-        assert "mode" not in _build_credit_note_body(_ORIGINAL_FT, "r", None, None)
+        assert "mode" not in _build_credit_note_body(_ORIGINAL_FT, "r", None, None, None)
 
     def test_tests_mode_on_wire(self, items: list[DocumentItem]) -> None:
         body = _build_invoice_body(1, items, None, None, mode=DocumentMode.TESTS)
@@ -153,7 +219,7 @@ class TestMode:
         assert body["mode"] == "normal"
 
     def test_credit_note_mode_on_wire(self) -> None:
-        body = _build_credit_note_body(_ORIGINAL_FT, "Return", None, DocumentMode.TESTS)
+        body = _build_credit_note_body(_ORIGINAL_FT, "Return", None, None, DocumentMode.TESTS)
         assert body["mode"] == "tests"
 
 

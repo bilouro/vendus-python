@@ -16,13 +16,12 @@ is actually done/verified, not just coded.
   FT or FR fails with `NotFoundError` ("No data") because the original test document
   is not retrievable via `/documents/{id}`. NC only works on real, retrievable
   originals. (Verified live for both FT and FR.)
-- [ ] **Clearer error when crediting a non-retrievable original.** The GET inside
-  `create_credit_note` raises a generic `NotFoundError`; wrap it with a hint that the
-  original must be a real (non-test) document. Cannot distinguish "test doc" from
-  "genuinely missing" (both 404), so keep it a hint, not a hard claim.
-- [ ] **Multi-line credit notes.** `document_row` is only verified for a single-line
-  original (row=1). The builder assumes `row = 1-based position`; verify against a
-  real multi-line invoice.
+- [x] **Clearer error when crediting a non-retrievable original.** Done:
+  `create_credit_note` wraps the GET's `NotFoundError` with a hint that the original
+  must be a real, retrievable document (test-mode documents cannot be credited).
+- [x] **Multi-line credit notes.** Done: verified live on a real 2-line FT
+  (FT 01P2026/2) — rows 1 and 2 both credited correctly via `reference_document`
+  (`qty_nc` `[1,1]`→`[0,1]`→`[0,0]`).
 - [ ] **`mode=tests` override on a `normal` register.** Unverified whether a per-request
   `mode=tests` produces a non-fiscal document on a register configured as `normal`.
   Our register is in `tests` mode, so we never exercised the override direction.
@@ -36,9 +35,9 @@ is actually done/verified, not just coded.
   every create that omits `mode`; a per-call `mode` still overrides. Verified live
   (`default_mode=TESTS` → `FT T01P2026/12` without passing `mode`). This removes the
   footgun where the register's `tests` default silently produced test documents.
-- [ ] **Partial credit notes.** Vendus supports crediting part of a document
-  (`qty_nc` per line). The SDK only does **full** credit in v0.1. Add a partial API
-  (select lines/quantities) when needed.
+- [x] **Partial credit notes.** Done: `create_credit_note(..., lines=[CreditLine(row=,
+  qty=)])` credits only the selected rows/quantities; a full credit skips already-credited
+  lines. Verified live (partial credit of line 1 of a 2-line FT → `qty_nc` `[1,1]`→`[0,1]`).
 - [ ] **`cancel` for non-FT/FR/NC types.** The SDK blocks the three fiscal types we
   know are non-cancellable (FT verified; FR/NC by rule). Which other types Vendus
   actually lets you cancel is unverified — do not expand the block list without

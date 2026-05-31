@@ -6,7 +6,7 @@ Uma Nota de Crédito (NC) credita uma fatura emitida anteriormente (FT ou FR). �
 
 - **Referencia sempre** um documento original (`reference_document_id`)
 - **Motivo obrigatório** (`reason`) — exigido pela AT
-- Credita o documento original **por inteiro**: o SDK vai buscar o original e replica as suas linhas, por isso o cliente e os valores vêm dele (créditos parciais não são suportados no v0.1)
+- Credita o original — **todas as linhas ainda creditáveis por defeito**, ou só as linhas que escolheres (crédito parcial via `lines`). O SDK vai buscar o original; o cliente e os valores vêm dele
 
 ## Fluxo
 
@@ -53,10 +53,34 @@ print(nc.gross_amount)   # o valor creditado
 |---|---|---|---|
 | `reference_document_id` | `int` | Sim | id da FT/FR original a creditar |
 | `reason` | `str` | Sim | Motivo da nota de crédito (exigido pela AT) |
+| `lines` | `list[CreditLine] \| None` | Não | Creditar só linhas/quantidades específicas (parcial); omite para o documento inteiro |
 | `external_reference` | `str` | Não | Permite retries seguros do POST |
 | `mode` | `DocumentMode \| None` | Não | `TESTS` para uma NC de teste (não-fiscal) |
 
 O cliente, os itens e os valores são lidos do documento original — não os passas.
+
+## Crédito parcial
+
+Para creditar só algumas linhas (ou parte da quantidade de uma linha), passa `lines`. Cada
+`CreditLine` seleciona uma linha do original pelo `row` (1-based); `qty` assume, por
+omissão, a quantidade restante dessa linha.
+
+```python
+from decimal import Decimal
+from vendus import CreditLine, VendusClient
+
+client = VendusClient.from_env()
+
+# Creditar só a linha 1, e só 1 unidade:
+nc = client.documents.create_credit_note(
+    reference_document_id=12345,
+    reason="Cliente devolveu um item",
+    lines=[CreditLine(row=1, qty=Decimal("1"))],
+)
+```
+
+Linhas já totalmente creditadas são saltadas num crédito total, por isso podes creditar um
+documento linha a linha ao longo de várias notas.
 
 ## Variante async
 
@@ -69,6 +93,6 @@ nc = await client.documents.create_credit_note_async(
 
 ## Notas
 
-1. **Só crédito total (v0.1):** o SDK credita todas as linhas do original. Créditos parciais (algumas linhas/quantidades) ficam para o futuro.
+1. **Total ou parcial:** por defeito o SDK credita todas as linhas ainda creditáveis. Passa `lines=[CreditLine(row=..., qty=...)]` para creditar só linhas/quantidades específicas; linhas já totalmente creditadas são saltadas.
 2. **A NC é como se reverte uma fatura:** faturas fiscais (FT/FR) **não podem ser canceladas** — o `cancel()` rejeita-as. Emite uma NC para creditar o original.
 3. **Apenas documentos reais:** o original tem de ser consultável, por isso as notas de crédito funcionam sobre documentos **reais**, não sobre os de modo teste (que não são endereçáveis via `/documents/{id}`).

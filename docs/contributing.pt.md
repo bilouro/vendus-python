@@ -135,14 +135,3 @@ Usa `services/documents.py::create_invoice` como referência.
    versão portuguesa `X.pt.md`).
 7. Atualiza o `CHANGELOG.md`, e o `CLAUDE.md` (roadmap, e a tabela de vocabulário R1 se
    surgir um campo novo).
-
-## Lacunas conhecidas
-
-Pendências e lacunas de verificação estão em
-[`TODO.md`](https://github.com/bilouro/vendus-python/blob/main/TODO.md) — consulta-o antes
-de começar trabalho relacionado, e mantém-no honesto (marca um item só quando verificado).
-
-## Âmbito
-
-Qualquer coisa fora do roadmap atual (ver `CLAUDE.md`) deve ser discutida num issue
-primeiro.

@@ -452,10 +452,6 @@ Note: the client object is NOT returned. If the SDK needs the client id, it must
 | v0.6.0 | CLI tool + dry-run mode | — |
 | v1.0.0 | Stable API, full docs | — |
 
-**Known gaps & follow-ups** (verification gaps, deferred features, correctness TODOs)
-are tracked in [`TODO.md`](TODO.md) at the repo root — consult it before starting
-related work, and keep it honest (check items only when actually verified/done).
-
 ---
 
 ## Authoring & Attribution

@@ -50,7 +50,6 @@ an FR needs `payments`, an NC credits a real original, FT/FR/NC can't be cancell
 - `CLAUDE.md` — architecture, rules (R1–R16), document types, vocabulary, live-verified facts
 - `src/vendus/services/documents.py` — reference implementation
 - `tests/unit/test_documents.py` — wire-body test pattern
-- `TODO.md` — known gaps and follow-ups
 
 ## Adding a new document type
 
@@ -58,7 +57,3 @@ See the [docs guide](https://bilouro.github.io/vendus-python/contributing/): enu
 `_build_X_body` → `create_X` / `create_X_async` (thread `self._effective_mode(mode)`) →
 **live-validate** → unit tests (wire body) → example → doc page (EN + PT) →
 `CHANGELOG.md` / `CLAUDE.md`.
-
-## Scope
-
-Anything outside the current roadmap (see `CLAUDE.md`) needs an issue first.

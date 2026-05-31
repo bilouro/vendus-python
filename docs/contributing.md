@@ -134,14 +134,3 @@ Use `services/documents.py::create_invoice` as the reference.
    Portuguese `X.pt.md`).
 7. Update `CHANGELOG.md`, and `CLAUDE.md` (roadmap, and the R1 vocabulary table if a new
    field appears).
-
-## Known gaps
-
-Open follow-ups and verification gaps are tracked in
-[`TODO.md`](https://github.com/bilouro/vendus-python/blob/main/TODO.md) — check it before
-starting related work, and keep it honest (tick an item only when actually verified).
-
-## Scope
-
-Anything outside the current roadmap (see `CLAUDE.md`) should be discussed in an issue
-first.

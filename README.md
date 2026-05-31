@@ -218,7 +218,7 @@ pytest -m integration --no-cov
 
 Full developer guide — testing, the live-validation discipline, and how to add a document
 type — is on the [Contributing](https://bilouro.github.io/vendus-python/contributing/)
-page, alongside `CLAUDE.md` and `TODO.md`.
+page, alongside `CLAUDE.md`.
 
 ## Contributing
 

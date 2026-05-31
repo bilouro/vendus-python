@@ -64,6 +64,7 @@ plugins:
             Invoice: Fatura
             Invoice-Receipt: Fatura-Recibo
             Credit Note: Nota de Crédito
+            Payment methods: Métodos de pagamento
             Recipes: Receitas
             Errors & Troubleshooting: Erros e Troubleshooting
             API Reference: Referência API
@@ -89,6 +90,7 @@ nav:
     - Invoice: documents/invoice.md
     - Invoice-Receipt: documents/invoice-receipt.md
     - Credit Note: documents/credit-note.md
+    - Payment methods: documents/payment-methods.md
   - Recipes:
     - Recipes: recipes/index.md
     - FastAPI: recipes/fastapi.md

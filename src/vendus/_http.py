@@ -28,6 +28,7 @@ from vendus.exceptions import (
     NotFoundError,
     RateLimitError,
     TransportError,
+    ValidationError,
 )
 
 _logger = get_logger()
@@ -186,31 +187,64 @@ class HttpTransport:
             body = response.text
 
         message = _extract_error_message(body) or f"HTTP {status}"
+        code = _extract_error_code(body)
 
+        # `P001` is a request/field validation error. Vendus returns it with HTTP
+        # 403, which would otherwise surface as a misleading AuthorizationError.
+        if code == "P001":
+            raise ValidationError(message, error_code=code)
         if status == 401:
-            raise AuthenticationError(message)
+            raise AuthenticationError(message, error_code=code)
         if status == 403:
-            raise AuthorizationError(message)
+            raise AuthorizationError(message, error_code=code)
         if status == 404:
-            raise NotFoundError(message)
+            raise NotFoundError(message, error_code=code)
         if status == 429:
-            raise RateLimitError(message)
-        raise APIError(message, status_code=status, response_body=body)
+            raise RateLimitError(message, error_code=code)
+        raise APIError(message, status_code=status, response_body=body, error_code=code)
+
+
+def _first_error(body: Any) -> dict[str, Any] | None:
+    """Return the first error object from a Vendus error body, if present.
+
+    Vendus uses ``{"errors": [{"code": ..., "message": ...}]}``.
+    """
+    if isinstance(body, dict):
+        errors = body.get("errors")
+        if isinstance(errors, list) and errors and isinstance(errors[0], dict):
+            return errors[0]
+        err = body.get("error")
+        if isinstance(err, dict):
+            return err
+    return None
 
 
 def _extract_error_message(body: Any) -> str | None:
     """Best-effort extraction of a human-readable error from a Vendus body."""
+    first = _first_error(body)
+    if first is not None:
+        msg = first.get("message") or first.get("detail")
+        if isinstance(msg, str) and msg:
+            return msg
     if isinstance(body, dict):
-        for key in ("errors", "error", "message", "detail"):
+        for key in ("message", "detail", "error"):
             value = body.get(key)
             if isinstance(value, str) and value:
                 return value
-            if isinstance(value, list) and value:
-                return ", ".join(str(item) for item in value)
-            if isinstance(value, dict):
-                inner = value.get("message") or value.get("detail")
-                if isinstance(inner, str):
-                    return inner
     if isinstance(body, str) and body:
         return body
+    return None
+
+
+def _extract_error_code(body: Any) -> str | None:
+    """Extract the Vendus error code (e.g. ``P001``) from a body, if present."""
+    first = _first_error(body)
+    if first is not None:
+        code = first.get("code")
+        if isinstance(code, str):
+            return code
+    if isinstance(body, dict):
+        code = body.get("code")
+        if isinstance(code, str):
+            return code
     return None

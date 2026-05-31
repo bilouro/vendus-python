@@ -10,6 +10,7 @@ import pytest
 import respx
 
 from vendus import (
+    AuthorizationError,
     CreditLine,
     DocumentItem,
     DocumentMode,
@@ -103,10 +104,10 @@ class TestCancel:
         with respx.mock(base_url=_BASE) as router:
             # cancel() first GETs the document to check its type.
             router.get("/v1.1/documents/9").mock(
-                return_value=httpx.Response(200, json=_doc(9, "OR"))
+                return_value=httpx.Response(200, json=_doc(9, "OT"))
             )
             route = router.patch("/v1.1/documents/9").mock(
-                return_value=httpx.Response(200, json=_doc(9, "OR"))
+                return_value=httpx.Response(200, json=_doc(9, "OT"))
             )
             doc = vendus.documents.cancel(9)
         assert doc.id == 9
@@ -127,10 +128,10 @@ class TestCancel:
     async def test_cancel_async(self, vendus: VendusClient) -> None:
         with respx.mock(base_url=_BASE) as router:
             router.get("/v1.1/documents/9").mock(
-                return_value=httpx.Response(200, json=_doc(9, "OR"))
+                return_value=httpx.Response(200, json=_doc(9, "OT"))
             )
             router.patch("/v1.1/documents/9").mock(
-                return_value=httpx.Response(200, json=_doc(9, "OR"))
+                return_value=httpx.Response(200, json=_doc(9, "OT"))
             )
             doc = await vendus.documents.cancel_async(9)
         assert doc.id == 9
@@ -277,3 +278,36 @@ class TestDefaultMode:
             client.documents.create_invoice(register_id=1, items=items)
         body = json.loads(route.calls.last.request.content)
         assert "mode" not in body
+
+
+class TestErrorMapping:
+    """Vendus error codes map to clearer exceptions and are exposed as error_code."""
+
+    def test_p001_is_validation_error_not_authorization(
+        self, vendus: VendusClient, items: list[DocumentItem]
+    ) -> None:
+        # Vendus returns P001 (a field/validation error) with HTTP 403.
+        with respx.mock(base_url=_BASE) as router:
+            router.post("/v1.1/documents").mock(
+                return_value=httpx.Response(
+                    403,
+                    json={"errors": [{"code": "P001", "message": "O campo x não é permitido"}]},
+                )
+            )
+            with pytest.raises(ValidationError) as exc:
+                vendus.documents.create_invoice(register_id=1, items=items)
+        assert exc.value.error_code == "P001"
+        assert "não é permitido" in str(exc.value)  # the real message, not the dict
+
+    def test_403_without_p001_is_authorization_error(
+        self, vendus: VendusClient, items: list[DocumentItem]
+    ) -> None:
+        with respx.mock(base_url=_BASE) as router:
+            router.post("/v1.1/documents").mock(
+                return_value=httpx.Response(
+                    403, json={"errors": [{"code": "X999", "message": "nope"}]}
+                )
+            )
+            with pytest.raises(AuthorizationError) as exc:
+                vendus.documents.create_invoice(register_id=1, items=items)
+        assert exc.value.error_code == "X999"

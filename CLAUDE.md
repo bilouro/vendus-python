@@ -327,6 +327,8 @@ These were confirmed against the **real** Vendus API; changing them silently re-
 - **Unknown type codes** (e.g. `RG`, seen live, absent from documents/types) must not crash parsing → `DocumentType.UNKNOWN`, raw code kept in `raw_response`.
 - `tax_authority_id` is **empty in the POST response even for real fiscal documents** (ATCUD/hash mark a doc fiscal), so it is not a reliable test-vs-real discriminator at create time — the series prefix is (`FT T01P…` test vs `FT 01P…` real).
 - **`mode` defaults to the register's mode.** This account's register is in `tests`, so a create that omits `mode` silently produces a *test* document (a real-mode NC came out `NC T01P…` because `mode` was omitted). Fix: set it once with `VendusClient(default_mode=DocumentMode.NORMAL)` (a per-call `mode` still overrides), or pass `mode=DocumentMode.NORMAL` on every create. A NC also credits a real original correctly when the NC itself is test (it lands in the test space, leaving the real original's `qty_nc` untouched).
+- **Vendus returns HTTP 403 for `P001`** (a field/request validation error). The SDK maps `P001` → `ValidationError` (not `AuthorizationError`) and exposes `.error_code` on every exception. The error body shape is `{"errors": [{"code", "message"}]}`.
+- **FR payments** accept multiple methods (`NU`/`CD`/`MBWAY`/`CC`/`TB`…), split across several `payments`, and a `date_due` — all live-verified. Method ids are per-account.
 
 ---
 
@@ -377,16 +379,29 @@ The SDK's `_config.py` keeps per-resource version mapping.
 - HTTP Basic Auth: username = `api_key`, password = `""`
 
 ### Document Types (Vendus codes)
+Aligned with the authoritative `documents/types` reference (`OT`, not `OR`; plus `FG`,
+`GA`/`GD`/`GR`, `DC`, `PF`, `EC`). `RG` was observed live (a receipt code absent from the
+reference). Any code not in this enum parses to `DocumentType.UNKNOWN` (raw code kept in
+`raw_response`).
+
 | Code | Name | SDK enum |
 |---|---|---|
 | FT | Fatura | `DocumentType.INVOICE` |
 | FS | Fatura Simplificada | `DocumentType.SIMPLIFIED_INVOICE` |
 | FR | Fatura-Recibo | `DocumentType.INVOICE_RECEIPT` |
+| FG | Fatura Global | `DocumentType.GLOBAL_INVOICE` |
 | NC | Nota de Crédito | `DocumentType.CREDIT_NOTE` |
 | ND | Nota de Débito | `DocumentType.DEBIT_NOTE` |
-| RC | Recibo | `DocumentType.RECEIPT` |
-| OR | Orçamento | `DocumentType.QUOTE` |
+| GA | Guia de Ativos Próprios | `DocumentType.OWN_ASSETS_GUIDE` |
+| GD | Guia de Devolução | `DocumentType.RETURN_GUIDE` |
+| GR | Guia de Remessa | `DocumentType.SHIPPING_GUIDE` |
 | GT | Guia de Transporte | `DocumentType.DELIVERY_NOTE` |
+| DC | Consulta de Mesa | `DocumentType.TABLE_BILL` |
+| PF | Fatura Pró-Forma | `DocumentType.PROFORMA` |
+| OT | Orçamento | `DocumentType.QUOTE` |
+| EC | Encomenda | `DocumentType.ORDER` |
+| RG | Recibo (observed live) | `DocumentType.RECEIPT` |
+| — | unmodelled code | `DocumentType.UNKNOWN` |
 
 ### Tax Exemption Reasons (AT codes M01–M99)
 Common ones:

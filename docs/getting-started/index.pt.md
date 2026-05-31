@@ -66,6 +66,23 @@ print(f"ATCUD: {invoice.atcud}")
 print(f"QR: {invoice.qrcode}")
 ```
 
+!!! warning "Modo teste por defeito"
+    Contas Vendus novas têm a caixa em **modo teste**, por isso os documentos são
+    não-fiscais até passares para modo real. Usa `VendusClient(api_key=..., default_mode=DocumentMode.NORMAL)`
+    (ou `mode=` por chamada) para documentos reais. Ver [Configuração](configuration.md#modo-por-omissao-dos-documentos).
+
+## Reverter um documento
+
+Documentos fiscais (FT/FR/NC) **não podem ser cancelados** — o `cancel()` recusa-os. Para
+reverter uma fatura, emite uma nota de crédito que a credita:
+
+```python
+client.documents.create_credit_note(
+    reference_document_id=invoice.id,
+    reason="Emitida por erro",
+)
+```
+
 ## Próximos passos
 
 - [Configuração](configuration.md) — todas as opções do `VendusClient`

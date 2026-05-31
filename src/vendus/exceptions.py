@@ -6,11 +6,21 @@ from typing import Any
 
 
 class VendusError(Exception):
-    """Base exception for all SDK errors."""
+    """Base exception for all SDK errors.
+
+    Attributes:
+        error_code: the Vendus error code (e.g. ``P001``, ``A001``) when the error
+            came from the API, else ``None``.
+    """
+
+    def __init__(self, message: str = "", *, error_code: str | None = None) -> None:
+        super().__init__(message)
+        self.error_code = error_code
 
 
 class ValidationError(VendusError):
-    """Local validation failed before any API call."""
+    """The request is invalid — caught locally before the call, or rejected by the
+    API as malformed (Vendus ``P001``, e.g. a field that is not permitted)."""
 
 
 class AuthenticationError(VendusError):
@@ -35,6 +45,7 @@ class APIError(VendusError):
     Attributes:
         status_code: HTTP status code from the API.
         response_body: Parsed JSON body if available, else raw text.
+        error_code: the Vendus error code from the body, if any.
     """
 
     def __init__(
@@ -42,8 +53,10 @@ class APIError(VendusError):
         message: str,
         status_code: int | None = None,
         response_body: Any | None = None,
+        *,
+        error_code: str | None = None,
     ) -> None:
-        super().__init__(message)
+        super().__init__(message, error_code=error_code)
         self.status_code = status_code
         self.response_body = response_body
 

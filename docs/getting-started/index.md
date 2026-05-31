@@ -66,6 +66,23 @@ print(f"ATCUD: {invoice.atcud}")
 print(f"QR: {invoice.qrcode}")
 ```
 
+!!! warning "Test mode by default"
+    New Vendus accounts have their register in **test mode**, so documents are non-fiscal
+    until you switch to real mode. Pass `VendusClient(api_key=..., default_mode=DocumentMode.NORMAL)`
+    (or `mode=` per call) for real documents. See [Configuration](configuration.md#default-document-mode).
+
+## Reversing a document
+
+Fiscal documents (FT/FR/NC) **cannot be cancelled** — `cancel()` rejects them. To reverse
+an invoice, issue a credit note that credits it:
+
+```python
+client.documents.create_credit_note(
+    reference_document_id=invoice.id,
+    reason="Issued in error",
+)
+```
+
 ## Next steps
 
 - [Configuration](configuration.md) — all `VendusClient` options

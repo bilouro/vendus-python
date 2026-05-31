@@ -22,15 +22,22 @@ class DocumentType(str, Enum):
     ``Document.raw_response["type"]``.
     """
 
-    INVOICE = "FT"
-    SIMPLIFIED_INVOICE = "FS"
-    INVOICE_RECEIPT = "FR"
-    CREDIT_NOTE = "NC"
-    DEBIT_NOTE = "ND"
-    RECEIPT = "RC"
-    QUOTE = "OR"
-    DELIVERY_NOTE = "GT"
-    UNKNOWN = "UNKNOWN"
+    INVOICE = "FT"  # Fatura
+    SIMPLIFIED_INVOICE = "FS"  # Fatura Simplificada
+    INVOICE_RECEIPT = "FR"  # Fatura-Recibo
+    GLOBAL_INVOICE = "FG"  # Fatura Global
+    CREDIT_NOTE = "NC"  # Nota de Crédito
+    DEBIT_NOTE = "ND"  # Nota de Débito
+    OWN_ASSETS_GUIDE = "GA"  # Guia de Ativos Próprios
+    RETURN_GUIDE = "GD"  # Guia de Devolução
+    SHIPPING_GUIDE = "GR"  # Guia de Remessa
+    DELIVERY_NOTE = "GT"  # Guia de Transporte
+    TABLE_BILL = "DC"  # Consulta de Mesa
+    PROFORMA = "PF"  # Fatura Pró-Forma
+    QUOTE = "OT"  # Orçamento
+    ORDER = "EC"  # Encomenda
+    RECEIPT = "RG"  # Recibo — observed live; absent from the documents/types reference
+    UNKNOWN = "UNKNOWN"  # forward-compat sentinel; raw code stays in raw_response
 
 
 class DocumentMode(str, Enum):

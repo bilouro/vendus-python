@@ -22,6 +22,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - `CreditLine` model + `lines` argument on `create_credit_note` — credit only specific
   rows/quantities (partial credit); omit for a full credit, which now skips lines that
   are already fully credited. Verified live on a real multi-line invoice
+- `error_code` attribute on every exception (the Vendus error code, e.g. `P001`)
+- `DocumentType` now covers the full `documents/types` reference (`FG`, `GA`, `GD`, `GR`,
+  `DC`, `PF`, `OT`, `EC`) plus `RG` (observed live)
+- Docs: a dedicated **Payment methods** page (`list_payment_methods`, the `Payment` model,
+  split payments, `date_due`), all live-validated
 - `DocumentType.UNKNOWN` — forward-compat sentinel so the SDK does not crash on type
   codes the API returns but the enum does not model (e.g. `RG`); the raw code stays in
   `raw_response`
@@ -38,7 +43,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - Portuguese NIF validation
 - PII redaction filter for logging
 - HttpTransport with conditional POST retries (R3)
-- 90 unit tests with `respx` mocks (94% coverage), plus live integration tests
+- 93 unit tests with `respx` mocks (95% coverage), plus live integration tests
 - Bilingual documentation (PT/EN) with mkdocs-material + i18n
 - 10 runnable examples, including an all-scenarios reference
 - CI workflow (ruff, mypy --strict, pytest on Python 3.9–3.13)
@@ -46,6 +51,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - Issue/PR templates and Dependabot config
 
 ### Changed
+- A Vendus `P001` (field-validation error, returned with HTTP 403) now raises
+  `ValidationError` instead of the misleading `AuthorizationError`.
+- `DocumentType.QUOTE` is now `"OT"` (was the incorrect `"OR"`) and `DocumentType.RECEIPT`
+  is `"RG"` (observed live; was the unverified `"RC"`), aligning with the Vendus reference.
 - **Breaking:** `DocumentItem.tax_rate` (a `Decimal` percentage) is now `tax_category`
   (a `TaxCategory` enum). Vendus classifies line-item VAT by category (`tax_id`:
   NOR/INT/RED/ISE/OUT), not by a numeric rate — the rate is defined by the category in
@@ -78,6 +87,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
   (the live account returned `RG`, which is absent from the documents/types reference).
 - `create_credit_note` raises a clearer `NotFoundError` when the original can't be read
   (e.g. a test-mode document), explaining it must be a real, retrievable document.
+- Error-message extraction for the `{"errors": [{"code", "message"}]}` body shape — the
+  message (not the raw dict) is now used for the exception text.
 
 ### Quality
 - `mypy --strict` passes with zero errors

@@ -22,11 +22,13 @@ is actually done/verified, not just coded.
 - [x] **Multi-line credit notes.** Done: verified live on a real 2-line FT
   (FT 01P2026/2) — rows 1 and 2 both credited correctly via `reference_document`
   (`qty_nc` `[1,1]`→`[0,1]`→`[0,0]`).
-- [ ] **`mode=tests` override on a `normal` register.** Unverified whether a per-request
-  `mode=tests` produces a non-fiscal document on a register configured as `normal`.
-  Our register is in `tests` mode, so we never exercised the override direction.
-- [ ] **FR payment variations.** Only validated with cash (type `NU`). Not tested:
-  other methods (MB/MBWAY/CC…), multiple `payments`, and deferred `date_due`.
+- [ ] **`mode=tests` override on a `normal` register.** Not testable in our setup — the
+  only register is in `tests` mode. The other direction (`mode=normal` overriding a
+  `tests` register) **is** verified (every real document was issued that way). Re-test if
+  a `normal`-mode register becomes available.
+- [x] **FR payment variations.** Done, live: Multibanco (`CD`), split across two methods
+  (`NU` + `MBWAY`), and `date_due` all accepted (test mode); a real FR with Multibanco was
+  issued and credited (`FR 01P2026/2172` → `NC 01P2026/13`).
 
 ## SDK gaps / decisions to revisit
 
@@ -38,32 +40,27 @@ is actually done/verified, not just coded.
 - [x] **Partial credit notes.** Done: `create_credit_note(..., lines=[CreditLine(row=,
   qty=)])` credits only the selected rows/quantities; a full credit skips already-credited
   lines. Verified live (partial credit of line 1 of a 2-line FT → `qty_nc` `[1,1]`→`[0,1]`).
-- [ ] **`cancel` for non-FT/FR/NC types.** The SDK blocks the three fiscal types we
-  know are non-cancellable (FT verified; FR/NC by rule). Which other types Vendus
-  actually lets you cancel is unverified — do not expand the block list without
-  checking. Consider also translating Vendus's "não é permitido cancelar" error as a
-  backstop.
-- [ ] **`DocumentType` enum vs the authoritative `documents/types` list.** The enum
-  still has `OR` and `RC`, which are absent from the reference list
-  (FT/FS/NC/FR/FG/ND/GA/GD/GR/GT/DC/PF/OT/EC). The live account also returns `RG`,
-  which is in *no* list. Decide: align the enum to the reference (likely `QUOTE` →
-  `OT`, add the missing codes) and how to model `RG`. Unknown codes already fall back
-  to `DocumentType.UNKNOWN`, so this is correctness/ergonomics, not a crash risk.
+- [ ] **`cancel` for non-FT/FR/NC types.** Not testable in v0.1 — the SDK only creates
+  FT/FR/NC (all non-cancellable), so there is no cancellable document to exercise the
+  PATCH happy path. The guard for FT/FR/NC is verified; the happy path is unit-only until
+  a cancellable type (e.g. a quote) is supported.
+- [x] **`DocumentType` enum vs the authoritative `documents/types` list.** Done: the enum
+  now matches the reference (`QUOTE` = `OT`, added `FG`/`GA`/`GD`/`GR`/`DC`/`PF`/`EC`),
+  `RECEIPT` = `RG` (observed live), and unknown codes fall back to `UNKNOWN`.
 
 ## Robustness / correctness
 
-- [ ] **Error mapping by code, not just HTTP status.** Vendus returns HTTP 403 for some
-  validation errors (e.g. `P001`) and 400 for others. The transport maps 403 →
-  `AuthorizationError`, which is misleading for a field-validation error. Map known
-  error codes (P001, A001, …) to clearer exceptions.
-- [ ] **Stronger non-fiscal assertion in the FR/FT integration tests.** `tax_authority_id`
-  is empty in the POST response even for *real* fiscal documents, so it is necessary
-  but not sufficient proof of non-fiscality. The real discriminator is the series
-  prefix (`FT T01P…` test vs `FT 01P…` real) — consider asserting on it.
+- [x] **Error mapping by code, not just HTTP status.** Done: `P001` (returned with 403)
+  now raises `ValidationError` instead of `AuthorizationError`, every exception exposes
+  `.error_code`, and the error message is parsed from the `{"errors": [...]}` shape.
+- [x] **Stronger non-fiscal assertion in the FR/FT integration tests.** Resolved by
+  documenting the limitation honestly: `tax_authority_id` empty is necessary but not
+  sufficient, and the real tell (series prefix `T01P…`) is **account-specific**, so a hard
+  assertion on it would be brittle. We rely on `mode=tests` + the register's mode instead.
 
 ## Docs
 
-- [ ] **Document `list_payment_methods` and the `Payment` model** on a dedicated docs
-  page (currently only shown inline in the FR examples).
-- [ ] **Mention the cancel restriction prominently** in the getting-started flow (FT/FR
-  can't be cancelled → credit note), not only on the per-document pages.
+- [x] **Document `list_payment_methods` and the `Payment` model** on a dedicated docs
+  page. Done: `docs/documents/payment-methods.md` (+ PT), in the nav.
+- [x] **Mention the cancel restriction prominently** in the getting-started flow. Done:
+  a "Reversing a document" section + a test-mode warning in `getting-started/index.md` (+ PT).

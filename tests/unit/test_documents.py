@@ -241,12 +241,21 @@ class TestParseDocument:
         doc = _parse_document(data)
         assert doc.tax_authority_id == "AT-987654"
 
+    def test_parses_authoritative_type_codes(self) -> None:
+        for code, expected in [
+            ("FG", DocumentType.GLOBAL_INVOICE),
+            ("OT", DocumentType.QUOTE),
+            ("RG", DocumentType.RECEIPT),
+        ]:
+            doc = _parse_document({"id": 1, "type": code, "amount_gross": "1", "amount_net": "1"})
+            assert doc.type == expected
+
     def test_unknown_type_maps_to_unknown(self) -> None:
-        # The live API can return type codes we do not model (e.g. "RG") — these
-        # must not crash parsing, and the exact code stays in raw_response.
-        doc = _parse_document({"id": 1, "type": "RG", "amount_gross": "1", "amount_net": "1"})
+        # A code we do not model must not crash parsing, and the exact code stays
+        # in raw_response.
+        doc = _parse_document({"id": 1, "type": "ZZ", "amount_gross": "1", "amount_net": "1"})
         assert doc.type == DocumentType.UNKNOWN
-        assert doc.raw_response["type"] == "RG"
+        assert doc.raw_response["type"] == "ZZ"
 
     def test_parses_credit_note_response(self, load_fixture: Any) -> None:
         data = load_fixture("credit_note_created.json")

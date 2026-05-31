@@ -454,6 +454,32 @@ Note: the client object is NOT returned. If the SDK needs the client id, it must
 
 ---
 
+## Releasing to PyPI
+
+The package is published to PyPI as [`vendus`](https://pypi.org/project/vendus/) via
+**Trusted Publishing (OIDC)** — there are **no API tokens or secrets** anywhere. Never put
+a PyPI token in the repo, CI, or chat. A published version is **immutable** (you cannot
+re-upload it — bump the version to fix a mistake).
+
+Trusted-publisher config (set once on PyPI → the project's Publishing settings): owner
+`bilouro`, repo `vendus-python`, workflow `release.yml`, environment `pypi`.
+
+### Cutting a release
+
+1. Make sure `main` is green — `ruff check .`, `ruff format --check .`, `mypy src/`,
+   `pytest`, `mkdocs build --strict` — and everything is committed and pushed.
+2. Bump the version in `pyproject.toml` (`version = "X.Y.Z"`). Semver: stay on `0.x` while
+   the public API may still break (a minor bump can break); go `1.0.0` only when you commit
+   to API stability. Adding a new document type is non-breaking → a minor bump.
+3. Cut the CHANGELOG: move `[Unreleased]` into `## [X.Y.Z] - YYYY-MM-DD`, and update the
+   compare / tag links at the bottom.
+4. Commit (`docs: cut CHANGELOG X.Y.Z`) and push to `main`.
+5. Publish a **GitHub Release** with tag `vX.Y.Z` on `main` — in the UI, or:
+   `gh release create vX.Y.Z --target main --title vX.Y.Z --notes-file <changelog-section>`.
+   This triggers `release.yml`, which builds, runs `twine check`, and publishes to PyPI via
+   OIDC. No token step.
+6. Verify: the **Release** workflow is green and `pip install vendus==X.Y.Z` works.
+
 ## Authoring & Attribution
 
 Commits, PRs, changelogs, READMEs, and any other public artifact must NOT credit Claude. No `Co-Authored-By: Claude` lines, no "Generated with Claude Code" footers. The user is the sole author. Operate as an invisible agent.

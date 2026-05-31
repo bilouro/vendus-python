@@ -3,10 +3,13 @@
 ## Instalação
 
 ```bash
-pip install vendus
+pip install vendus      # ou: uv add vendus
 ```
 
-Requer Python 3.9+. Dependências: [httpx](https://www.python-httpx.org/) e [Pydantic v2](https://docs.pydantic.dev/).
+- **PyPI:** <https://pypi.org/project/vendus/>
+- **Python:** 3.9 – 3.13
+- **Dependências:** [httpx](https://www.python-httpx.org/) e [Pydantic v2](https://docs.pydantic.dev/) — nada mais
+- **Tipado:** inclui o marcador `py.typed` (PEP 561) — autocomplete e `mypy` completos
 
 ## Obter API key
 

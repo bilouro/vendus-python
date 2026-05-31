@@ -18,10 +18,13 @@ Issue invoices, invoice-receipts, and credit notes — in 5 lines of Python.
 ## Installation
 
 ```bash
-pip install vendus
+pip install vendus      # or: uv add vendus
 ```
 
-Requires Python 3.9+. No additional dependencies beyond [httpx](https://www.python-httpx.org/) and [Pydantic v2](https://docs.pydantic.dev/).
+- **PyPI:** <https://pypi.org/project/vendus/>
+- **Python:** 3.9 – 3.13
+- **Dependencies:** [httpx](https://www.python-httpx.org/) and [Pydantic v2](https://docs.pydantic.dev/) — nothing else
+- **Typed:** ships a `py.typed` marker (PEP 561) — full IDE autocomplete and `mypy` support
 
 ## Quick Start
 

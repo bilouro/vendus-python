@@ -2109,21 +2109,20 @@ account's method ids from :meth:<code>list_payment_methods</code>.</p>
 
 
 <h4 id="vendus.services.documents.DocumentsService.create_credit_note" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">create_credit_note</span><span class="p">(</span><span class="n">reference_document_id</span><span class="p">,</span> <span class="n">reason</span><span class="p">,</span> <span class="n">external_reference</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+            <code class="highlight language-python"><span class="n">create_credit_note</span><span class="p">(</span><span class="n">reference_document_id</span><span class="p">,</span> <span class="n">reason</span><span class="p">,</span> <span class="n">lines</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">external_reference</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
 
 <a href="#vendus.services.documents.DocumentsService.create_credit_note" class="headerlink" title="Permanent link">&para;</a></h4>
 
 
     <div class="doc doc-contents ">
 
-        <p>Issue a credit note (NC) crediting the <strong>full</strong> referenced document.</p>
+        <p>Issue a credit note (NC) crediting a previously-issued document.</p>
 <p>Vendus credits an invoice line by line: each credit line must reference an
 existing line of the original. The SDK fetches the original (FT/FR) and
-replicates every line, so you pass only the document id and a reason — the
-client and amounts come from the original.</p>
+builds the credit lines from it — the client and amounts come from the
+original, so you usually pass only the document id and a reason.</p>
 <p>The original must be retrievable, i.e. a <strong>real</strong> (non-test) document;
-test-mode documents are not addressable, so they cannot be credited.
-Partial credits are not supported in v0.1.</p>
+test-mode documents are not addressable and cannot be credited.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -2167,6 +2166,23 @@ Partial credits are not supported in v0.1.</p>
             </td>
             <td>
                 <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>lines</code>
+            </td>
+            <td>
+                  <code><span title="vendus.services.documents.DocumentsService.list">list</span>[<span title="vendus.models.document.CreditLine">CreditLine</span>] | None</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Restrict the credit to specific rows/quantities (partial credit).
+Omit to credit every still-creditable line of the document.</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
             </td>
           </tr>
           <tr class="doc-section-item">

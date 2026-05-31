@@ -828,6 +828,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#partial-credit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Partial credit
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#async-variant" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1188,6 +1199,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#partial-credit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Partial credit
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#async-variant" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1235,7 +1257,7 @@
 <ul>
 <li><strong>Always references</strong> an original document (<code>reference_document_id</code>)</li>
 <li><strong>Reason is mandatory</strong> (<code>reason</code>) — required by AT</li>
-<li>Credits the <strong>full</strong> original document: the SDK fetches the original and replicates its lines, so the client and amounts come from it (partial credits are not supported in v0.1)</li>
+<li>Credits the original — <strong>every still-creditable line by default</strong>, or only the rows you choose (partial credit via <code>lines</code>). The SDK fetches the original; the client and amounts come from it</li>
 </ul>
 <h2 id="flow">Flow<a class="headerlink" href="#flow" title="Permanent link">&para;</a></h2>
 <pre class="mermaid"><code>sequenceDiagram
@@ -1293,6 +1315,12 @@
 <td>Reason for the credit note (required by AT)</td>
 </tr>
 <tr>
+<td><code>lines</code></td>
+<td><code>list[CreditLine] \| None</code></td>
+<td>No</td>
+<td>Credit only specific rows/quantities (partial); omit for the full document</td>
+</tr>
+<tr>
 <td><code>external_reference</code></td>
 <td><code>str</code></td>
 <td>No</td>
@@ -1307,15 +1335,33 @@
 </tbody>
 </table>
 <p>The client, items and amounts are read from the original document — you do not pass them.</p>
+<h2 id="partial-credit">Partial credit<a class="headerlink" href="#partial-credit" title="Permanent link">&para;</a></h2>
+<p>To credit only some lines (or part of a line's quantity), pass <code>lines</code>. Each
+<code>CreditLine</code> selects an original line by its 1-based <code>row</code>; <code>qty</code> defaults to that
+line's full remaining quantity.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">decimal</span><span class="w"> </span><span class="kn">import</span> <span class="n">Decimal</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">vendus</span><span class="w"> </span><span class="kn">import</span> <span class="n">CreditLine</span><span class="p">,</span> <span class="n">VendusClient</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="n">client</span> <span class="o">=</span> <span class="n">VendusClient</span><span class="o">.</span><span class="n">from_env</span><span class="p">()</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="c1"># Credit only line 1, and only 1 unit of it:</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="n">nc</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">documents</span><span class="o">.</span><span class="n">create_credit_note</span><span class="p">(</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>    <span class="n">reference_document_id</span><span class="o">=</span><span class="mi">12345</span><span class="p">,</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>    <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;Customer returned one item&quot;</span><span class="p">,</span>
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>    <span class="n">lines</span><span class="o">=</span><span class="p">[</span><span class="n">CreditLine</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">qty</span><span class="o">=</span><span class="n">Decimal</span><span class="p">(</span><span class="s2">&quot;1&quot;</span><span class="p">))],</span>
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="p">)</span>
+</code></pre></div>
+<p>Lines that are already fully credited are skipped by a full credit, so you can credit a
+document line by line across several notes.</p>
 <h2 id="async-variant">Async variant<a class="headerlink" href="#async-variant" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">nc</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">documents</span><span class="o">.</span><span class="n">create_credit_note_async</span><span class="p">(</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    <span class="n">reference_document_id</span><span class="o">=</span><span class="mi">12345</span><span class="p">,</span>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;...&quot;</span><span class="p">,</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">nc</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">documents</span><span class="o">.</span><span class="n">create_credit_note_async</span><span class="p">(</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>    <span class="n">reference_document_id</span><span class="o">=</span><span class="mi">12345</span><span class="p">,</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>    <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;...&quot;</span><span class="p">,</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="p">)</span>
 </code></pre></div>
 <h2 id="notes">Notes<a class="headerlink" href="#notes" title="Permanent link">&para;</a></h2>
 <ol>
-<li><strong>Full credit only (v0.1):</strong> the SDK credits every line of the original. Partial credits (some lines or quantities) are a future addition.</li>
+<li><strong>Full or partial:</strong> by default the SDK credits every still-creditable line. Pass <code>lines=[CreditLine(row=..., qty=...)]</code> to credit only specific lines/quantities; lines already fully credited are skipped.</li>
 <li><strong>NC is how you reverse an invoice:</strong> fiscal invoices (FT/FR) <strong>cannot be cancelled</strong> — <code>cancel()</code> rejects them. Issue an NC to credit the original instead.</li>
 <li><strong>Real documents only:</strong> the original must be retrievable, so credit notes work on <strong>real</strong> documents, not test-mode ones (which are not addressable via <code>/documents/{id}</code>).</li>
 </ol>

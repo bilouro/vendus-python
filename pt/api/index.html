@@ -1126,6 +1126,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#vendus.services.documents.DocumentsService.list_payment_methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        list_payment_methods
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1492,6 +1503,17 @@
     <span class="md-ellipsis">
       
         cancel
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#vendus.services.documents.DocumentsService.list_payment_methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        list_payment_methods
       
     </span>
   </a>
@@ -1955,7 +1977,7 @@ register's configured mode.</p>
 
 
 <h4 id="vendus.services.documents.DocumentsService.create_invoice_receipt" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">create_invoice_receipt</span><span class="p">(</span><span class="n">register_id</span><span class="p">,</span> <span class="n">items</span><span class="p">,</span> <span class="n">client</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">external_reference</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+            <code class="highlight language-python"><span class="n">create_invoice_receipt</span><span class="p">(</span><span class="n">register_id</span><span class="p">,</span> <span class="n">items</span><span class="p">,</span> <span class="n">payments</span><span class="p">,</span> <span class="n">client</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">external_reference</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
 
 <a href="#vendus.services.documents.DocumentsService.create_invoice_receipt" class="headerlink" title="Permanent link">&para;</a></h4>
 
@@ -1966,26 +1988,6 @@ register's configured mode.</p>
 <p>An FR is an invoice and a receipt in a single document: it bills and
 acknowledges payment at once. Use it when the client pays immediately
 (typical for services and freelancers).</p>
-<p>Client can be omitted (final consumer) or passed with/without fiscal_id.
-Pass <code>mode=DocumentMode.TESTS</code> for a non-fiscal test document.</p>
-
-
-    </div>
-
-</div>
-
-<div class="doc doc-object doc-function">
-
-
-<h4 id="vendus.services.documents.DocumentsService.create_credit_note" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">create_credit_note</span><span class="p">(</span><span class="n">register_id</span><span class="p">,</span> <span class="n">reference_document_id</span><span class="p">,</span> <span class="n">reason</span><span class="p">,</span> <span class="n">items</span><span class="p">,</span> <span class="n">client</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">external_reference</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
-
-<a href="#vendus.services.documents.DocumentsService.create_credit_note" class="headerlink" title="Permanent link">&para;</a></h4>
-
-
-    <div class="doc doc-contents ">
-
-        <p>Issue a credit note (NC) referencing a previously-issued document.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -2017,38 +2019,6 @@ Pass <code>mode=DocumentMode.TESTS</code> for a non-fiscal test document.</p>
           </tr>
           <tr class="doc-section-item">
             <td>
-                <code>reference_document_id</code>
-            </td>
-            <td>
-                  <code><span title="int">int</span></code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>ID of the original invoice being credited (R13).</p>
-              </div>
-            </td>
-            <td>
-                <em>required</em>
-            </td>
-          </tr>
-          <tr class="doc-section-item">
-            <td>
-                <code>reason</code>
-            </td>
-            <td>
-                  <code><span title="str">str</span></code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>Free-text reason for the credit note. Required by AT.</p>
-              </div>
-            </td>
-            <td>
-                <em>required</em>
-            </td>
-          </tr>
-          <tr class="doc-section-item">
-            <td>
                 <code>items</code>
             </td>
             <td>
@@ -2056,7 +2026,25 @@ Pass <code>mode=DocumentMode.TESTS</code> for a non-fiscal test document.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Line items to credit.</p>
+                <p>Line items.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>payments</code>
+            </td>
+            <td>
+                  <code><span title="vendus.services.documents.DocumentsService.list">list</span>[<span title="vendus.models.payment.Payment">Payment</span>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>How the document was paid. <strong>Required</strong> — an FR records
+payment on issue, and Vendus rejects it otherwise. Get the
+account's method ids from :meth:<code>list_payment_methods</code>.</p>
               </div>
             </td>
             <td>
@@ -2072,7 +2060,7 @@ Pass <code>mode=DocumentMode.TESTS</code> for a non-fiscal test document.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Client data — should match the original invoice's client.</p>
+                <p>Client data — omit for final consumer.</p>
               </div>
             </td>
             <td>
@@ -2104,8 +2092,111 @@ Pass <code>mode=DocumentMode.TESTS</code> for a non-fiscal test document.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Working mode. <code>DocumentMode.TESTS</code> for a non-fiscal test
-document; omit to use the register's configured mode.</p>
+                <p><code>DocumentMode.TESTS</code> for a non-fiscal test document.</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="vendus.services.documents.DocumentsService.create_credit_note" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">create_credit_note</span><span class="p">(</span><span class="n">reference_document_id</span><span class="p">,</span> <span class="n">reason</span><span class="p">,</span> <span class="n">external_reference</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+<a href="#vendus.services.documents.DocumentsService.create_credit_note" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Issue a credit note (NC) crediting the <strong>full</strong> referenced document.</p>
+<p>Vendus credits an invoice line by line: each credit line must reference an
+existing line of the original. The SDK fetches the original (FT/FR) and
+replicates every line, so you pass only the document id and a reason — the
+client and amounts come from the original.</p>
+<p>The original must be retrievable, i.e. a <strong>real</strong> (non-test) document;
+test-mode documents are not addressable, so they cannot be credited.
+Partial credits are not supported in v0.1.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>reference_document_id</code>
+            </td>
+            <td>
+                  <code><span title="int">int</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>id of the FT/FR being credited (R13).</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>reason</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Free-text reason, stored as the document's notes.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>external_reference</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span> | None</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Your internal reference. Enables safe POST retries.</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>mode</code>
+            </td>
+            <td>
+                  <code><span title="vendus.models.document.DocumentMode">DocumentMode</span> | None</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Working mode for the credit note itself.</p>
               </div>
             </td>
             <td>
@@ -2131,10 +2222,34 @@ document; omit to use the register's configured mode.</p>
 
     <div class="doc doc-contents ">
 
-        <p>Cancel (void) a document by setting its status to cancelled (<code>A</code>).</p>
-<p>Vendus has no API field for a cancellation reason — the document PATCH
-endpoint accepts only <code>status</code>/<code>mode</code> — so the SDK sends none. Any
-AT-required justification is handled in the Vendus backoffice.</p>
+        <p>Cancel (void) a non-fiscal document.</p>
+<p>Fiscal invoices (FT/FR) and credit notes (NC) communicated to the AT
+<strong>cannot</strong> be cancelled — Vendus rejects it. To reverse an invoice, issue
+a credit note with :meth:<code>create_credit_note</code>. The SDK fetches the document
+and raises :class:<code>ValidationError</code> for these types <strong>before</strong> attempting
+any change.</p>
+<p>Vendus has no API field for a cancellation reason (the document PATCH
+endpoint accepts only status/mode), so none is sent.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="vendus.services.documents.DocumentsService.list_payment_methods" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">list_payment_methods</span><span class="p">()</span></code>
+
+<a href="#vendus.services.documents.DocumentsService.list_payment_methods" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>List the account's configured payment methods (id, title, type).</p>
+<p>Use the returned <code>id</code> as <code>Payment.method_id</code> when issuing a
+Fatura-Recibo with :meth:<code>create_invoice_receipt</code>.</p>
 
 
     </div>
@@ -2319,7 +2434,12 @@ client object in the document response.</p>
 
 
 
-        <p>Vendus document types (AT-defined codes).</p>
+        <p>Vendus document type codes.</p>
+<p><code>UNKNOWN</code> is a forward-compatibility sentinel: the live API can return type
+codes this enum does not model (e.g. <code>RG</code>, seen on real accounts but absent
+from the documents/types reference). Parsing maps any unmodelled code to
+<code>UNKNOWN</code> instead of failing — the exact code is always preserved in
+<code>Document.raw_response["type"]</code>.</p>
 
 
 

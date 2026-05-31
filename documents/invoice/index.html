@@ -805,10 +805,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#cancel-an-invoice" class="md-nav__link">
+  <a href="#reversing-an-invoice" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Cancel an invoice
+        Reversing an invoice
       
     </span>
   </a>
@@ -1254,10 +1254,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#cancel-an-invoice" class="md-nav__link">
+  <a href="#reversing-an-invoice" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Cancel an invoice
+        Reversing an invoice
       
     </span>
   </a>
@@ -1455,10 +1455,17 @@
 </tr>
 </tbody>
 </table>
-<h2 id="cancel-an-invoice">Cancel an invoice<a class="headerlink" href="#cancel-an-invoice" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">cancelled</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">documents</span><span class="o">.</span><span class="n">cancel</span><span class="p">(</span><span class="n">document_id</span><span class="o">=</span><span class="n">invoice</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+<h2 id="reversing-an-invoice">Reversing an invoice<a class="headerlink" href="#reversing-an-invoice" title="Permanent link">&para;</a></h2>
+<p>A Fatura (FT) <strong>cannot be cancelled</strong> — once issued it is a fiscal document reported to the AT. The SDK refuses it before any change:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">client</span><span class="o">.</span><span class="n">documents</span><span class="o">.</span><span class="n">cancel</span><span class="p">(</span><span class="n">invoice</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="c1"># raises ValidationError: a FT cannot be cancelled — issue a credit note instead</span>
 </code></pre></div>
-<p>Vendus has no API field for a cancellation reason, so none is sent. Cancellation is non-idempotent — do not pass max_retries &gt; 0.</p>
+<p>To reverse an FT, issue a <strong>credit note</strong> that credits it (see <a href="../credit-note/">Credit Note</a>):</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">nc</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">documents</span><span class="o">.</span><span class="n">create_credit_note</span><span class="p">(</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>    <span class="n">reference_document_id</span><span class="o">=</span><span class="n">invoice</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>    <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;Issued in error&quot;</span><span class="p">,</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="p">)</span>
+</code></pre></div>
 <h2 id="notes">Notes<a class="headerlink" href="#notes" title="Permanent link">&para;</a></h2>
 <ol>
 <li><strong><code>unit_price</code> is gross</strong> (includes VAT). The SDK does not recompute.</li>

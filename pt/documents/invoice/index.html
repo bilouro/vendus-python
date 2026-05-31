@@ -807,10 +807,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#cancelar-uma-fatura" class="md-nav__link">
+  <a href="#reverter-uma-fatura" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Cancelar uma fatura
+        Reverter uma fatura
       
     </span>
   </a>
@@ -1256,10 +1256,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#cancelar-uma-fatura" class="md-nav__link">
+  <a href="#reverter-uma-fatura" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Cancelar uma fatura
+        Reverter uma fatura
       
     </span>
   </a>
@@ -1457,10 +1457,17 @@
 </tr>
 </tbody>
 </table>
-<h2 id="cancelar-uma-fatura">Cancelar uma fatura<a class="headerlink" href="#cancelar-uma-fatura" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">cancelled</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">documents</span><span class="o">.</span><span class="n">cancel</span><span class="p">(</span><span class="n">document_id</span><span class="o">=</span><span class="n">invoice</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+<h2 id="reverter-uma-fatura">Reverter uma fatura<a class="headerlink" href="#reverter-uma-fatura" title="Permanent link">&para;</a></h2>
+<p>Uma Fatura (FT) <strong>não pode ser cancelada</strong> — uma vez emitida é um documento fiscal comunicado à AT. O SDK recusa-a antes de qualquer alteração:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">client</span><span class="o">.</span><span class="n">documents</span><span class="o">.</span><span class="n">cancel</span><span class="p">(</span><span class="n">invoice</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="c1"># levanta ValidationError: uma FT não pode ser cancelada — emite uma nota de crédito</span>
 </code></pre></div>
-<p>A Vendus não tem campo de motivo de cancelamento na API, por isso nenhum é enviado. Cancelamento é não-idempotente — não passes max_retries &gt; 0.</p>
+<p>Para reverter uma FT, emite uma <strong>nota de crédito</strong> que a credita (ver <a href="../credit-note/">Nota de Crédito</a>):</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">nc</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">documents</span><span class="o">.</span><span class="n">create_credit_note</span><span class="p">(</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>    <span class="n">reference_document_id</span><span class="o">=</span><span class="n">invoice</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>    <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;Emitida por erro&quot;</span><span class="p">,</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="p">)</span>
+</code></pre></div>
 <h2 id="notas">Notas<a class="headerlink" href="#notas" title="Permanent link">&para;</a></h2>
 <ol>
 <li><strong><code>unit_price</code> é bruto</strong> (com IVA incluído). O SDK não recalcula.</li>

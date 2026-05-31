@@ -1231,12 +1231,11 @@
 
 <h1 id="credit-note-nc">Credit Note (NC)<a class="headerlink" href="#credit-note-nc" title="Permanent link">&para;</a></h1>
 <h2 id="what-it-is">What it is<a class="headerlink" href="#what-it-is" title="Permanent link">&para;</a></h2>
-<p>A Credit Note (NC) cancels or partially credits a previously issued document (FT or FS). It is the legal mechanism for returns, retroactive discounts, or correcting wrong invoices.</p>
+<p>A Credit Note (NC) credits a previously issued invoice (FT or FR). It is the legal mechanism for returns, refunds, and corrections — and the <strong>only</strong> way to reverse a fiscal invoice, which cannot be cancelled.</p>
 <ul>
 <li><strong>Always references</strong> an original document (<code>reference_document_id</code>)</li>
 <li><strong>Reason is mandatory</strong> (<code>reason</code>) — required by AT</li>
-<li>Client should match the original document's client</li>
-<li>Can be partial (refunding only some items)</li>
+<li>Credits the <strong>full</strong> original document: the SDK fetches the original and replicates its lines, so the client and amounts come from it (partial credits are not supported in v0.1)</li>
 </ul>
 <h2 id="flow">Flow<a class="headerlink" href="#flow" title="Permanent link">&para;</a></h2>
 <pre class="mermaid"><code>sequenceDiagram
@@ -1245,41 +1244,30 @@
     participant API as Vendus API
     participant AT
 
-    Note over App: Original: client bought 10 hours
-    App-&gt;&gt;SDK: create_credit_note(&lt;br/&gt;reference_document_id=12345,&lt;br/&gt;reason="Refund 2h",&lt;br/&gt;items=[2 hours])
-    SDK-&gt;&gt;SDK: validate reason + reference_id
-    SDK-&gt;&gt;API: POST /v1.1/documents (NC)
+    App-&gt;&gt;SDK: create_credit_note(reference_document_id=12345, reason="Refund")
+    SDK-&gt;&gt;API: GET /v1.1/documents/12345 (read the original's lines)
+    API--&gt;&gt;SDK: original document
+    SDK-&gt;&gt;API: POST /v1.1/documents (NC, crediting each line)
     API-&gt;&gt;AT: report NC
     AT--&gt;&gt;API: hash + ATCUD
     API--&gt;&gt;SDK: Document JSON
     SDK--&gt;&gt;App: Document(NC)</code></pre>
 <h2 id="full-example">Full example<a class="headerlink" href="#full-example" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">decimal</span><span class="w"> </span><span class="kn">import</span> <span class="n">Decimal</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">vendus</span><span class="w"> </span><span class="kn">import</span> <span class="n">ClientData</span><span class="p">,</span> <span class="n">DocumentItem</span><span class="p">,</span> <span class="n">TaxCategory</span><span class="p">,</span> <span class="n">VendusClient</span>
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="n">client</span> <span class="o">=</span> <span class="n">VendusClient</span><span class="o">.</span><span class="n">from_env</span><span class="p">()</span>
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="c1"># Assume invoice.id was stored from the original issue</span>
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="n">original_invoice_id</span> <span class="o">=</span> <span class="mi">12345</span>
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="n">nc</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">documents</span><span class="o">.</span><span class="n">create_credit_note</span><span class="p">(</span>
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>    <span class="n">register_id</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>    <span class="n">reference_document_id</span><span class="o">=</span><span class="n">original_invoice_id</span><span class="p">,</span>
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>    <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;Client returned 2 consulting hours&quot;</span><span class="p">,</span>
-<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>    <span class="n">client</span><span class="o">=</span><span class="n">ClientData</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Acme Lda&quot;</span><span class="p">,</span> <span class="n">fiscal_id</span><span class="o">=</span><span class="s2">&quot;123456789&quot;</span><span class="p">),</span>
-<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>    <span class="n">items</span><span class="o">=</span><span class="p">[</span>
-<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>        <span class="n">DocumentItem</span><span class="p">(</span>
-<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Consulting (credited)&quot;</span><span class="p">,</span>
-<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>            <span class="n">quantity</span><span class="o">=</span><span class="n">Decimal</span><span class="p">(</span><span class="s2">&quot;2&quot;</span><span class="p">),</span>
-<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>            <span class="n">unit_price</span><span class="o">=</span><span class="n">Decimal</span><span class="p">(</span><span class="s2">&quot;75.00&quot;</span><span class="p">),</span>
-<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>            <span class="n">tax_category</span><span class="o">=</span><span class="n">TaxCategory</span><span class="o">.</span><span class="n">NORMAL</span><span class="p">,</span>
-<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>        <span class="p">),</span>
-<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>    <span class="p">],</span>
-<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>    <span class="n">external_reference</span><span class="o">=</span><span class="s2">&quot;REFUND-2026-001&quot;</span><span class="p">,</span>
-<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a><span class="p">)</span>
-<a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>
-<a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a><span class="nb">print</span><span class="p">(</span><span class="n">nc</span><span class="o">.</span><span class="n">number</span><span class="p">)</span>         <span class="c1"># &quot;NC 2026/4&quot;</span>
-<a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a><span class="nb">print</span><span class="p">(</span><span class="n">nc</span><span class="o">.</span><span class="n">gross_amount</span><span class="p">)</span>   <span class="c1"># Decimal(&quot;184.50&quot;) — 2 × 75 × 1.23</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">vendus</span><span class="w"> </span><span class="kn">import</span> <span class="n">VendusClient</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="n">client</span> <span class="o">=</span> <span class="n">VendusClient</span><span class="o">.</span><span class="n">from_env</span><span class="p">()</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="c1"># invoice.id was stored when you issued the original</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="n">original_invoice_id</span> <span class="o">=</span> <span class="mi">12345</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="n">nc</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">documents</span><span class="o">.</span><span class="n">create_credit_note</span><span class="p">(</span>
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>    <span class="n">reference_document_id</span><span class="o">=</span><span class="n">original_invoice_id</span><span class="p">,</span>
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>    <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;Client returned the service&quot;</span><span class="p">,</span>
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>    <span class="n">external_reference</span><span class="o">=</span><span class="s2">&quot;REFUND-2026-001&quot;</span><span class="p">,</span>
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="p">)</span>
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="nb">print</span><span class="p">(</span><span class="n">nc</span><span class="o">.</span><span class="n">number</span><span class="p">)</span>         <span class="c1"># &quot;NC 2026/4&quot;</span>
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="nb">print</span><span class="p">(</span><span class="n">nc</span><span class="o">.</span><span class="n">gross_amount</span><span class="p">)</span>   <span class="c1"># the credited amount</span>
 </code></pre></div>
 <h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h2>
 <table>
@@ -1293,16 +1281,10 @@
 </thead>
 <tbody>
 <tr>
-<td><code>register_id</code></td>
-<td><code>int</code></td>
-<td>Yes</td>
-<td>POS register ID configured in Vendus</td>
-</tr>
-<tr>
 <td><code>reference_document_id</code></td>
 <td><code>int</code></td>
 <td>Yes</td>
-<td>ID of the original FT/FS being credited</td>
+<td>id of the original FT/FR being credited</td>
 </tr>
 <tr>
 <td><code>reason</code></td>
@@ -1311,38 +1293,31 @@
 <td>Reason for the credit note (required by AT)</td>
 </tr>
 <tr>
-<td><code>items</code></td>
-<td><code>list[DocumentItem]</code></td>
-<td>Yes</td>
-<td>Items to credit (can be a subset of the original)</td>
-</tr>
-<tr>
-<td><code>client</code></td>
-<td><code>ClientData \| None</code></td>
-<td>No</td>
-<td>Should match the original document's client</td>
-</tr>
-<tr>
 <td><code>external_reference</code></td>
 <td><code>str</code></td>
 <td>No</td>
 <td>Enables safe POST retries</td>
 </tr>
+<tr>
+<td><code>mode</code></td>
+<td><code>DocumentMode \| None</code></td>
+<td>No</td>
+<td><code>TESTS</code> for a non-fiscal test NC</td>
+</tr>
 </tbody>
 </table>
+<p>The client, items and amounts are read from the original document — you do not pass them.</p>
 <h2 id="async-variant">Async variant<a class="headerlink" href="#async-variant" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">nc</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">documents</span><span class="o">.</span><span class="n">create_credit_note_async</span><span class="p">(</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    <span class="n">register_id</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    <span class="n">reference_document_id</span><span class="o">=</span><span class="mi">12345</span><span class="p">,</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>    <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;...&quot;</span><span class="p">,</span>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>    <span class="n">items</span><span class="o">=</span><span class="p">[</span><span class="o">...</span><span class="p">],</span>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="p">)</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    <span class="n">reference_document_id</span><span class="o">=</span><span class="mi">12345</span><span class="p">,</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;...&quot;</span><span class="p">,</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="p">)</span>
 </code></pre></div>
 <h2 id="notes">Notes<a class="headerlink" href="#notes" title="Permanent link">&para;</a></h2>
 <ol>
-<li><strong>Full vs partial NC:</strong> if refunding the whole amount, replicate all items. For partial refunds, include only the items/quantities to credit.</li>
-<li><strong>NC is not cancellation:</strong> an NC <strong>credits</strong> the value but keeps the original document. To fully void, use <code>client.documents.cancel(id)</code> instead.</li>
-<li><strong>Consistent client:</strong> if the original was to Final Consumer, the NC should also omit <code>client</code>.</li>
+<li><strong>Full credit only (v0.1):</strong> the SDK credits every line of the original. Partial credits (some lines or quantities) are a future addition.</li>
+<li><strong>NC is how you reverse an invoice:</strong> fiscal invoices (FT/FR) <strong>cannot be cancelled</strong> — <code>cancel()</code> rejects them. Issue an NC to credit the original instead.</li>
+<li><strong>Real documents only:</strong> the original must be retrievable, so credit notes work on <strong>real</strong> documents, not test-mode ones (which are not addressable via <code>/documents/{id}</code>).</li>
 </ol>
 
 

@@ -8,11 +8,10 @@ is actually done/verified, not just coded.
 
 ## Live-validation gaps
 
-- [ ] **Run `create_credit_note` through the SDK end-to-end live in REAL mode.** It is
-  validated by unit tests (wire body) plus a manual raw-HTTP call that succeeded
-  (NC 01P2026/9). The SDK method has been fired live only in **test** mode, where it
-  correctly fails (`NotFoundError`, see next item). Do one real FT/FR →
-  `create_credit_note(...)` cycle to confirm the SDK builds a working real NC.
+- [x] **`create_credit_note` end-to-end live in REAL mode via the SDK.** Done: a real
+  10-step flow (FR 01P2026/2171 → NC 01P2026/10) ran fully through the SDK. The
+  original's `qty_nc` went 1 → 0 and `related_docs` linked the NC — functional proof
+  the credit applied. `get`/`list`/`cancel`-guard also exercised on the real FR and NC.
 - [x] **NC in test mode is verified impossible.** `create_credit_note` on a test-mode
   FT or FR fails with `NotFoundError` ("No data") because the original test document
   is not retrievable via `/documents/{id}`. NC only works on real, retrievable
@@ -32,6 +31,12 @@ is actually done/verified, not just coded.
 
 ## SDK gaps / decisions to revisit
 
+- [ ] **Client-level default `mode` (footgun).** `mode` defaults to the **register's**
+  mode. The test account's register is in `tests`, so every create silently produces a
+  *test* document unless `mode=DocumentMode.NORMAL` is passed — this bit a real-mode
+  run (the NC came out as `NC T01P2026/1` because `mode` was omitted). Consider a
+  client-level default, e.g. `VendusClient(api_key=..., default_mode=DocumentMode.NORMAL)`,
+  applied when a call omits `mode`, so the intended mode is set once. Non-breaking.
 - [ ] **Partial credit notes.** Vendus supports crediting part of a document
   (`qty_nc` per line). The SDK only does **full** credit in v0.1. Add a partial API
   (select lines/quantities) when needed.

@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-05-31
+
 ### Added
 - `create_simplified_invoice` (FS) and `create_receipt` (RG), sync + async. An FS is a
   simplified invoice paid on issue (requires `payments`); an RG (Recibo) acknowledges
@@ -103,4 +105,5 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - `mypy --strict` passes with zero errors
 - `ruff check` / `ruff format` clean
 
-[Unreleased]: https://github.com/bilouro/vendus-python/compare/main...HEAD
+[Unreleased]: https://github.com/bilouro/vendus-python/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/bilouro/vendus-python/releases/tag/v0.1.0

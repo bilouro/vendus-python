@@ -1216,6 +1216,45 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#pull-requests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pull Requests
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Pull Requests">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#workflow-tipico" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Workflow típico
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#convencoes-de-codigo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Convenções de código
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1338,6 +1377,45 @@
     <span class="md-ellipsis">
       
         Adicionar um novo tipo de documento
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pull-requests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pull Requests
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Pull Requests">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#workflow-tipico" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Workflow típico
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#convencoes-de-codigo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Convenções de código
       
     </span>
   </a>
@@ -1481,6 +1559,43 @@ corrigir os campos das linhas). Estão registados como factos verificados no <co
 <li>Atualiza o <code>CHANGELOG.md</code>, e o <code>CLAUDE.md</code> (roadmap, e a tabela de vocabulário R1 se
    surgir um campo novo).</li>
 </ol>
+<h2 id="pull-requests">Pull Requests<a class="headerlink" href="#pull-requests" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Um feature ou fix por PR</strong> — não mistures alterações não relacionadas.</li>
+<li><strong>Inclui testes</strong> para código novo — cobertura mínima de 85%, a assertar o body exato.</li>
+<li><strong>Atualiza o <code>CHANGELOG.md</code></strong> na secção <code>[Unreleased]</code>.</li>
+<li><strong>Todos os checks de CI têm de passar</strong> — lint, types, testes (Python 3.9–3.13).</li>
+<li><strong>Valida ao vivo</strong> tudo o que toca na API antes de afirmar que funciona (ver acima).</li>
+<li>Descreve o que mudou e porquê no corpo do PR.</li>
+</ul>
+<h3 id="workflow-tipico">Workflow típico<a class="headerlink" href="#workflow-tipico" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1"># 1. Cria um branch</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>git<span class="w"> </span>checkout<span class="w"> </span>-b<span class="w"> </span>feature/debit-note
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="c1"># 2. Desenvolve e testa</span>
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>pytest<span class="w"> </span>tests/unit/test_documents.py
+<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>
+<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="c1"># 3. Verifica tudo</span>
+<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>ruff<span class="w"> </span>check<span class="w"> </span>.<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>ruff<span class="w"> </span>format<span class="w"> </span>--check<span class="w"> </span>.<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>mypy<span class="w"> </span>src/<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>pytest
+<a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a>
+<a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a><span class="c1"># 4. Commit e push</span>
+<a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a>git<span class="w"> </span>add<span class="w"> </span>.
+<a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Add debit note (ND) support&quot;</span>
+<a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a>git<span class="w"> </span>push<span class="w"> </span>-u<span class="w"> </span>origin<span class="w"> </span>feature/debit-note
+<a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a>
+<a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a><span class="c1"># 5. Abre um PR no GitHub</span>
+</code></pre></div>
+<h2 id="convencoes-de-codigo">Convenções de código<a class="headerlink" href="#convencoes-de-codigo" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Python ≥3.9</strong> — usa <code>from __future__ import annotations</code>; nunca <code>match/case</code>, e usa
+  <code>Optional[...]</code> (não <code>X | None</code>) em runtime nos modelos Pydantic.</li>
+<li><strong><code>Decimal</code> para dinheiro</strong> — nunca <code>float</code>; converte com <code>float()</code> só na fronteira do wire.</li>
+<li><strong>Type annotations</strong> em todas as funções públicas (<code>mypy --strict</code> passa).</li>
+<li><strong>Docstrings Google style</strong> nas funções públicas.</li>
+<li><strong><code>_ficheiro.py</code></strong> = módulo interno, <strong><code>ficheiro.py</code></strong> = API pública (exportada em <code>__init__.py</code>).</li>
+<li><strong>Nunca logar PII</strong> — <code>fiscal_id</code>, email, telefone e morada são redigidos automaticamente.</li>
+<li><strong>Um método por tipo de documento</strong>, cada um com uma variante sync e <code>_async</code>.</li>
+</ul>
 
 
 

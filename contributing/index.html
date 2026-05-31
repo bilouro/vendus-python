@@ -1214,6 +1214,45 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#pull-requests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pull Requests
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Pull Requests">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#typical-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Typical workflow
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#code-conventions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Code conventions
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1336,6 +1375,45 @@
     <span class="md-ellipsis">
       
         Adding a new document type
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pull-requests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pull Requests
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Pull Requests">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#typical-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Typical workflow
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#code-conventions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Code conventions
       
     </span>
   </a>
@@ -1478,6 +1556,43 @@ R16). The ones a contributor must respect:</p>
 <li>Update <code>CHANGELOG.md</code>, and <code>CLAUDE.md</code> (roadmap, and the R1 vocabulary table if a new
    field appears).</li>
 </ol>
+<h2 id="pull-requests">Pull Requests<a class="headerlink" href="#pull-requests" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>One feature or fix per PR</strong> — don't mix unrelated changes.</li>
+<li><strong>Include tests</strong> for new code — minimum 85% coverage, asserting the exact wire body.</li>
+<li><strong>Update <code>CHANGELOG.md</code></strong> in the <code>[Unreleased]</code> section.</li>
+<li><strong>All CI checks must pass</strong> — lint, types, tests (Python 3.9–3.13).</li>
+<li><strong>Live-validate</strong> anything that hits the API before claiming it works (see above).</li>
+<li>Describe what changed and why in the PR body.</li>
+</ul>
+<h3 id="typical-workflow">Typical workflow<a class="headerlink" href="#typical-workflow" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1"># 1. Create a branch</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>git<span class="w"> </span>checkout<span class="w"> </span>-b<span class="w"> </span>feature/debit-note
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="c1"># 2. Develop and test</span>
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>pytest<span class="w"> </span>tests/unit/test_documents.py
+<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>
+<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="c1"># 3. Check everything</span>
+<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>ruff<span class="w"> </span>check<span class="w"> </span>.<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>ruff<span class="w"> </span>format<span class="w"> </span>--check<span class="w"> </span>.<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>mypy<span class="w"> </span>src/<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>pytest
+<a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a>
+<a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a><span class="c1"># 4. Commit and push</span>
+<a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a>git<span class="w"> </span>add<span class="w"> </span>.
+<a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Add debit note (ND) support&quot;</span>
+<a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a>git<span class="w"> </span>push<span class="w"> </span>-u<span class="w"> </span>origin<span class="w"> </span>feature/debit-note
+<a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a>
+<a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a><span class="c1"># 5. Open a PR on GitHub</span>
+</code></pre></div>
+<h2 id="code-conventions">Code conventions<a class="headerlink" href="#code-conventions" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Python ≥3.9</strong> — use <code>from __future__ import annotations</code>; never <code>match/case</code>, and use
+  <code>Optional[...]</code> (not <code>X | None</code>) at runtime in Pydantic models.</li>
+<li><strong><code>Decimal</code> for money</strong> — never <code>float</code>; convert with <code>float()</code> only at the wire boundary.</li>
+<li><strong>Type annotations</strong> on every public function (<code>mypy --strict</code> passes).</li>
+<li><strong>Google-style docstrings</strong> on public functions.</li>
+<li><strong><code>_filename.py</code></strong> = internal module, <strong><code>filename.py</code></strong> = public API (exported in <code>__init__.py</code>).</li>
+<li><strong>Never log PII</strong> — <code>fiscal_id</code>, email, phone, and address are redacted automatically.</li>
+<li><strong>One method per document type</strong>, each with a sync and an <code>_async</code> variant.</li>
+</ul>
 
 
 

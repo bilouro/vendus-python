@@ -1,3 +1,7 @@
+---
+description: "Emite uma fatura Vendus (FT) em Python — linhas, impostos, cliente por NIF e o ATCUD/QR code, com exemplos sync e async."
+---
+
 # Fatura (FT)
 
 ## O que é

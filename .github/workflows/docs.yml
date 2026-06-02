@@ -22,9 +22,17 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      - name: Install Cairo/imaging deps (for social cards)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libcairo2-dev libfreetype6-dev libffi-dev \
+            libjpeg-dev libpng-dev libz-dev pngquant
       - name: Install
         run: |
           python -m pip install --upgrade pip
           pip install -e ".[docs]"
+          pip install "mkdocs-material[imaging]"
       - name: Deploy
+        # CI=true is set by GitHub Actions, which enables the social plugin
+        # (mkdocs.yml: `social.enabled: !ENV [CI, false]`).
         run: mkdocs gh-deploy --force --clean

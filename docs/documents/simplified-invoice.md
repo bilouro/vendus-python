@@ -1,3 +1,7 @@
+---
+description: "Issue a Vendus simplified invoice (Fatura Simplificada, FS) from Python — paid on issue, with the required payments and tax categories."
+---
+
 # Simplified Invoice (FS)
 
 ## What it is

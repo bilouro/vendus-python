@@ -1,3 +1,7 @@
+---
+description: "Issue a Vendus credit note (Nota de Crédito, NC) from Python — credit a real invoice in full or partially, the only way to reverse a fiscal document."
+---
+
 # Credit Note (NC)
 
 ## What it is

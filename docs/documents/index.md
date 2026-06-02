@@ -1,3 +1,7 @@
+---
+description: "Which Vendus document type to issue from Python — invoice (FT), simplified invoice (FS), invoice-receipt (FR), receipt (RG) or credit note (NC)."
+---
+
 # Which document type to choose?
 
 AT defines several fiscal document types. The SDK issues these:

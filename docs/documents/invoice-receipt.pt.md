@@ -1,3 +1,7 @@
+---
+description: "Emite uma fatura-recibo Vendus (FR) em Python — junta fatura e recibo num só documento, com métodos de pagamento obrigatórios."
+---
+
 # Fatura-Recibo (FR)
 
 ## O que é

@@ -1,3 +1,7 @@
+---
+description: "Issue a Vendus invoice (Fatura, FT) from Python — line items, taxes, client by NIF and the ATCUD/QR code, with sync and async examples."
+---
+
 # Invoice (FT)
 
 ## What it is

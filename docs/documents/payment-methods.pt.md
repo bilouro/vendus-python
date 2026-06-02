@@ -1,3 +1,7 @@
+---
+description: "Lista os métodos de pagamento de uma conta Vendus em Python e associa payments a faturas-recibo e faturas simplificadas — pagamentos divididos e datas."
+---
+
 # Métodos de pagamento
 
 Uma **Fatura-Recibo (FR)** regista o pagamento no momento da emissão, por isso exige um ou

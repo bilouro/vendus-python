@@ -1,3 +1,7 @@
+---
+description: "Que tipo de documento Vendus emitir em Python — fatura (FT), fatura simplificada (FS), fatura-recibo (FR), recibo (RG) ou nota de crédito (NC)."
+---
+
 # Qual tipo de documento escolher?
 
 A AT define vários tipos de documentos fiscais. O SDK emite estes:

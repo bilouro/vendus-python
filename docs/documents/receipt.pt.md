@@ -1,3 +1,7 @@
+---
+description: "Emite um recibo Vendus (RG) em Python — acusa o pagamento de uma ou mais faturas, referenciadas por número de documento."
+---
+
 # Recibo (RG)
 
 ## O que é

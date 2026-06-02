@@ -1,3 +1,7 @@
+---
+description: "Install the vendus Python SDK and issue your first Vendus invoice in minutes — API key setup, configuration and a working create_invoice example."
+---
+
 # Installation & Quickstart
 
 ## Installation

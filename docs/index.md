@@ -1,3 +1,7 @@
+---
+description: "Unofficial Python SDK for the Vendus invoicing & POS API (Portugal). Issue invoices, invoice-receipts, receipts and credit notes — typed, sync and async."
+---
+
 # vendus Python SDK
 
 [![PyPI version](https://img.shields.io/pypi/v/vendus)](https://pypi.org/project/vendus/)

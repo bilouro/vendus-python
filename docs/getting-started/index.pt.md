@@ -1,3 +1,7 @@
+---
+description: "Instala o SDK Python vendus e emite a primeira fatura na Vendus em minutos — configuração da API key e um exemplo funcional de create_invoice."
+---
+
 # Instalação e Quickstart
 
 ## Instalação

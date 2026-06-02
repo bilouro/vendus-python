@@ -1,21 +1,32 @@
 [project]
 name = "vendus"
-version = "0.1.0"
-description = "Unofficial Python SDK for the Vendus invoicing API (Portugal)"
+version = "0.1.1"
+description = "Unofficial Python SDK for the Vendus invoicing & POS API (Portugal): issue invoices, invoice-receipts, receipts and credit notes — AT faturação, typed, sync + async."
 readme = "README.md"
 requires-python = ">=3.9"
 license = { text = "MIT" }
-keywords = ["vendus", "invoicing", "portugal", "at", "faturacao"]
-authors = [{ name = "Victor Bilouro" }]
+keywords = [
+    "vendus", "invoicing", "invoice", "faturacao", "fatura", "recibo",
+    "nota-de-credito", "portugal", "spain", "at", "saft", "atcud",
+    "e-invoicing", "billing", "pos", "vat", "iva", "sdk", "api",
+]
+authors = [{ name = "Victor Bilouro", email = "consulting@bilouro.com" }]
 classifiers = [
     "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
     "Topic :: Office/Business :: Financial :: Accounting",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Programming Language :: Python :: 3 :: Only",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
+    "Framework :: AsyncIO",
+    "Natural Language :: English",
+    "Natural Language :: Portuguese",
     "Typing :: Typed",
 ]
 dependencies = [
@@ -42,6 +53,7 @@ docs = ["mkdocs-material", "mkdocstrings[python]", "mkdocs-static-i18n"]
 [project.urls]
 Homepage = "https://github.com/bilouro/vendus-python"
 Documentation = "https://bilouro.github.io/vendus-python/"
+Source = "https://github.com/bilouro/vendus-python"
 Issues = "https://github.com/bilouro/vendus-python/issues"
 Changelog = "https://github.com/bilouro/vendus-python/blob/main/CHANGELOG.md"
 

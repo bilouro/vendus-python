@@ -1,3 +1,7 @@
+---
+description: "Trata erros da API Vendus em Python — hierarquia de exceções, códigos como P001, validação local, retries e resolução de problemas."
+---
+
 # Erros e Troubleshooting
 
 ## Hierarquia de exceções

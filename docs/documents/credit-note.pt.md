@@ -1,3 +1,7 @@
+---
+description: "Emite uma nota de crédito Vendus (NC) em Python — credita uma fatura real total ou parcialmente, a única forma de reverter um documento fiscal."
+---
+
 # Nota de Crédito (NC)
 
 ## O que é

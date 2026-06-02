@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+<!--
+  Theme override: inject JSON-LD structured data so search engines can render a
+  software rich result. Scoped to the home page (one canonical entity per site).
+  No softwareVersion here on purpose — it would go stale; PyPI is the source of truth.
+-->
+{% block extrahead %}
+  {{ super() }}
+  {% if page and page.is_homepage %}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "vendus Python SDK",
+    "description": "Unofficial, fully-typed Python SDK for the Vendus invoicing & POS API (Portugal) — issue invoices, invoice-receipts, receipts and credit notes against the AT-certified faturação platform, with sync and async clients.",
+    "url": "https://bilouro.github.io/vendus-python/",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "OS Independent",
+    "programmingLanguage": "Python",
+    "license": "https://opensource.org/licenses/MIT",
+    "downloadUrl": "https://pypi.org/project/vendus/",
+    "codeRepository": "https://github.com/bilouro/vendus-python",
+    "author": {
+      "@type": "Person",
+      "name": "Victor Bilouro"
+    },
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "EUR"
+    }
+  }
+  </script>
+  {% endif %}
+{% endblock %}

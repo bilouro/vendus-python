@@ -1,3 +1,7 @@
+---
+description: "Configura o cliente Python da Vendus: API key, base URL, timeouts, retries e o modo de documento por omissão (teste vs faturação real)."
+---
+
 # Configuração
 
 ## Opções do `VendusClient`

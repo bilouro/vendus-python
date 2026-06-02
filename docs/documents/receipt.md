@@ -1,3 +1,7 @@
+---
+description: "Issue a Vendus receipt (Recibo, RG) from Python — acknowledge payment of one or more invoices, referenced by document number."
+---
+
 # Receipt (RG)
 
 ## What it is

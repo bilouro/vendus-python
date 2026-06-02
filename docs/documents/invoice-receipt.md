@@ -1,3 +1,7 @@
+---
+description: "Issue a Vendus invoice-receipt (Fatura-Recibo, FR) from Python — combine invoice and receipt in one document, with the required payment methods."
+---
+
 # Invoice-Receipt (FR)
 
 ## What it is

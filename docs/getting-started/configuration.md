@@ -1,3 +1,7 @@
+---
+description: "Configure the Vendus Python client: API key, base URL, timeouts, retries and the default document mode (test vs real faturação)."
+---
+
 # Configuration
 
 ## `VendusClient` options

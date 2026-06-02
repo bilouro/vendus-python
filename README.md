@@ -3,14 +3,15 @@
 [![PyPI version](https://img.shields.io/pypi/v/vendus)](https://pypi.org/project/vendus/)
 [![Python versions](https://img.shields.io/pypi/pyversions/vendus)](https://pypi.org/project/vendus/)
 [![CI](https://github.com/bilouro/vendus-python/actions/workflows/test.yml/badge.svg)](https://github.com/bilouro/vendus-python/actions/workflows/test.yml)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/bilouro/vendus-python/blob/main/LICENSE)
 [![Typed](https://img.shields.io/badge/typed-mypy--strict-blue)](https://mypy.readthedocs.io/)
 [![Docs](https://img.shields.io/badge/docs-bilouro.github.io-blue)](https://bilouro.github.io/vendus-python/)
 
-The first Python SDK for [Vendus](https://www.vendus.pt), Portugal's AT-certified invoicing & POS platform.
-Issue invoices, invoice-receipts, and credit notes — in 5 lines of Python.
+**`vendus`** is an unofficial, fully-typed Python SDK for the [Vendus](https://www.vendus.pt) invoicing & POS API — Portugal's AT-certified *faturação* platform (also Spain). Issue invoices (FT), simplified invoices (FS), invoice-receipts (FR), receipts (RG) and credit notes (NC) against the Vendus API in a few lines of Python, with matching **sync and async** clients.
 
-**Documentation: [English](https://bilouro.github.io/vendus-python/) · [Português](https://bilouro.github.io/vendus-python/pt/)** | [Examples](examples/) | [API Reference](https://bilouro.github.io/vendus-python/api/)
+Vendus handles all communication with the AT (Autoridade Tributária) — SAF-T, ATCUD, document hash and QR code come back ready on every document. This SDK talks to Vendus; Vendus talks to the AT.
+
+**Documentation: [English](https://bilouro.github.io/vendus-python/) · [Português](https://bilouro.github.io/vendus-python/pt/)** | [Examples](https://github.com/bilouro/vendus-python/tree/main/examples) | [API Reference](https://bilouro.github.io/vendus-python/api/)
 
 > **Community SDK** — not affiliated with or endorsed by Vendus.
 > For official integrations, visit [vendus.pt](https://www.vendus.pt).
@@ -225,11 +226,11 @@ page.
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md). PRs welcome — especially for new document types.
+See [CONTRIBUTING.md](https://github.com/bilouro/vendus-python/blob/main/CONTRIBUTING.md). PRs welcome — especially for new document types.
 
 ## Security
 
-Report vulnerabilities privately — see [SECURITY.md](SECURITY.md). Do not open public issues for security bugs.
+Report vulnerabilities privately — see [SECURITY.md](https://github.com/bilouro/vendus-python/blob/main/SECURITY.md). Do not open public issues for security bugs.
 
 ## License
 

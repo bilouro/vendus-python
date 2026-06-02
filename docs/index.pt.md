@@ -1,3 +1,7 @@
+---
+description: "SDK Python não-oficial para a API de faturação & POS da Vendus (Portugal). Emite faturas, faturas-recibo, recibos e notas de crédito — tipado, sync e async."
+---
+
 # vendus Python SDK
 
 [![PyPI version](https://img.shields.io/pypi/v/vendus)](https://pypi.org/project/vendus/)

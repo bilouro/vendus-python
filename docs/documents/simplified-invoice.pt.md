@@ -1,3 +1,7 @@
+---
+description: "Emite uma fatura simplificada Vendus (FS) em Python — paga no ato, com os payments obrigatórios e categorias de imposto."
+---
+
 # Fatura Simplificada (FS)
 
 ## O que é

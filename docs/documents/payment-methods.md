@@ -1,3 +1,7 @@
+---
+description: "List a Vendus account's payment methods from Python and attach payments to invoice-receipts and simplified invoices — split payments and due dates."
+---
+
 # Payment methods
 
 A **Fatura-Recibo (FR)** records payment at the moment of issue, so it requires one or

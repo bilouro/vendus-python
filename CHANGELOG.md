@@ -6,6 +6,25 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-06-02
+
+Metadata, packaging, and documentation release — no library code or wire behaviour
+changed.
+
+### Added
+- Discoverability/SEO: per-page meta descriptions across the docs, auto-generated
+  social/OG cards (built in CI), JSON-LD `SoftwareApplication` structured data on the
+  docs home page, and a `robots.txt` that advertises the sitemap.
+- Maintainer contact email and a `Source` project URL in the package metadata; a
+  `FUNDING.yml` template for the GitHub sponsor button.
+
+### Changed
+- Richer PyPI metadata for discoverability: expanded `description`, `keywords`, and
+  trove `classifiers`.
+- README now opens with a keyword-focused summary and uses absolute links — the
+  previous relative links (LICENSE, examples, CONTRIBUTING, SECURITY) 404'd on the
+  PyPI project page.
+
 ## [0.1.0] - 2026-05-31
 
 ### Added
@@ -107,5 +126,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - `mypy --strict` passes with zero errors
 - `ruff check` / `ruff format` clean
 
-[Unreleased]: https://github.com/bilouro/vendus-python/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/bilouro/vendus-python/compare/v0.1.1...HEAD
+[0.1.1]: https://github.com/bilouro/vendus-python/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/bilouro/vendus-python/releases/tag/v0.1.0

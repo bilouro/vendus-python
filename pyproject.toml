@@ -36,7 +36,7 @@ dependencies = [
 
 [project.optional-dependencies]
 django = ["django>=4.0"]
-fastapi = ["fastapi>=0.100"]
+fastapi = ["fastapi>=0.128.8"]
 flask = ["flask>=2.0"]
 dev = [
     "pytest>=7.0",

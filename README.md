@@ -11,7 +11,10 @@
 
 Vendus handles all communication with the AT (Autoridade Tributária) — SAF-T, ATCUD, document hash and QR code come back ready on every document. This SDK talks to Vendus; Vendus talks to the AT.
 
-**Documentation: [English](https://bilouro.github.io/vendus-python/) · [Português](https://bilouro.github.io/vendus-python/pt/)** | [Examples](https://github.com/bilouro/vendus-python/tree/main/examples) | [API Reference](https://bilouro.github.io/vendus-python/api/)
+📖 Documentation: <https://bilouro.github.io/vendus-python/> · English<br>
+📖 Documentation: <https://bilouro.github.io/vendus-python/pt/> · Português
+
+[Examples](https://github.com/bilouro/vendus-python/tree/main/examples) · [API Reference](https://bilouro.github.io/vendus-python/api/)
 
 > **Community SDK** — not affiliated with or endorsed by Vendus.
 > For official integrations, visit [vendus.pt](https://www.vendus.pt).

@@ -2,3 +2,4 @@ User-agent: *
 Allow: /
 
 Sitemap: https://bilouro.github.io/vendus-python/sitemap.xml
+Sitemap: https://bilouro.github.io/vendus-python/sitemap-vendus.xml

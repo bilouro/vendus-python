@@ -1,6 +1,6 @@
 [project]
 name = "vendus"
-version = "0.1.1"
+version = "0.1.2"
 description = "Unofficial Python SDK for the Vendus invoicing & POS API (Portugal): issue invoices, invoice-receipts, receipts and credit notes — AT faturação, typed, sync + async."
 readme = "README.md"
 requires-python = ">=3.9"

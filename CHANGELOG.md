@@ -6,6 +6,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [0.1.2] - 2026-06-06
+
+Documentation/site release — no library code or wire behaviour changed.
+
+### Changed
+- The documentation site moved to a custom domain: **<https://vendus.bilouro.com/>**
+  (was `bilouro.github.io/vendus-python`). The package `Documentation` URL, the
+  sitemap / canonical / JSON-LD, `robots.txt`, and all in-repo links now point there;
+  the old GitHub Pages URLs 301-redirect to it.
+- README: the documentation links are split into separate English and Português lines.
+
 ## [0.1.1] - 2026-06-04
 
 Metadata, packaging, and documentation release — no library code or wire behaviour
@@ -126,6 +137,7 @@ changed.
 - `mypy --strict` passes with zero errors
 - `ruff check` / `ruff format` clean
 
-[Unreleased]: https://github.com/bilouro/vendus-python/compare/v0.1.1...HEAD
+[Unreleased]: https://github.com/bilouro/vendus-python/compare/v0.1.2...HEAD
+[0.1.2]: https://github.com/bilouro/vendus-python/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/bilouro/vendus-python/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/bilouro/vendus-python/releases/tag/v0.1.0

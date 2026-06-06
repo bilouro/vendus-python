@@ -52,7 +52,7 @@ docs = ["mkdocs-material", "mkdocstrings[python]", "mkdocs-static-i18n"]
 
 [project.urls]
 Homepage = "https://github.com/bilouro/vendus-python"
-Documentation = "https://bilouro.github.io/vendus-python/"
+Documentation = "https://vendus.bilouro.com/"
 Source = "https://github.com/bilouro/vendus-python"
 Issues = "https://github.com/bilouro/vendus-python/issues"
 Changelog = "https://github.com/bilouro/vendus-python/blob/main/CHANGELOG.md"

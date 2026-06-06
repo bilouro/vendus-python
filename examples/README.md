@@ -38,4 +38,4 @@ payment-method id; the FR examples look one up with `list_payment_methods()`.
 | `10_simplified_invoice.py` | Issue a Fatura Simplificada (FS) |
 | `11_receipt.py` | Issue a Recibo (RG) for a previous invoice |
 
-See the [docs site](https://bilouro.github.io/vendus-python/) for the full guide.
+See the [docs site](https://vendus.bilouro.com/) for the full guide.

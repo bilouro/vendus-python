@@ -3,7 +3,7 @@
 Thanks for your interest in improving `vendus`. This project follows a strict quality
 bar. The full developer guide — architecture, conventions, and the live-verified API
 facts — is on the docs site:
-<https://bilouro.github.io/vendus-python/contributing/>.
+<https://vendus.bilouro.com/contributing/>.
 
 ## Setup
 
@@ -44,17 +44,17 @@ Validate the wire shape against the real API **before** claiming an operation wo
 Vendus reference docs can be incomplete. The hard-won facts (e.g. an FR needs `payments`,
 an NC credits a real original, FT/FR/NC can't be cancelled, and `mode` inherits the
 register's mode — `tests` on new accounts) are documented on the
-[contributing page](https://bilouro.github.io/vendus-python/contributing/).
+[contributing page](https://vendus.bilouro.com/contributing/).
 
 ## What to read first
 
-- The [contributing guide](https://bilouro.github.io/vendus-python/contributing/) — architecture, conventions, document types, live-verified facts
+- The [contributing guide](https://vendus.bilouro.com/contributing/) — architecture, conventions, document types, live-verified facts
 - `src/vendus/services/documents.py` — reference implementation
 - `tests/unit/test_documents.py` — wire-body test pattern
 
 ## Adding a new document type
 
-See the [docs guide](https://bilouro.github.io/vendus-python/contributing/): enum →
+See the [docs guide](https://vendus.bilouro.com/contributing/): enum →
 `_build_X_body` → `create_X` / `create_X_async` (thread `self._effective_mode(mode)`) →
 **live-validate** → unit tests (wire body) → example → doc page (EN + PT) →
 `CHANGELOG.md`.

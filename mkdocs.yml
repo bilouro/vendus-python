@@ -1,5 +1,5 @@
 site_name: vendus Python SDK
-site_url: https://bilouro.github.io/vendus-python/
+site_url: https://vendus.bilouro.com/
 site_description: Unofficial Python SDK for the Vendus invoicing API (Portugal)
 repo_url: https://github.com/bilouro/vendus-python
 repo_name: bilouro/vendus-python

@@ -5,16 +5,16 @@
 [![CI](https://github.com/bilouro/vendus-python/actions/workflows/test.yml/badge.svg)](https://github.com/bilouro/vendus-python/actions/workflows/test.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/bilouro/vendus-python/blob/main/LICENSE)
 [![Typed](https://img.shields.io/badge/typed-mypy--strict-blue)](https://mypy.readthedocs.io/)
-[![Docs](https://img.shields.io/badge/docs-bilouro.github.io-blue)](https://bilouro.github.io/vendus-python/)
+[![Docs](https://img.shields.io/badge/docs-vendus.bilouro.com-blue)](https://vendus.bilouro.com/)
 
 **`vendus`** is an unofficial, fully-typed Python SDK for the [Vendus](https://www.vendus.pt) invoicing & POS API — Portugal's AT-certified *faturação* platform (also Spain). Issue invoices (FT), simplified invoices (FS), invoice-receipts (FR), receipts (RG) and credit notes (NC) against the Vendus API in a few lines of Python, with matching **sync and async** clients.
 
 Vendus handles all communication with the AT (Autoridade Tributária) — SAF-T, ATCUD, document hash and QR code come back ready on every document. This SDK talks to Vendus; Vendus talks to the AT.
 
-📖 Documentation: <https://bilouro.github.io/vendus-python/> · English<br>
-📖 Documentation: <https://bilouro.github.io/vendus-python/pt/> · Português
+📖 Documentation: <https://vendus.bilouro.com/> · English<br>
+📖 Documentation: <https://vendus.bilouro.com/pt/> · Português
 
-[Examples](https://github.com/bilouro/vendus-python/tree/main/examples) · [API Reference](https://bilouro.github.io/vendus-python/api/)
+[Examples](https://github.com/bilouro/vendus-python/tree/main/examples) · [API Reference](https://vendus.bilouro.com/api/)
 
 > **Community SDK** — not affiliated with or endorsed by Vendus.
 > For official integrations, visit [vendus.pt](https://www.vendus.pt).
@@ -224,7 +224,7 @@ pytest -m integration --no-cov
 ```
 
 Full developer guide — testing, the live-validation discipline, and how to add a document
-type — is on the [Contributing](https://bilouro.github.io/vendus-python/contributing/)
+type — is on the [Contributing](https://vendus.bilouro.com/contributing/)
 page.
 
 ## Contributing

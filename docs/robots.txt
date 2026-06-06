@@ -1,5 +1,5 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://bilouro.github.io/vendus-python/sitemap.xml
-Sitemap: https://bilouro.github.io/vendus-python/sitemap-vendus.xml
+Sitemap: https://vendus.bilouro.com/sitemap.xml
+Sitemap: https://vendus.bilouro.com/sitemap-vendus.xml

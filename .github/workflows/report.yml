@@ -16,7 +16,7 @@ jobs:
       - name: Install GoAccess
         run: sudo apt-get update && sudo apt-get install -y goaccess
       - name: Configure AWS credentials (OIDC)
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v6
         with:
           role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
           aws-region: eu-west-1

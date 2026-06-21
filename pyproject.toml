@@ -35,7 +35,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-django = ["django>=4.0"]
+django = ["django>=4.2.30"]
 fastapi = ["fastapi>=0.100"]
 flask = ["flask>=2.0"]
 dev = [

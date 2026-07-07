@@ -79,6 +79,7 @@ plugins:
             Persisting documents: Persistir documentos
             Errors & Troubleshooting: Erros e Troubleshooting
             API Reference: Referência API
+            Security: Segurança
             Contributing: Contribuir
   - mkdocstrings:
       handlers:
@@ -112,6 +113,7 @@ nav:
     - Persisting documents: recipes/persisting-documents.md
   - Errors & Troubleshooting: errors/index.md
   - API Reference: api/index.md
+  - Security: security.md
   - Contributing: contributing.md
 
 markdown_extensions:

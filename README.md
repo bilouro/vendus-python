@@ -233,6 +233,8 @@ See [CONTRIBUTING.md](https://github.com/bilouro/vendus-python/blob/main/CONTRIB
 
 ## Security
 
+The SDK's security posture — API key handling, the test/real mode boundary, PII redaction, and fiscal-record integrity — is on the [Security guide](https://vendus.bilouro.com/security/).
+
 Report vulnerabilities privately — see [SECURITY.md](https://github.com/bilouro/vendus-python/blob/main/SECURITY.md). Do not open public issues for security bugs.
 
 ## License
